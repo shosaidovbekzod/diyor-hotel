@@ -17,8 +17,8 @@ const bodyFont = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "DIYOR HOTEL - TASHKENT",
-  description: "Luxury hotel booking platform for DIYOR HOTEL in Tashkent."
+  title: "Diyor Tashkent Hotel | Official Website",
+  description: "Modern comfort, national hospitality, and direct booking for Diyor Tashkent Hotel."
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

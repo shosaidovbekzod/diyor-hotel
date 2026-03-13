@@ -4,108 +4,191 @@ import type { Language } from "@/lib/i18n";
 const amenityMap: Record<string, Record<Language, string>> = {
   "Wi-Fi": { en: "Wi-Fi", uz: "Wi-Fi", ru: "Wi-Fi" },
   Breakfast: { en: "Breakfast", uz: "Nonushta", ru: "Завтрак" },
-  "Smart TV": { en: "Smart TV", uz: "Smart TV", ru: "Smart TV" },
-  Minibar: { en: "Minibar", uz: "Minibar", ru: "Мини-бар" },
-  "Rainfall Shower": { en: "Rainfall Shower", uz: "Yomg'ir uslubidagi dush", ru: "Тропический душ" },
   "Air Conditioning": { en: "Air Conditioning", uz: "Konditsioner", ru: "Кондиционер" },
-  Workspace: { en: "Workspace", uz: "Ish zonasi", ru: "Рабочая зона" },
-  "Coffee Station": { en: "Coffee Station", uz: "Kofe zonasi", ru: "Кофейная зона" },
-  Bathtub: { en: "Bathtub", uz: "Vanna", ru: "Ванна" },
+  "Smart TV": { en: "Smart TV", uz: "Smart TV", ru: "Smart TV" },
+  "Private Bathroom": { en: "Private Bathroom", uz: "Shaxsiy hammom", ru: "Собственная ванная" },
   "Lounge Area": { en: "Lounge Area", uz: "Dam olish zonasi", ru: "Лаунж-зона" },
-  "Dining Corner": { en: "Dining Corner", uz: "Ovqatlanish burchagi", ru: "Обеденная зона" },
-  "Kids Welcome Set": { en: "Kids Welcome Set", uz: "Bolalar uchun to'plam", ru: "Детский набор" },
-  "Walk-in Shower": { en: "Walk-in Shower", uz: "Keng dush", ru: "Просторный душ" }
+  Kitchen: { en: "Kitchen", uz: "Oshxona", ru: "Кухня" },
+  Workspace: { en: "Workspace", uz: "Ish zonasi", ru: "Рабочая зона" },
+  "Dining Area": { en: "Dining Area", uz: "Ovqatlanish zonasi", ru: "Обеденная зона" }
 };
 
 const roomMap: Record<string, Record<Language, Partial<Room>>> = {
-  "deluxe-city-room": {
+  "double-room-one-bed-or-two": {
     en: {},
     uz: {
-      title: "Deluxe City Room",
-      subtitle: "Shahar manzarali nafis qulaylik",
-      description: "Qatlamli teksturalar, yumshoq king bed, smart TV, ish stoli va premium bezaklar bilan jihozlangan nafis xona.",
-      bed_type: "King karavot",
-      view_label: "Shahar manzarasi"
+      title: "1 ta karavotli yoki 2 alohida karavotli ikki kishilik xona",
+      subtitle: "Biznes safar va qisqa shahar tashrifi uchun sokin standart xona.",
+      description:
+        "Bir katta karavot yoki ikkita alohida karavot bilan tayyorlanadigan qulay standart ikki kishilik xona, shahardagi osoyishta dam olish uchun mo'ljallangan.",
+      bed_type: "1 katta karavot / 2 alohida karavot",
+      view_label: "Shahar turar joyi"
     },
     ru: {
-      title: "Deluxe City Room",
-      subtitle: "Элегантный комфорт с видом на город",
-      description: "Изысканный номер с мягкой king-кроватью, smart TV, рабочим столом и премиальной отделкой.",
-      bed_type: "King Bed",
-      view_label: "Вид на город"
+      title: "Двухместный номер с 1 кроватью или 2 отдельными кроватями",
+      subtitle: "Спокойный стандартный номер для деловых поездок и коротких городских визитов.",
+      description:
+        "Удобный стандартный двухместный номер, который может быть подготовлен с одной большой кроватью или двумя отдельными кроватями для тихого отдыха в городе.",
+      bed_type: "1 большая кровать / 2 отдельные кровати",
+      view_label: "Городское проживание"
     }
   },
-  "executive-suite": {
+  "two-bedroom-suite": {
     en: {},
     uz: {
-      title: "Executive Suite",
-      subtitle: "Biznes va dam olish uchun keng premium suit",
-      description: "Dam olish zonasi, premium king bed, ish joyi va keng vannaxona bilan jihozlangan yuqori toifadagi suit.",
-      bed_type: "King karavot + divan",
-      view_label: "Hovli manzarasi"
+      title: "2 yotoqxonali suit",
+      subtitle: "Maxfiylik, ko'lam va qulaylikni qadrlaydigan mehmonlar uchun keng suit.",
+      description:
+        "Keng yashash maydoni, yumshoq maxfiylik va kattaroq reja bilan yaratilgan hashamatli suit.",
+      bed_type: "2 yotoqxonali suit",
+      view_label: "Suit kolleksiyasi"
     },
     ru: {
-      title: "Executive Suite",
-      subtitle: "Просторный премиум-сьют для бизнеса и отдыха",
-      description: "Премиальный сьют с лаунж-зоной, king-кроватью, рабочим местом и увеличенной ванной комнатой.",
-      bed_type: "King Bed + Sofa",
-      view_label: "Вид во двор"
+      title: "Люкс с 2 спальнями",
+      subtitle: "Просторный люкс для гостей, которые ценят приватность, масштаб и комфорт.",
+      description:
+        "Роскошный люкс с более просторной планировкой, мягкой приватностью и комфортной атмосферой для длительного проживания.",
+      bed_type: "Люкс с 2 спальнями",
+      view_label: "Коллекция люксов"
     }
   },
-  "family-residence": {
+  "one-bedroom-deluxe-apartment": {
     en: {},
     uz: {
-      title: "Family Residence",
-      subtitle: "Oilaviy yashash uchun katta xona",
-      description: "Oilalar va kichik guruhlar uchun mos, ovqatlanish burchagi va qulay yotoq sxemasi bilan jihozlangan keng xona.",
-      bed_type: "2 ta queen karavot",
-      view_label: "Bog' manzarasi"
+      title: "1 yotoqxonali deluxe apartament",
+      subtitle: "Uzoqroq va mustaqilroq turar joy uchun nafis apartament rejasi.",
+      description:
+        "Bitta yotoqxona va nafis interyer bilan yaratilgan keng deluxe apartament, qo'shimcha qulaylik va kengroq yashash maydonini istagan mehmonlar uchun.",
+      bed_type: "1 yotoqxonali apartament",
+      view_label: "Deluxe apartament"
     },
     ru: {
-      title: "Family Residence",
-      subtitle: "Большой семейный номер с гибкой планировкой",
-      description: "Просторный семейный номер с обеденной зоной и удобной конфигурацией спальных мест для длительного проживания.",
-      bed_type: "2 Queen Beds",
-      view_label: "Вид на сад"
+      title: "Делюкс-апартаменты с 1 спальней",
+      subtitle: "Элегантная планировка апартаментов для более длительного и независимого проживания.",
+      description:
+        "Просторные делюкс-апартаменты с одной спальней и элегантным интерьером для гостей, которым нужен больший комфорт и больше личного пространства.",
+      bed_type: "Апартаменты с 1 спальней",
+      view_label: "Делюкс-апартаменты"
+    }
+  },
+  "deluxe-apartment-two-bedrooms": {
+    en: {},
+    uz: {
+      title: "2 yotoqxonali deluxe apartament",
+      subtitle: "Oila uchun moslashuvchan turar joy va oshxona bilan kattaroq apartament.",
+      description:
+        "Ikki yotoqxona va oshxona bilan oilalar yoki kichik guruhlar uchun qulay, uzoqroq turar joyga mos ideal variant.",
+      bed_type: "2 yotoqxonali apartament",
+      view_label: "Apartament kolleksiyasi"
+    },
+    ru: {
+      title: "Делюкс-апартаменты с 2 спальнями",
+      subtitle: "Более просторные апартаменты с кухней для гибкого семейного проживания.",
+      description:
+        "Идеальный выбор для семей или небольших групп: две спальни, кухня и больше пространства для длительного пребывания.",
+      bed_type: "Апартаменты с 2 спальнями",
+      view_label: "Коллекция апартаментов"
+    }
+  },
+  "deluxe-apartment-three-bedrooms": {
+    en: {},
+    uz: {
+      title: "3 yotoqxonali deluxe apartament",
+      subtitle: "Katta oilalar va guruhlar uchun eng keng apartament varianti.",
+      description:
+        "Oshxona va yashash zonalari bilan jihozlangan katta uch yotoqxonali apartament, keng joy kerak bo'lgan mehmonlar uchun yaratilgan.",
+      bed_type: "3 yotoqxonali apartament",
+      view_label: "Residence kolleksiyasi"
+    },
+    ru: {
+      title: "Делюкс-апартаменты с 3 спальнями",
+      subtitle: "Самый просторный вариант апартаментов для больших семей и групп.",
+      description:
+        "Большие апартаменты с тремя спальнями, кухней и гостиной для гостей, которым нужно много пространства без потери приватности отдельных комнат.",
+      bed_type: "Апартаменты с 3 спальнями",
+      view_label: "Коллекция residence"
     }
   }
 };
 
 const serviceMap: Record<string, Record<Language, Partial<Service>>> = {
-  "Swimming Pool": {
+  "Buffet breakfast": {
     en: {},
-    uz: { name: "Basseyn", short_description: "Issiq yopiq basseyn", description: "Dam olish uchun mo'ljallangan premium yopiq basseyn." },
-    ru: { name: "Бассейн", short_description: "Теплый крытый бассейн", description: "Премиальный крытый бассейн для отдыха и восстановления." }
+    uz: {
+      name: "Nonushta",
+      short_description: "Shaxsiylashtirilgan nonushta xizmati",
+      description: "Nonushta restoran yoki xona ichida, mehmon istagiga ko'ra individual tarzda taqdim etiladi."
+    },
+    ru: {
+      name: "Завтрак",
+      short_description: "Индивидуальный завтрак",
+      description: "Завтрак может быть подан в ресторане или прямо в номер с учетом предпочтений гостя."
+    }
   },
-  "Fitness Gym": {
+  "Indoor swimming pool": {
     en: {},
-    uz: { name: "Fitness zal", short_description: "Zamonaviy fitness hududi", description: "Kardio va kuch mashqlari uchun zamonaviy jihozlar." },
-    ru: { name: "Фитнес-зал", short_description: "Современная фитнес-зона", description: "Современное оборудование для кардио и силовых тренировок." }
+    uz: {
+      name: "Yopiq basseyn",
+      short_description: "Yil bo'yi ishlaydigan yopiq basseyn",
+      description: "Sokin muhit, qulay suv harorati va dam olish uchun mo'ljallangan zamonaviy yopiq basseyn."
+    },
+    ru: {
+      name: "Крытый бассейн",
+      short_description: "Крытый бассейн круглый год",
+      description: "Современный крытый бассейн со спокойной атмосферой и комфортной температурой воды для отдыха и плавания."
+    }
   },
-  "Finnish Sauna": {
+  Gym: {
     en: {},
-    uz: { name: "Fin saunasi", short_description: "Quruq sauna", description: "Chuqur dam olish uchun an'anaviy fin saunasi." },
-    ru: { name: "Финская сауна", short_description: "Сухая сауна", description: "Традиционная финская сауна для глубокого расслабления." }
+    uz: {
+      name: "Sport zal",
+      short_description: "Zamonaviy mashg'ulot hududi",
+      description: "Kardio va kuch mashqlari uchun kerakli jihozlar bilan ta'minlangan zamonaviy zal."
+    },
+    ru: {
+      name: "Тренажерный зал",
+      short_description: "Современная зона тренировок",
+      description: "Современный зал с необходимым оборудованием для кардио- и силовых тренировок."
+    }
   },
-  "Turkish Sauna": {
+  "Sauna (Turkish and Finnish)": {
     en: {},
-    uz: { name: "Turk saunasi", short_description: "An'anaviy hammom bug'i", description: "Hammom uslubidagi bug'li tiklanish tajribasi." },
-    ru: { name: "Турецкая сауна", short_description: "Пар в стиле хаммама", description: "Восстанавливающая паровая атмосфера в стиле хаммама." }
+    uz: {
+      name: "Turk va fin saunasi",
+      short_description: "Ikki xil sauna marosimi",
+      description: "Turk hammomi yumshoq bug' bilan, fin saunasi esa quruq issiqlik bilan chuqur tiklanish hissini beradi."
+    },
+    ru: {
+      name: "Сауна (турецкая и финская)",
+      short_description: "Два формата сауны",
+      description: "Турецкий хаммам дает мягкий пар, а финская сауна обеспечивает сухое тепло и глубокое восстановление."
+    }
   },
-  "Salt Room": {
+  Parking: {
     en: {},
-    uz: { name: "Tuz xonasi", short_description: "Tinch wellness hududi", description: "Nafas va dam olish uchun mo'ljallangan sokin tuz xonasi." },
-    ru: { name: "Соляная комната", short_description: "Спокойная wellness-зона", description: "Соляная комната для отдыха и мягкого восстановления." }
+    uz: {
+      name: "Avtoturargoh",
+      short_description: "Xavfsiz joyidagi parking",
+      description: "Avtomobilda kelgan mehmonlar uchun mehmonxona yonidagi xavfsiz parking mavjud."
+    },
+    ru: {
+      name: "Парковка",
+      short_description: "Безопасная парковка на территории",
+      description: "Для гостей, приезжающих на автомобиле, доступна безопасная парковка рядом с отелем."
+    }
   },
-  "SPA Center": {
+  "Wi-Fi": {
     en: {},
-    uz: { name: "SPA markaz", short_description: "Premium muolajalar", description: "Massaj va wellness muolajalari uchun premium zona." },
-    ru: { name: "SPA-центр", short_description: "Премиальные процедуры", description: "Премиальная зона для массажа и wellness-процедур." }
-  },
-  Restaurant: {
-    en: {},
-    uz: { name: "Restoran", short_description: "Elegant ovqatlanish", description: "O'zbek va xalqaro taomlardan iborat nafis restoran." },
-    ru: { name: "Ресторан", short_description: "Элегантный ресторан", description: "Элегантный ресторан с узбекской и международной кухней." }
+    uz: {
+      name: "Wi-Fi",
+      short_description: "Yuqori tezlikdagi internet",
+      description: "Bepul yuqori tezlikdagi internet xonalar va umumiy hududlarda mavjud."
+    },
+    ru: {
+      name: "Wi-Fi",
+      short_description: "Высокоскоростной интернет",
+      description: "Бесплатный высокоскоростной интернет доступен в номерах и общественных зонах отеля."
+    }
   }
 };
 

@@ -100,36 +100,71 @@ const SERVER_API_URL =
 const API_URL = typeof window === "undefined" ? SERVER_API_URL : CLIENT_API_URL;
 
 const demoServices: Service[] = [
-  { id: 1, name: "Swimming Pool", icon: "waves", short_description: "Indoor heated pool", description: "Indoor heated pool with private relaxation seating." },
-  { id: 2, name: "Fitness Gym", icon: "dumbbell", short_description: "Premium gym", description: "Modern cardio and strength equipment." },
-  { id: 3, name: "Finnish Sauna", icon: "flame", short_description: "Dry sauna ritual", description: "A restorative Finnish sauna experience." },
-  { id: 4, name: "Turkish Sauna", icon: "cloud", short_description: "Traditional hammam steam", description: "Steam therapy inspired by hammam rituals." },
-  { id: 5, name: "Salt Room", icon: "sparkles", short_description: "Wellness breathing room", description: "Calm halotherapy-style recovery lounge." },
-  { id: 6, name: "SPA Center", icon: "flower-2", short_description: "Luxury treatments", description: "Massages and wellness rituals." },
-  { id: 7, name: "Restaurant", icon: "utensils-crossed", short_description: "Elegant dining", description: "Uzbek and international cuisine." }
+  {
+    id: 1,
+    name: "Buffet breakfast",
+    icon: "utensils-crossed",
+    short_description: "Personalized breakfast service",
+    description: "Breakfast can be served in the restaurant or directly in the room according to guest preferences."
+  },
+  {
+    id: 2,
+    name: "Indoor swimming pool",
+    icon: "waves",
+    short_description: "Year-round indoor pool",
+    description: "A modern indoor swimming pool with a calm atmosphere, comfortable water temperature, and space for relaxation."
+  },
+  {
+    id: 3,
+    name: "Gym",
+    icon: "dumbbell",
+    short_description: "Modern training zone",
+    description: "A well-equipped gym for cardio and strength workouts throughout the stay."
+  },
+  {
+    id: 4,
+    name: "Sauna (Turkish and Finnish)",
+    icon: "flame",
+    short_description: "Two sauna rituals",
+    description: "Turkish hammam steam and Finnish dry heat are both available for recovery and relaxation."
+  },
+  {
+    id: 5,
+    name: "Parking",
+    icon: "car",
+    short_description: "Safe on-site parking",
+    description: "Secure parking is available for guests arriving by car."
+  },
+  {
+    id: 6,
+    name: "Wi-Fi",
+    icon: "wifi",
+    short_description: "High-speed internet",
+    description: "Complimentary high-speed internet is available in rooms and public spaces."
+  }
 ];
 
 const demoRooms: Room[] = [
   {
     id: 1,
-    slug: "deluxe-city-room",
+    slug: "double-room-one-bed-or-two",
     room_number: "201",
-    title: "Deluxe City Room",
-    subtitle: "Elegant comfort with a city-facing view",
-    description: "A refined room with layered textiles, a plush king bed, rainfall shower, and premium finishing throughout the stay.",
-    size_sqm: 34,
+    title: "Double Room with 1 Bed or 2 Separate Beds",
+    subtitle: "A calm standard room for business trips and short city stays.",
+    description: "A comfortable standard double room that can be arranged with one large bed or two separate beds, designed for quiet rest in the city.",
+    size_sqm: 32,
     price_per_night: 420000,
     promo_price: 299000,
     display_price: 299000,
     capacity: 2,
-    bed_type: "King Bed",
-    amenities: ["Wi-Fi", "Breakfast", "Smart TV", "Minibar", "Rainfall Shower", "Air Conditioning"],
-    image_url: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1200&q=80",
+    bed_type: "1 Double Bed / 2 Twin Beds",
+    amenities: ["Wi-Fi", "Breakfast", "Air Conditioning", "Smart TV", "Private Bathroom"],
+    image_url: "https://diyortashkenthotel.uz/img/813dbe414736ec61.webp",
     gallery: [
-      "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?auto=format&fit=crop&w=1200&q=80"
+      "https://diyortashkenthotel.uz/img/813dbe414736ec61.webp",
+      "https://diyortashkenthotel.uz/img/86c5aa8d74083036.webp"
     ],
-    view_label: "City View",
+    view_label: "City stay",
     is_featured: true,
     is_available: true,
     average_rating: 4.9,
@@ -137,24 +172,24 @@ const demoRooms: Room[] = [
   },
   {
     id: 2,
-    slug: "executive-suite",
+    slug: "two-bedroom-suite",
     room_number: "305",
-    title: "Executive Suite",
-    subtitle: "Spacious premium suite for business and leisure",
-    description: "A polished suite with a lounge area, king bed, dedicated workspace, and deep-soaking bathroom amenities.",
-    size_sqm: 52,
-    price_per_night: 690000,
+    title: "2 Bedroom Suite",
+    subtitle: "A spacious suite for guests who value privacy, scale, and comfort.",
+    description: "A luxurious suite created for guests who appreciate spacious living, soft privacy, and a more generous room layout.",
+    size_sqm: 68,
+    price_per_night: 890000,
     promo_price: null,
-    display_price: 690000,
-    capacity: 3,
-    bed_type: "King Bed + Sofa",
-    amenities: ["Wi-Fi", "Breakfast", "Workspace", "Coffee Station", "Bathtub", "Lounge Area"],
-    image_url: "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=1200&q=80",
+    display_price: 890000,
+    capacity: 4,
+    bed_type: "2 Bedroom Suite",
+    amenities: ["Wi-Fi", "Breakfast", "Lounge Area", "Air Conditioning", "Smart TV", "Private Bathroom"],
+    image_url: "https://diyortashkenthotel.uz/img/0df4c4147ce5830c.webp",
     gallery: [
-      "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1200&q=80"
+      "https://diyortashkenthotel.uz/img/0df4c4147ce5830c.webp",
+      "https://diyortashkenthotel.uz/img/838a38a4e81dd51c.webp"
     ],
-    view_label: "Courtyard View",
+    view_label: "Suite collection",
     is_featured: true,
     is_available: true,
     average_rating: 4.8,
@@ -162,28 +197,78 @@ const demoRooms: Room[] = [
   },
   {
     id: 3,
-    slug: "family-residence",
+    slug: "one-bedroom-deluxe-apartment",
     room_number: "402",
-    title: "Family Residence",
-    subtitle: "Large family stay with flexible sleeping layout",
-    description: "A generous family room with a dining corner, flexible bedding, and practical luxury for longer stays.",
-    size_sqm: 68,
-    price_per_night: 890000,
-    promo_price: 760000,
+    title: "1 Bedroom Deluxe Apartment",
+    subtitle: "An elegant apartment layout suited to longer, more independent stays.",
+    description: "A spacious deluxe apartment with one bedroom and an elegant interior, composed for guests who want extra comfort and more room to settle in.",
+    size_sqm: 54,
+    price_per_night: 760000,
+    promo_price: null,
     display_price: 760000,
-    capacity: 4,
-    bed_type: "2 Queen Beds",
-    amenities: ["Wi-Fi", "Breakfast", "Dining Corner", "Kids Welcome Set", "Walk-in Shower"],
-    image_url: "https://images.unsplash.com/photo-1505692952047-1a78307da8f2?auto=format&fit=crop&w=1200&q=80",
+    capacity: 3,
+    bed_type: "1 Bedroom Apartment",
+    amenities: ["Wi-Fi", "Breakfast", "Kitchen", "Workspace", "Smart TV", "Private Bathroom"],
+    image_url: "https://diyortashkenthotel.uz/img/d29a38843873236a.webp",
     gallery: [
-      "https://images.unsplash.com/photo-1505692952047-1a78307da8f2?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1496417263034-38ec4f0b665a?auto=format&fit=crop&w=1200&q=80"
+      "https://diyortashkenthotel.uz/img/d29a38843873236a.webp",
+      "https://diyortashkenthotel.uz/img/86c5aa8d74083036.webp"
     ],
-    view_label: "Garden View",
+    view_label: "Deluxe apartment",
     is_featured: true,
     is_available: true,
     average_rating: 4.7,
     reviews_count: 14
+  },
+  {
+    id: 4,
+    slug: "deluxe-apartment-two-bedrooms",
+    room_number: "501",
+    title: "Deluxe Apartment with 2 Bedrooms",
+    subtitle: "A larger apartment with kitchen access for flexible family stays.",
+    description: "An ideal choice for families or small groups, with two bedrooms, a kitchen, and the extra room needed for a longer stay.",
+    size_sqm: 86,
+    price_per_night: 990000,
+    promo_price: null,
+    display_price: 990000,
+    capacity: 4,
+    bed_type: "2 Bedroom Apartment",
+    amenities: ["Wi-Fi", "Breakfast", "Kitchen", "Dining Area", "Smart TV", "Private Bathroom"],
+    image_url: "https://diyortashkenthotel.uz/img/451be978591e2b97.webp",
+    gallery: [
+      "https://diyortashkenthotel.uz/img/451be978591e2b97.webp",
+      "https://diyortashkenthotel.uz/img/838a38a4e81dd51c.webp"
+    ],
+    view_label: "Apartment collection",
+    is_featured: true,
+    is_available: true,
+    average_rating: 4.8,
+    reviews_count: 12
+  },
+  {
+    id: 5,
+    slug: "deluxe-apartment-three-bedrooms",
+    room_number: "502",
+    title: "Deluxe Apartment with 3 Bedrooms",
+    subtitle: "The most expansive apartment option for extended family and group travel.",
+    description: "A large three-bedroom apartment with kitchen and living areas, designed for guests who need extra space without losing the privacy of separate rooms.",
+    size_sqm: 118,
+    price_per_night: 1350000,
+    promo_price: null,
+    display_price: 1350000,
+    capacity: 6,
+    bed_type: "3 Bedroom Apartment",
+    amenities: ["Wi-Fi", "Breakfast", "Kitchen", "Dining Area", "Smart TV", "Private Bathroom"],
+    image_url: "https://diyortashkenthotel.uz/img/7610f37d48fbf093.webp",
+    gallery: [
+      "https://diyortashkenthotel.uz/img/7610f37d48fbf093.webp",
+      "https://diyortashkenthotel.uz/img/838a38a4e81dd51c.webp"
+    ],
+    view_label: "Residence collection",
+    is_featured: true,
+    is_available: true,
+    average_rating: 4.8,
+    reviews_count: 10
   }
 ];
 
@@ -198,16 +283,17 @@ const demoReviews: Review[] = [
 ];
 
 const demoSummary: HotelSummary = {
-  name: "DIYOR HOTEL - TASHKENT",
-  location: "Olmos 74A street, Tashkent, Uzbekistan",
+  name: "Diyor Tashkent Hotel",
+  location: "Olmos Street 74A, Bektemir district, Tashkent 100037, Uzbekistan",
   phone: "+998 88 589 33 33",
-  telegram_url: "https://t.me/diyor_tashkent_hotel",
+  telegram_url: "https://t.me/diyor_hoteln11",
   youtube_url: "https://www.youtube.com/@Diyorhoteluz",
-  hero_image: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1600&q=80",
+  hero_image: "https://diyortashkenthotel.uz/img/838a38a4e81dd51c.webp",
   gallery: [
-    "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80",
-    "https://images.unsplash.com/photo-1522798514-97ceb8c4f1c8?auto=format&fit=crop&w=1200&q=80",
-    "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=1200&q=80"
+    "https://diyortashkenthotel.uz/img/86c5aa8d74083036.webp",
+    "https://diyortashkenthotel.uz/img/813dbe414736ec61.webp",
+    "https://diyortashkenthotel.uz/img/0df4c4147ce5830c.webp",
+    "https://diyortashkenthotel.uz/img/dac01a4ffbd5aa31.webp"
   ],
   highlight_rooms: demoRooms,
   services: demoServices,

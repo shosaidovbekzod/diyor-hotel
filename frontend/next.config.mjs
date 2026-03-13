@@ -4,7 +4,8 @@ const backendOrigin = (process.env.BACKEND_ORIGIN || "http://localhost:8000").re
 const nextConfig = {
   images: {
     remotePatterns: [
-      { protocol: "https", hostname: "images.unsplash.com" }
+      { protocol: "https", hostname: "images.unsplash.com" },
+      { protocol: "https", hostname: "diyortashkenthotel.uz" }
     ]
   },
   async rewrites() {

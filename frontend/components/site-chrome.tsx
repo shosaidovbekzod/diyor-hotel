@@ -21,8 +21,11 @@ export function SiteChrome({ children, lang }: { children: React.ReactNode; lang
         <div className="shell border-b border-[#d8cfc2] py-3 text-[10px] uppercase tracking-[0.34em] text-stone">
           <div className="grid items-center gap-3 md:grid-cols-[1fr_auto_1fr]">
             <div className="text-left">Olmos 74A, Tashkent</div>
-            <Link href="/" className="justify-self-center font-display text-[28px] tracking-[0.22em] text-ink md:text-[34px]">
-              DIYOR HOTEL
+            <Link href="/" className="justify-self-center flex items-center gap-3 text-ink">
+              <img src="/diyor-logo.webp" alt="Diyor Tashkent Hotel logo" className="h-12 w-auto md:h-14" />
+              <span className="font-display text-[24px] tracking-[0.18em] md:text-[30px]">
+                DIYOR HOTEL
+              </span>
             </Link>
             <div className="flex items-center justify-end gap-5">
               <a href="tel:+9988858933333" className="transition hover:text-ink">+998 88 589 33 33</a>
@@ -56,9 +59,12 @@ export function SiteChrome({ children, lang }: { children: React.ReactNode; lang
         <div className="shell grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
           <div>
             <div className="section-label">DIYOR HOTEL</div>
-            <h2 className="mt-4 max-w-2xl font-display text-5xl leading-[0.98] text-ink">
-              Calm city hospitality with an editorial, residence-style sense of luxury.
-            </h2>
+            <div className="mt-4 flex items-center gap-4">
+              <img src="/diyor-logo.webp" alt="Diyor Tashkent Hotel logo" className="h-16 w-auto" />
+              <h2 className="max-w-2xl font-display text-4xl leading-[0.98] text-ink">
+                Diyor Tashkent Hotel with the comfort, hospitality, and central convenience of the original property.
+              </h2>
+            </div>
           </div>
           <div className="grid gap-8 text-sm text-ink/75 md:grid-cols-2">
             <div className="border-t border-[#d8cfc2] pt-4">
@@ -69,7 +75,8 @@ export function SiteChrome({ children, lang }: { children: React.ReactNode; lang
               <div className="section-label">Contact</div>
               <div className="mt-4 flex flex-col gap-3">
                 <a href="tel:+9988858933333" className="transition hover:text-ink">+998 88 589 33 33</a>
-                <a href="https://t.me/diyor_tashkent_hotel" className="transition hover:text-ink">{copy.footer.telegram}</a>
+                <a href="mailto:receptiondiyorhotel@gmail.com" className="transition hover:text-ink">receptiondiyorhotel@gmail.com</a>
+                <a href="https://t.me/diyor_hoteln11" className="transition hover:text-ink">{copy.footer.telegram}</a>
                 <a href="https://www.youtube.com/@Diyorhoteluz" className="transition hover:text-ink">{copy.footer.youtube}</a>
               </div>
             </div>
