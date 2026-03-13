@@ -85,7 +85,13 @@ export type HotelSummary = {
   testimonials: Review[];
 };
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1";
+const CLIENT_API_URL = process.env.NEXT_PUBLIC_API_URL ?? "/api/v1";
+const SERVER_API_URL =
+  process.env.INTERNAL_API_URL ??
+  process.env.NEXT_PUBLIC_API_URL ??
+  "http://localhost:8000/api/v1";
+
+const API_URL = typeof window === "undefined" ? SERVER_API_URL : CLIENT_API_URL;
 
 const demoServices: Service[] = [
   { id: 1, name: "Swimming Pool", icon: "waves", short_description: "Indoor heated pool", description: "Indoor heated pool with private relaxation seating." },
