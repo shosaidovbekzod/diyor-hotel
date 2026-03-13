@@ -37,7 +37,7 @@ def create_booking(
 def my_bookings(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     query = (
         select(Booking)
-        .options(joinedload(Booking.room), joinedload(Booking.payment))
+        .options(joinedload(Booking.room), joinedload(Booking.payment), joinedload(Booking.user))
         .where(Booking.user_id == current_user.id)
         .order_by(Booking.created_at.desc())
     )
@@ -52,7 +52,7 @@ def cancel_booking(
 ):
     booking = db.scalar(
         select(Booking)
-        .options(joinedload(Booking.room), joinedload(Booking.payment))
+        .options(joinedload(Booking.room), joinedload(Booking.payment), joinedload(Booking.user))
         .where(Booking.id == booking_id, Booking.user_id == current_user.id)
     )
     if not booking:

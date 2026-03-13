@@ -50,6 +50,12 @@ export type Booking = {
   total_price: number;
   status: string;
   room: Room;
+  special_request?: string | null;
+  user?: {
+    id: number;
+    full_name: string;
+    email: string;
+  } | null;
 };
 
 export type AdminDashboard = {

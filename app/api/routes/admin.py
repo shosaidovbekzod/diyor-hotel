@@ -38,7 +38,7 @@ def get_dashboard(_: User = Depends(get_current_admin), db: Session = Depends(ge
     recent_bookings = list(
         db.scalars(
             select(Booking)
-            .options(joinedload(Booking.room), joinedload(Booking.payment))
+            .options(joinedload(Booking.room), joinedload(Booking.payment), joinedload(Booking.user))
             .order_by(Booking.created_at.desc())
             .limit(10)
         ).unique().all()
@@ -66,7 +66,7 @@ def list_all_bookings(_: User = Depends(get_current_admin), db: Session = Depend
     return list(
         db.scalars(
             select(Booking)
-            .options(joinedload(Booking.room), joinedload(Booking.payment))
+            .options(joinedload(Booking.room), joinedload(Booking.payment), joinedload(Booking.user))
             .order_by(Booking.created_at.desc())
         ).unique().all()
     )

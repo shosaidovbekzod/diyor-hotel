@@ -97,7 +97,7 @@ def create_booking_or_raise(db: Session, user: User, payload: BookingCreate) -> 
     db.refresh(booking)
     return db.scalar(
         select(Booking)
-        .options(joinedload(Booking.room), joinedload(Booking.payment))
+        .options(joinedload(Booking.room), joinedload(Booking.payment), joinedload(Booking.user))
         .where(Booking.id == booking.id)
     )
 

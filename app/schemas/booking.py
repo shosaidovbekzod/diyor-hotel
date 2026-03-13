@@ -7,6 +7,7 @@ from app.models.booking import BookingStatus
 from app.schemas.common import TimestampedSchema
 from app.schemas.payment import PaymentRead
 from app.schemas.room import RoomRead
+from app.schemas.user import UserSummary
 
 
 class BookingCreate(BaseModel):
@@ -47,4 +48,5 @@ class BookingRead(TimestampedSchema):
     status: BookingStatus
     special_request: str | None
     room: RoomRead
+    user: UserSummary | None = None
     payment: PaymentRead | None = None
