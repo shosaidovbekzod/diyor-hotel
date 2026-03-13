@@ -125,6 +125,8 @@ const pageCopy = {
   }
 } as const;
 
+const heroVideoSrc = "/hero-video.mp4?v=20260313";
+
 export default async function HomePage() {
   const lang = await getServerLanguage();
   const copy = t(lang).home;
@@ -148,7 +150,7 @@ export default async function HomePage() {
             poster="/diyor-hero-poster.webp"
             className="h-full w-full object-cover"
           >
-            <source src="/hero-video.mp4" type="video/mp4" />
+            <source src={heroVideoSrc} type="video/mp4" />
           </video>
         </div>
         <div className="absolute inset-0 bg-hero-glow" />
