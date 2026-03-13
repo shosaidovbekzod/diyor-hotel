@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion } from "framer-motion";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { t, type Language } from "@/lib/i18n";
 
@@ -17,27 +16,34 @@ export function SiteChrome({ children, lang }: { children: React.ReactNode; lang
   ];
 
   return (
-    <div className="min-h-screen">
-      <header className="sticky top-0 z-50 border-b border-white/40 bg-[#171717]/85 text-white backdrop-blur-xl">
-        <div className="shell flex flex-wrap items-center justify-between gap-4 py-4">
-          <Link href="/" className="font-display text-xl tracking-[0.25em]">
-            DIYOR HOTEL
-          </Link>
-          <div className="flex items-center gap-3">
-            <LanguageSwitcher current={lang} />
-            <nav className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 p-1 text-sm">
+    <div className="min-h-screen bg-sand">
+      <header className="sticky top-0 z-50 border-b border-[#d8cfc2] bg-sand/95 backdrop-blur-xl">
+        <div className="shell py-3 text-[11px] uppercase tracking-[0.28em] text-stone">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>DIYOR HOTEL - TASHKENT</div>
+            <div className="flex items-center gap-5">
+              <a href="tel:+9988858933333" className="transition hover:text-ink">+998 88 589 33 33</a>
+              <LanguageSwitcher current={lang} />
+            </div>
+          </div>
+        </div>
+        <div className="shell py-5">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+            <Link href="/" className="font-display text-4xl tracking-[0.18em] text-ink">
+              DIYOR
+            </Link>
+            <nav className="flex flex-wrap gap-5 text-sm uppercase tracking-[0.28em] text-stone">
               {nav.map((item) => {
                 const active = pathname === item.href;
                 return (
-                  <Link key={item.href} href={item.href} className="relative rounded-full px-4 py-2 text-white/80 transition hover:text-white">
-                    {active && (
-                      <motion.span
-                        layoutId="nav-pill"
-                        className="absolute inset-0 rounded-full bg-champagne"
-                        transition={{ type: "spring", stiffness: 260, damping: 24 }}
-                      />
-                    )}
-                    <span className={`relative z-10 ${active ? "text-ink" : ""}`}>{item.label}</span>
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`border-b pb-1 transition ${
+                      active ? "border-ink text-ink" : "border-transparent hover:border-[#bfae95] hover:text-ink"
+                    }`}
+                  >
+                    {item.label}
                   </Link>
                 );
               })}
@@ -45,17 +51,30 @@ export function SiteChrome({ children, lang }: { children: React.ReactNode; lang
           </div>
         </div>
       </header>
+
       <main>{children}</main>
-      <footer className="mt-20 border-t border-ink/10 py-10 text-sm text-ink/70">
-        <div className="shell flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+
+      <footer className="mt-24 border-t border-[#d8cfc2] bg-[#efe8dd] py-14">
+        <div className="shell grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
           <div>
-            <div className="font-display text-lg text-ink">{copy.footer.title}</div>
-            <div>{copy.footer.address}</div>
+            <div className="section-label">DIYOR HOTEL</div>
+            <h2 className="mt-4 max-w-xl font-display text-4xl text-ink">
+              Premium hospitality in Tashkent, shaped around calm stays and restorative service.
+            </h2>
           </div>
-          <div className="flex flex-col gap-1 md:items-end">
-            <a href="tel:+9988858933333" className="hover:text-ink">+998 88 589 33 33</a>
-            <a href="https://t.me/diyor_tashkent_hotel" className="hover:text-ink">{copy.footer.telegram}</a>
-            <a href="https://www.youtube.com/@Diyorhoteluz" className="hover:text-ink">{copy.footer.youtube}</a>
+          <div className="grid gap-6 text-sm text-ink/75 md:grid-cols-2">
+            <div>
+              <div className="section-label">Visit</div>
+              <p className="mt-3 max-w-xs">{copy.footer.address}</p>
+            </div>
+            <div>
+              <div className="section-label">Contact</div>
+              <div className="mt-3 flex flex-col gap-2">
+                <a href="tel:+9988858933333" className="transition hover:text-ink">+998 88 589 33 33</a>
+                <a href="https://t.me/diyor_tashkent_hotel" className="transition hover:text-ink">{copy.footer.telegram}</a>
+                <a href="https://www.youtube.com/@Diyorhoteluz" className="transition hover:text-ink">{copy.footer.youtube}</a>
+              </div>
+            </div>
           </div>
         </div>
       </footer>

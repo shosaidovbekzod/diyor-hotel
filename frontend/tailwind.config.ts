@@ -9,20 +9,22 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        ink: "#111111",
-        champagne: "#d4b16a",
-        sand: "#f5efe4",
-        olive: "#273127"
+        ink: "#161410",
+        champagne: "#c2a36a",
+        sand: "#f4efe7",
+        olive: "#24312b",
+        linen: "#ede6db",
+        stone: "#8b7f70"
       },
       fontFamily: {
-        display: ["Georgia", "serif"],
-        body: ["ui-sans-serif", "system-ui", "sans-serif"]
+        display: ["var(--font-display)", "serif"],
+        body: ["var(--font-body)", "sans-serif"]
       },
       boxShadow: {
-        luxe: "0 25px 80px rgba(17, 17, 17, 0.14)"
+        luxe: "0 24px 70px rgba(22, 20, 16, 0.08)"
       },
       backgroundImage: {
-        "hero-glow": "radial-gradient(circle at top, rgba(212,177,106,0.25), transparent 40%)"
+        "hero-glow": "linear-gradient(180deg, rgba(8, 8, 8, 0.18) 0%, rgba(8, 8, 8, 0.64) 100%)"
       }
     }
   },
