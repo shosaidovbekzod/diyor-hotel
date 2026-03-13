@@ -18,13 +18,13 @@ export function LanguageSwitcher({ current }: { current: Language }) {
   }
 
   return (
-    <div className="flex items-center rounded-full border border-white/10 bg-white/5 p-1">
+    <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.28em] text-stone">
       {options.map((option) => (
         <button
           key={option.value}
           onClick={() => handleChange(option.value)}
-          className={`rounded-full px-3 py-2 text-xs tracking-[0.25em] transition ${
-            current === option.value ? "bg-white text-ink" : "text-white/65 hover:text-white"
+          className={`border-b pb-1 transition ${
+            current === option.value ? "border-ink text-ink" : "border-transparent hover:border-[#bfae95] hover:text-ink"
           }`}
         >
           {option.label}

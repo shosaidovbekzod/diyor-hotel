@@ -56,37 +56,67 @@ export function BookingForm({ roomId, pricePerNight, lang }: BookingFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="card gold-ring space-y-4 p-6">
-      <div>
-        <div className="text-xs uppercase tracking-[0.3em] text-ink/50">{copy.reserve}</div>
-        <h3 className="mt-2 font-display text-2xl">{copy.title}</h3>
-      </div>
-      <div className="grid gap-4 md:grid-cols-2">
-        <label className="space-y-2 text-sm">
+    <form onSubmit={handleSubmit} className="card p-8 md:p-10">
+      <div className="section-label">{copy.reserve}</div>
+      <h3 className="mt-4 font-display text-4xl text-ink">{copy.title}</h3>
+
+      <div className="mt-8 grid gap-5 md:grid-cols-2">
+        <label className="space-y-2 text-sm text-ink/70">
           <span>{copy.checkIn}</span>
-          <input type="date" value={checkIn} onChange={(e) => setCheckIn(e.target.value)} className="w-full rounded-2xl border border-ink/10 bg-white px-4 py-3 outline-none" required />
+          <input
+            type="date"
+            value={checkIn}
+            onChange={(e) => setCheckIn(e.target.value)}
+            className="w-full border-b border-[#d8cfc2] bg-transparent px-0 py-3 text-ink outline-none"
+            required
+          />
         </label>
-        <label className="space-y-2 text-sm">
+        <label className="space-y-2 text-sm text-ink/70">
           <span>{copy.checkOut}</span>
-          <input type="date" value={checkOut} onChange={(e) => setCheckOut(e.target.value)} className="w-full rounded-2xl border border-ink/10 bg-white px-4 py-3 outline-none" required />
+          <input
+            type="date"
+            value={checkOut}
+            onChange={(e) => setCheckOut(e.target.value)}
+            className="w-full border-b border-[#d8cfc2] bg-transparent px-0 py-3 text-ink outline-none"
+            required
+          />
         </label>
       </div>
-      <label className="space-y-2 text-sm">
+
+      <label className="mt-5 block space-y-2 text-sm text-ink/70">
         <span>{copy.guests}</span>
-        <input type="number" min={1} max={8} value={guestsCount} onChange={(e) => setGuestsCount(Number(e.target.value))} className="w-full rounded-2xl border border-ink/10 bg-white px-4 py-3 outline-none" />
+        <input
+          type="number"
+          min={1}
+          max={8}
+          value={guestsCount}
+          onChange={(e) => setGuestsCount(Number(e.target.value))}
+          className="w-full border-b border-[#d8cfc2] bg-transparent px-0 py-3 text-ink outline-none"
+        />
       </label>
-      <label className="space-y-2 text-sm">
+
+      <label className="mt-5 block space-y-2 text-sm text-ink/70">
         <span>{copy.specialRequest}</span>
-        <textarea value={specialRequest} onChange={(e) => setSpecialRequest(e.target.value)} className="min-h-28 w-full rounded-2xl border border-ink/10 bg-white px-4 py-3 outline-none" placeholder={copy.requestPlaceholder} />
+        <textarea
+          value={specialRequest}
+          onChange={(e) => setSpecialRequest(e.target.value)}
+          className="min-h-28 w-full border-b border-[#d8cfc2] bg-transparent px-0 py-3 text-ink outline-none"
+          placeholder={copy.requestPlaceholder}
+        />
       </label>
-      <div className="rounded-2xl bg-ink px-4 py-4 text-white">
-        <div className="text-sm text-white/60">{copy.estimate}</div>
-        <div className="mt-1 font-display text-3xl">{estimate.toLocaleString("en-US")} UZS</div>
+
+      <div className="mt-8 border-t border-[#d8cfc2] pt-6">
+        <div className="section-label">{copy.estimate}</div>
+        <div className="mt-3 font-display text-5xl text-ink">{estimate.toLocaleString("en-US")} UZS</div>
       </div>
-      <button disabled={pending} className="w-full rounded-full bg-champagne px-5 py-3 font-medium text-ink transition hover:opacity-90 disabled:opacity-60">
+
+      <button
+        disabled={pending}
+        className="mt-8 w-full border border-ink bg-ink px-6 py-4 text-xs uppercase tracking-[0.24em] text-white transition hover:bg-[#2c2721] disabled:opacity-60"
+      >
         {pending ? copy.confirming : copy.confirm}
       </button>
-      {message ? <p className="text-sm text-ink/70">{message}</p> : null}
+      {message ? <p className="mt-4 text-sm text-ink/70">{message}</p> : null}
     </form>
   );
 }

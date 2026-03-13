@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { type AdminDashboard, getAdminDashboard, login } from "@/lib/api";
+import { getAdminDashboard, login, type AdminDashboard } from "@/lib/api";
 import { t, type Language } from "@/lib/i18n";
 
 const ADMIN_TOKEN_KEY = "diyor_admin_token";
@@ -13,45 +13,77 @@ const adminUiCopy: Record<
     signedIn: string;
     refresh: string;
     noBookings: string;
+    noUsers: string;
+    noRooms: string;
     guest: string;
     dates: string;
     total: string;
-    status: string;
     specialRequest: string;
+    usersTitle: string;
+    roomsTitle: string;
+    roomRate: string;
+    availability: string;
+    availableNow: string;
+    unavailable: string;
+    loading: string;
   }
 > = {
   en: {
-    signInHelp: "Sign in with the admin email and password to open the dashboard.",
+    signInHelp: "Sign in with the admin email and password to open live operations.",
     signedIn: "Admin session is active. New bookings refresh automatically.",
     refresh: "Refresh",
     noBookings: "No bookings have been created yet.",
+    noUsers: "No guest accounts found yet.",
+    noRooms: "No room inventory loaded yet.",
     guest: "Guest",
     dates: "Stay dates",
     total: "Total",
-    status: "Status",
-    specialRequest: "Special request"
+    specialRequest: "Special request",
+    usersTitle: "Guest directory",
+    roomsTitle: "Room inventory",
+    roomRate: "Rate",
+    availability: "Availability",
+    availableNow: "Available now",
+    unavailable: "Unavailable",
+    loading: "Loading dashboard..."
   },
   uz: {
-    signInHelp: "Panelni ochish uchun admin email va parolini kiriting.",
+    signInHelp: "Jonli operatsiyalarni ochish uchun admin email va parolini kiriting.",
     signedIn: "Admin sessiyasi faol. Yangi bronlar avtomatik yangilanadi.",
     refresh: "Yangilash",
     noBookings: "Hozircha bronlar yaratilmagan.",
+    noUsers: "Hozircha mehmon akkauntlari topilmadi.",
+    noRooms: "Xonalar inventari hali yuklanmadi.",
     guest: "Mehmon",
     dates: "Turar sanalari",
     total: "Jami",
-    status: "Holat",
-    specialRequest: "Maxsus so'rov"
+    specialRequest: "Maxsus so'rov",
+    usersTitle: "Mehmonlar ro'yxati",
+    roomsTitle: "Xonalar inventari",
+    roomRate: "Narx",
+    availability: "Mavjudlik",
+    availableNow: "Hozir mavjud",
+    unavailable: "Mavjud emas",
+    loading: "Panel yuklanmoqda..."
   },
   ru: {
-    signInHelp: "Войдите с admin email и паролем, чтобы открыть панель.",
-    signedIn: "Сессия админа активна. Новые брони обновляются автоматически.",
+    signInHelp: "Введите email и пароль администратора, чтобы открыть живые операции.",
+    signedIn: "Сессия администратора активна. Новые брони обновляются автоматически.",
     refresh: "Обновить",
     noBookings: "Бронирований пока нет.",
+    noUsers: "Гостевых аккаунтов пока нет.",
+    noRooms: "Инвентарь номеров пока не загружен.",
     guest: "Гость",
     dates: "Даты проживания",
     total: "Итого",
-    status: "Статус",
-    specialRequest: "Особое пожелание"
+    specialRequest: "Особое пожелание",
+    usersTitle: "База гостей",
+    roomsTitle: "Инвентарь номеров",
+    roomRate: "Тариф",
+    availability: "Доступность",
+    availableNow: "Доступно",
+    unavailable: "Недоступно",
+    loading: "Панель загружается..."
   }
 };
 
@@ -62,7 +94,7 @@ export function AdminPanel({ lang }: { lang: Language }) {
   const [password, setPassword] = useState("");
   const [token, setToken] = useState("");
   const [dashboard, setDashboard] = useState<AdminDashboard | null>(null);
-  const [message, setMessage] = useState<string>(ui.signInHelp);
+  const [message, setMessage] = useState(ui.signInHelp);
   const [pending, setPending] = useState(false);
 
   useEffect(() => {
@@ -136,15 +168,24 @@ export function AdminPanel({ lang }: { lang: Language }) {
   const recentBookings = dashboard?.recent_bookings ?? [];
 
   return (
-    <div className="space-y-6">
-      <div className="card p-6">
-        <div className="text-xs uppercase tracking-[0.3em] text-ink/45">{copy.access}</div>
-        <h2 className="mt-2 font-display text-3xl">{copy.ops}</h2>
-        <div className="mt-5 grid gap-3 md:grid-cols-[1fr_1fr_auto_auto]">
+    <div className="space-y-10">
+      <section className="editorial-panel p-8 md:p-10">
+        <div className="section-label">{copy.access}</div>
+        <div className="mt-4 flex flex-wrap items-start justify-between gap-5">
+          <div>
+            <h2 className="font-display text-5xl leading-none text-ink">{copy.ops}</h2>
+            <p className="mt-5 max-w-2xl text-base leading-8 text-ink/72">{message}</p>
+          </div>
+          <div className="border border-[#d8cfc2] px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-stone">
+            {token ? copy.loaded : copy.access}
+          </div>
+        </div>
+
+        <div className="mt-10 grid gap-5 md:grid-cols-[1fr_1fr_auto_auto]">
           <input
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-full border border-ink/10 px-5 py-3"
+            className="editorial-input"
             placeholder={copy.email}
             autoComplete="username"
           />
@@ -152,38 +193,33 @@ export function AdminPanel({ lang }: { lang: Language }) {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-full border border-ink/10 px-5 py-3"
+            className="editorial-input"
             placeholder={copy.password}
             autoComplete="current-password"
           />
-          <button
-            onClick={loadDashboard}
-            disabled={pending}
-            className="rounded-full bg-ink px-5 py-3 text-white disabled:opacity-60"
-          >
+          <button onClick={loadDashboard} disabled={pending} className="editorial-button disabled:opacity-60">
             {copy.load}
           </button>
           {token ? (
-            <>
+            <div className="flex flex-wrap gap-3">
               <button
                 onClick={() => void hydrateDashboard(token, copy.loaded, false)}
                 disabled={pending}
-                className="rounded-full border border-ink/15 px-5 py-3 disabled:opacity-60"
+                className="editorial-button-secondary disabled:opacity-60"
               >
                 {ui.refresh}
               </button>
-              <button onClick={logoutAdmin} className="rounded-full border border-ink/15 px-5 py-3">
+              <button onClick={logoutAdmin} className="editorial-button-secondary">
                 {copy.logout}
               </button>
-            </>
+            </div>
           ) : null}
         </div>
-        <p className="mt-3 text-sm text-ink/60">{message}</p>
-      </div>
+      </section>
 
       {dashboard ? (
         <>
-          <div className="grid gap-4 md:grid-cols-5">
+          <div className="grid gap-px border border-[#d8cfc2] bg-[#d8cfc2] md:grid-cols-5">
             <Metric label={copy.revenue} value={`${Number(dashboard.analytics.total_revenue).toLocaleString("en-US")} UZS`} />
             <Metric label={copy.bookings} value={dashboard.analytics.total_bookings} />
             <Metric label={copy.active} value={dashboard.analytics.active_bookings} />
@@ -191,66 +227,124 @@ export function AdminPanel({ lang }: { lang: Language }) {
             <Metric label={copy.users} value={dashboard.analytics.users_count} />
           </div>
 
-          <div className="grid gap-6 lg:grid-cols-2">
-            <div className="card p-6">
-              <h3 className="font-display text-2xl">{copy.recent}</h3>
-              <div className="mt-4 space-y-3">
-                {recentBookings.length === 0 ? (
-                  <div className="rounded-2xl bg-sand p-4 text-sm text-ink/65">{ui.noBookings}</div>
-                ) : null}
-                {recentBookings.map((booking) => (
-                  <div key={booking.id} className="rounded-2xl bg-sand p-4 text-sm">
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <div className="font-medium">{booking.room.title}</div>
-                        <div className="text-ink/60">{booking.booking_reference}</div>
-                      </div>
-                      <div className="rounded-full bg-white px-3 py-1 text-xs capitalize">{booking.status}</div>
-                    </div>
-                    {booking.user ? (
-                      <div className="mt-3 text-ink/70">
-                        {ui.guest}: {booking.user.full_name} ({booking.user.email})
-                      </div>
-                    ) : null}
-                    <div className="mt-2 text-ink/70">
-                      {ui.dates}: {booking.check_in} - {booking.check_out}
-                    </div>
-                    <div className="mt-2 text-ink/70">
-                      {ui.total}: {Number(booking.total_price).toLocaleString("en-US")} UZS
-                    </div>
-                    {booking.special_request ? (
-                      <div className="mt-2 text-ink/70">
-                        {ui.specialRequest}: {booking.special_request}
-                      </div>
-                    ) : null}
-                  </div>
-                ))}
+          <div className="grid gap-8 xl:grid-cols-[1.15fr_0.8fr_0.8fr]">
+            <section className="editorial-panel">
+              <div className="border-b border-[#d8cfc2] p-8">
+                <div className="section-label">{copy.recent}</div>
+                <h3 className="mt-4 font-display text-4xl text-ink">{copy.recent}</h3>
               </div>
-            </div>
+              {recentBookings.length === 0 ? (
+                <div className="p-8 text-sm text-ink/68">{ui.noBookings}</div>
+              ) : null}
+              {recentBookings.map((booking, index) => (
+                <div
+                  key={booking.id}
+                  className={`grid gap-4 p-8 ${index > 0 ? "border-t border-[#d8cfc2]" : ""}`}
+                >
+                  <div className="flex flex-wrap items-start justify-between gap-4">
+                    <div>
+                      <div className="section-label">{copy.bookings}</div>
+                      <h4 className="mt-3 font-display text-3xl text-ink">{booking.room.title}</h4>
+                      <div className="mt-2 text-xs uppercase tracking-[0.28em] text-stone">
+                        {booking.booking_reference}
+                      </div>
+                    </div>
+                    <div className="border border-[#d8cfc2] px-4 py-2 text-[10px] uppercase tracking-[0.28em] text-stone">
+                      {booking.status}
+                    </div>
+                  </div>
 
-            <div className="card p-6">
-              <h3 className="font-display text-2xl">{copy.users}</h3>
-              <div className="mt-4 space-y-3">
-                {dashboard.users.map((user) => (
-                  <div key={user.id} className="rounded-2xl bg-sand p-4 text-sm">
-                    <div className="font-medium">{user.full_name}</div>
-                    <div>{user.email}</div>
+                  {booking.user ? (
+                    <div className="text-sm leading-7 text-ink/72">
+                      <span className="section-label">{ui.guest}</span>
+                      <div className="mt-3">
+                        {booking.user.full_name} ({booking.user.email})
+                      </div>
+                    </div>
+                  ) : null}
+
+                  <div className="grid gap-5 text-sm text-ink/72 md:grid-cols-2">
+                    <div>
+                      <div className="section-label">{ui.dates}</div>
+                      <div className="mt-3">{booking.check_in} - {booking.check_out}</div>
+                    </div>
+                    <div>
+                      <div className="section-label">{ui.total}</div>
+                      <div className="mt-3">{Number(booking.total_price).toLocaleString("en-US")} UZS</div>
+                    </div>
                   </div>
-                ))}
+
+                  {booking.special_request ? (
+                    <div className="border-t border-[#d8cfc2] pt-4 text-sm leading-7 text-ink/68">
+                      <span className="section-label">{ui.specialRequest}</span>
+                      <div className="mt-3">{booking.special_request}</div>
+                    </div>
+                  ) : null}
+                </div>
+              ))}
+            </section>
+
+            <section className="editorial-panel">
+              <div className="border-b border-[#d8cfc2] p-8">
+                <div className="section-label">{copy.users}</div>
+                <h3 className="mt-4 font-display text-4xl text-ink">{ui.usersTitle}</h3>
               </div>
-            </div>
+              {dashboard.users.length === 0 ? (
+                <div className="p-8 text-sm text-ink/68">{ui.noUsers}</div>
+              ) : null}
+              {dashboard.users.map((user, index) => (
+                <div key={user.id} className={`p-8 ${index > 0 ? "border-t border-[#d8cfc2]" : ""}`}>
+                  <div className="font-display text-2xl text-ink">{user.full_name}</div>
+                  <div className="mt-3 text-sm leading-7 text-ink/72">{user.email}</div>
+                </div>
+              ))}
+            </section>
+
+            <section className="editorial-panel">
+              <div className="border-b border-[#d8cfc2] p-8">
+                <div className="section-label">{ui.roomsTitle}</div>
+                <h3 className="mt-4 font-display text-4xl text-ink">{ui.roomsTitle}</h3>
+              </div>
+              {dashboard.rooms.length === 0 ? (
+                <div className="p-8 text-sm text-ink/68">{ui.noRooms}</div>
+              ) : null}
+              {dashboard.rooms.map((room, index) => (
+                <div key={room.id} className={`grid gap-4 p-8 ${index > 0 ? "border-t border-[#d8cfc2]" : ""}`}>
+                  <div>
+                    <div className="font-display text-2xl text-ink">{room.title}</div>
+                    <div className="mt-2 text-xs uppercase tracking-[0.28em] text-stone">
+                      {room.view_label || room.bed_type}
+                    </div>
+                  </div>
+                  <div className="grid gap-4 text-sm text-ink/72">
+                    <div>
+                      <div className="section-label">{ui.roomRate}</div>
+                      <div className="mt-3">{Number(room.display_price).toLocaleString("en-US")} UZS</div>
+                    </div>
+                    <div>
+                      <div className="section-label">{ui.availability}</div>
+                      <div className="mt-3">
+                        {room.is_available ? ui.availableNow : ui.unavailable}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </section>
           </div>
         </>
-      ) : null}
+      ) : (
+        <div className="editorial-panel p-8 text-sm text-ink/68">{pending ? ui.loading : ui.signInHelp}</div>
+      )}
     </div>
   );
 }
 
 function Metric({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="card p-5">
-      <div className="text-xs uppercase tracking-[0.3em] text-ink/45">{label}</div>
-      <div className="mt-3 font-display text-3xl">{value}</div>
+    <div className="bg-white/80 p-6">
+      <div className="section-label">{label}</div>
+      <div className="mt-4 font-display text-4xl text-ink">{value}</div>
     </div>
   );
 }

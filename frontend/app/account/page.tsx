@@ -1,31 +1,54 @@
+import { AuthPanel } from "@/components/auth-panel";
 import { t } from "@/lib/i18n";
 import { getServerLanguage } from "@/lib/i18n-server";
-import { AuthPanel } from "@/components/auth-panel";
+
+const editorialCopy = {
+  en: {
+    asideTitle: "Guest access is arranged with the same calm precision as the stay itself.",
+    asideBody:
+      "Sign in to review confirmed reservations, manage cancellations, and keep your guest details ready for future arrivals."
+  },
+  uz: {
+    asideTitle: "Mehmon kabineti turar joyning o'zi kabi sokin va aniq boshqaruv uchun yaratilgan.",
+    asideBody:
+      "Tasdiqlangan bronlarni ko'rish, bekor qilishlarni boshqarish va keyingi kelishlar uchun ma'lumotlaringizni tayyor saqlash uchun akkauntga kiring."
+  },
+  ru: {
+    asideTitle: "Гостевой кабинет построен с той же спокойной точностью, что и само проживание.",
+    asideBody:
+      "Войдите, чтобы видеть подтвержденные бронирования, управлять отменами и держать данные гостя готовыми к следующим заездам."
+  }
+} as const;
 
 export default async function AccountPage() {
   const lang = await getServerLanguage();
   const copy = t(lang).account;
+  const editorial = editorialCopy[lang];
 
   return (
-    <div className="shell py-14">
-      <div className="grid gap-10 lg:grid-cols-[1fr_0.7fr]">
-        <div className="max-w-4xl">
-          <div className="text-xs uppercase tracking-[0.3em] text-ink/45">{copy.eyebrow}</div>
-          <h1 className="mt-2 font-display text-5xl">{copy.title}</h1>
-          <p className="mt-4 text-ink/70">{copy.description}</p>
-        </div>
-        <div className="card p-6">
-          <div className="text-xs uppercase tracking-[0.3em] text-ink/45">{copy.quickTips}</div>
-          <div className="mt-4 space-y-3 text-sm text-ink/75">
-            <div className="rounded-2xl bg-sand px-4 py-3">{copy.quickTip1}</div>
-            <div className="rounded-2xl bg-sand px-4 py-3">{copy.quickTip2}</div>
-            <div className="rounded-2xl bg-sand px-4 py-3">{copy.quickTip3}</div>
+    <div className="pb-16">
+      <section className="border-b border-[#d8cfc2] bg-[#f1ebe1]">
+        <div className="shell grid gap-10 py-16 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
+          <div>
+            <div className="section-label">{copy.eyebrow}</div>
+            <h1 className="mt-5 max-w-4xl font-display text-6xl leading-[0.95] text-ink md:text-7xl">
+              {copy.title}
+            </h1>
+            <p className="mt-6 max-w-3xl text-lg leading-8 text-ink/72">{copy.description}</p>
+          </div>
+          <div className="border-t border-[#d8cfc2] pt-5 lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0">
+            <div className="section-label">{copy.quickTips}</div>
+            <h2 className="mt-4 max-w-xl font-display text-4xl leading-tight text-ink">
+              {editorial.asideTitle}
+            </h2>
+            <p className="mt-5 max-w-xl text-base leading-8 text-ink/72">{editorial.asideBody}</p>
           </div>
         </div>
-      </div>
-      <div className="mt-10">
+      </section>
+
+      <section className="shell mt-14">
         <AuthPanel lang={lang} />
-      </div>
+      </section>
     </div>
   );
 }
