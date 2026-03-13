@@ -10,7 +10,7 @@ export function AdminPanel({ lang }: { lang: Language }) {
   const [password, setPassword] = useState("password");
   const [token, setToken] = useState("");
   const [dashboard, setDashboard] = useState<any>(null);
-  const [message, setMessage] = useState(copy.initial);
+  const [message, setMessage] = useState<string>(copy.initial);
 
   async function loadDashboard() {
     try {

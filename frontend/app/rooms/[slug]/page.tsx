@@ -5,8 +5,8 @@ import { localizeRoom } from "@/lib/content";
 import { t } from "@/lib/i18n";
 import { getServerLanguage } from "@/lib/i18n-server";
 
-export default async function RoomDetailPage({ params }: { params: { slug: string } }) {
-  const { slug } = params;
+export default async function RoomDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
   const lang = await getServerLanguage();
   const copy = t(lang).rooms;
   const room = localizeRoom(await getRoomBySlug(slug), lang);
