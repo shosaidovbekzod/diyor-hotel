@@ -16,8 +16,19 @@ export default async function HomePage() {
     <div className="pb-12">
       <section className="relative overflow-hidden bg-[#171717] text-white">
         <div className="absolute inset-0">
-          <Image src={summary.hero_image} alt={summary.name} fill className="object-cover opacity-35" />
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            poster={summary.hero_image}
+            className="h-full w-full object-cover opacity-55"
+          >
+            <source src="/hero-video.mp4" type="video/mp4" />
+          </video>
         </div>
+        <div className="absolute inset-0 bg-black/35" />
         <div className="absolute inset-0 bg-hero-glow" />
         <div className="shell relative grid min-h-[82vh] items-end gap-10 py-20 lg:grid-cols-[1.2fr_0.8fr]">
           <div className="max-w-3xl">
