@@ -1,6 +1,6 @@
 # Bepul Deploy Qo'llanma
 
-Bu loyiha Render + Supabase orqali tekin test/demo sifatida internetga chiqarilishi mumkin.
+Bu loyiha Render + Supabase orqali tekin sinov muhiti sifatida internetga chiqarilishi mumkin.
 
 ## 1. Supabase
 

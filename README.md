@@ -1,74 +1,85 @@
-# DIYOR HOTEL - TASHKENT
+# DIYOR HOTEL - TOSHKENT
 
-Production-ready full-stack hotel booking platform for DIYOR HOTEL, Tashkent.
+DIYOR HOTEL uchun ishlab chiqilgan zamonaviy to'liq stack mehmonxona bron platformasi. Loyihada mehmonlar uchun premium booking oqimi, admin boshqaruvi, xonalar katalogi, ko'p tilli interfeys va deployga tayyor backend/frontend infratuzilmasi mavjud.
 
-## Stack
+## Texnologiyalar
 
 - Frontend: Next.js, React, Tailwind CSS, Framer Motion
-- Backend: FastAPI, SQLAlchemy, JWT authentication
-- Database: PostgreSQL
-- Cache: Redis (optional service in Docker)
-- Deployment: Docker, Docker Compose
+- Backend: FastAPI, SQLAlchemy, JWT autentifikatsiya
+- Ma'lumotlar bazasi: PostgreSQL
+- Kesh: Redis (`docker-compose.yml` ichida ixtiyoriy)
+- Deploy: Docker, Docker Compose, Render
 
-## Architecture
-
-### Frontend
-
-- App Router based Next.js application in `frontend/`
-- Luxury landing page, room listing, room detail, account, and admin dashboard pages
-- Uses server-side fetching with graceful fallback data for resilient demos
-- Client-side booking/account/admin panels for interactive JWT-driven flows
-
-### Backend
-
-- FastAPI app in `app/`
-- JWT authentication with user registration, login, and current-user endpoint
-- Room browsing, booking quote, booking creation/cancellation, reviews, services, and hotel summary APIs
-- Admin dashboard endpoint for analytics, booking oversight, room management, and user listing
-- Automatic schema creation and seed data for DIYOR HOTEL rooms/services/demo guest
-
-## Folder Structure
+## Loyiha tuzilmasi
 
 ```text
 .
-├── app
-│   ├── api
-│   ├── core
-│   ├── db
-│   ├── models
-│   ├── schemas
-│   └── services
-├── frontend
-│   ├── app
-│   ├── components
-│   ├── lib
-│   └── public
-├── Dockerfile
-├── docker-compose.yml
-├── requirements.txt
-└── README.md
+|-- app
+|   |-- api
+|   |-- core
+|   |-- db
+|   |-- models
+|   |-- schemas
+|   `-- services
+|-- frontend
+|   |-- app
+|   |-- components
+|   |-- lib
+|   `-- public
+|-- Dockerfile
+|-- docker-compose.yml
+|-- render.yaml
+|-- requirements.txt
+|-- run_api.py
+`-- README.md
 ```
 
-## Database Schema
+## Asosiy imkoniyatlar
 
-### Tables
+### Mehmonlar uchun
 
-- `users`: guest/admin identity, contact info, auth hash, language preference
-- `rooms`: room metadata, pricing, amenities, gallery, availability, highlight flags
-- `bookings`: reservation dates, guests, totals, taxes, booking reference, status
-- `services`: hotel wellness and hospitality offerings
-- `reviews`: guest room reviews with score/title/comment
-- `payments`: per-booking payment record and transaction reference
+- bosh sahifa, premium hero video va promo bloklar
+- xonalarni qidirish va filterlash
+- jonli narx hisoblash
+- bron yuborish va bron tarixini ko'rish
+- xizmatlar, sharhlar va kontaktlar sahifasi
+- o'zbek, ingliz va rus tillari
 
-## API Surface
+### Admin uchun
 
-### Authentication
+- admin login
+- bronlar ro'yxati
+- bron statusini tasdiqlash, bekor qilish va yakunlash
+- faol bronlar va mijozlar tarixi
+- foydalanuvchilar, xonalar va tushum ko'rsatkichlari
+
+## Backend imkoniyatlari
+
+- foydalanuvchi ro'yxatdan o'tkazish va login
+- JWT token orqali himoyalangan endpointlar
+- xonalar va xizmatlar API
+- bron quote, yaratish, bekor qilish
+- admin dashboard va booking status update
+- boshlang'ich ma'lumotlarni seed qilish
+
+## Ma'lumotlar bazasi jadvallari
+
+- `users`
+- `rooms`
+- `bookings`
+- `services`
+- `reviews`
+- `payments`
+
+## API endpointlar
+
+### Autentifikatsiya
 
 - `POST /api/v1/auth/register`
 - `POST /api/v1/auth/login`
 - `GET /api/v1/auth/me`
 
-### Hotel content
+### Kontent
 
 - `GET /api/v1/hotel/summary`
 - `GET /api/v1/services`
@@ -77,7 +88,7 @@ Production-ready full-stack hotel booking platform for DIYOR HOTEL, Tashkent.
 - `GET /api/v1/reviews`
 - `POST /api/v1/reviews`
 
-### Booking system
+### Bron tizimi
 
 - `POST /api/v1/bookings/quote`
 - `POST /api/v1/bookings`
@@ -87,64 +98,99 @@ Production-ready full-stack hotel booking platform for DIYOR HOTEL, Tashkent.
 ### Admin
 
 - `GET /api/v1/admin/dashboard`
+- `PATCH /api/v1/admin/bookings/{booking_id}/status`
 - `GET /api/v1/admin/bookings`
 - `GET /api/v1/admin/users`
 - `POST /api/v1/admin/rooms`
 - `PUT /api/v1/admin/rooms/{room_id}`
 - `DELETE /api/v1/admin/rooms/{room_id}`
 
-## Booking Logic
-
-- Validates check-in/check-out chronology
-- Rejects overlapping confirmed/pending bookings for a room
-- Enforces room capacity
-- Calculates nights, subtotal, 12% taxes, and total automatically
-- Generates booking and payment references on confirmation
-- Marks payment as refunded when a booking is cancelled
-
-## Run Locally
+## Lokal ishga tushirish
 
 ### Backend
 
-1. Create a virtual environment.
-2. Install dependencies with `pip install -r requirements.txt`
-3. Copy `.env.example` to `.env`
-4. Start PostgreSQL and update `DATABASE_URL` if needed
-5. Run `python run_api.py`
+1. Virtual environment yarating.
+2. Kutubxonalarni o'rnating:
+
+```bash
+pip install -r requirements.txt
+```
+
+3. `.env` faylini tayyorlang.
+4. `DATABASE_URL` ni moslab qo'ying.
+5. Backendni ishga tushiring:
+
+```bash
+python run_api.py
+```
 
 ### Frontend
 
-1. Go to `frontend/`
-2. Install dependencies with `npm install`
-3. Copy `.env.local.example` to `.env.local`
-4. Run `npm run dev`
+1. `frontend` papkasiga kiring:
 
-## Run With Docker
+```bash
+cd frontend
+```
 
-1. Copy `.env.example` to `.env`
-2. Run `docker compose up --build`
-3. Open:
-   - Frontend: `http://localhost:3000`
-   - API docs: `http://localhost:8000/docs`
+2. Kutubxonalarni o'rnating:
 
-## Free Deploy
+```bash
+npm install
+```
 
-Free deploy uchun Render + Supabase ishlatishingiz mumkin.
+3. `.env.local` fayl yarating:
 
-- Render Blueprint config: `render.yaml`
-- Uzbek guide: `DEPLOY_FREE_UZ.md`
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
+```
 
-## Default Seed Accounts
+4. Frontendni ishga tushiring:
+
+```bash
+npm run dev
+```
+
+## Docker bilan ishga tushirish
+
+1. `.env` faylini tayyorlang.
+2. Quyidagini ishga tushiring:
+
+```bash
+docker compose up --build
+```
+
+3. So'ng quyidagi manzillarni oching:
+- Frontend: `http://localhost:3000`
+- Backend docs: `http://localhost:8000/docs`
+
+## Tekin deploy
+
+Loyiha Render va Supabase orqali tekin rejimda ham ishga tushirilishi mumkin.
+
+- Render konfiguratsiyasi: `render.yaml`
+- Qadam-baqadam deploy yo'riqnomasi: `DEPLOY_FREE_UZ.md`
+
+## Boshlang'ich akkauntlar
 
 - Admin email: `admin@diyorhotel.uz`
-- Admin password: `ChangeMe123!`
-- Demo guest email: `guest@diyorhotel.uz`
-- Demo guest password: `Guest123!`
+- Admin parol: `ChangeMe123!`
+- Mehmon email: `guest@diyorhotel.uz`
+- Mehmon parol: `Guest123!`
 
-## Deployment Notes
+## Muhim eslatmalar
 
-- Backend container is exposed on port `8000`
-- Frontend container is exposed on port `3000`
-- Replace the demo secret and default passwords before production deployment
-- Move from `create_all` to Alembic migrations for long-term production lifecycle management
-Shosaidov Bekzod tomonidan yaratildi
+- Production uchun kuchli `SECRET_KEY` ishlating.
+- Default parollarni albatta almashtiring.
+- Uzoq muddatli production lifecycle uchun `create_all` o'rniga Alembic migratsiyalariga o'tish tavsiya qilinadi.
+- Render free rejimida servis ma'lum vaqtdan keyin uyqu rejimiga o'tishi mumkin.
+
+## Aloqa ma'lumotlari
+
+- Manzil: Olmos 74A ko'chasi, Toshkent, O'zbekiston
+- Telefon: +998 88 589 33 33
+- Telegram: https://t.me/diyor_hoteln11
+- YouTube: https://www.youtube.com/@Diyorhoteluz
+
+## Muallif
+
+# YARATUVCHI: SHosaidov Bekzod

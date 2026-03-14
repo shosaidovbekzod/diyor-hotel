@@ -186,7 +186,7 @@ def initialize_database() -> None:
         if not db.scalar(select(User.id).where(User.email == "guest@diyorhotel.uz")):
             db.add(
                 User(
-                    full_name="Demo Guest",
+                    full_name="DIYOR Guest",
                     email="guest@diyorhotel.uz",
                     phone="+998901112233",
                     hashed_password=get_password_hash("Guest123!"),

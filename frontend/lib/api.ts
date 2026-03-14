@@ -134,7 +134,7 @@ const SERVER_API_URL =
 
 const API_URL = typeof window === "undefined" ? SERVER_API_URL : CLIENT_API_URL;
 
-const demoServices: Service[] = [
+const fallbackServices: Service[] = [
   {
     id: 1,
     name: "Buffet breakfast",
@@ -179,7 +179,7 @@ const demoServices: Service[] = [
   }
 ];
 
-const demoRooms: Room[] = [
+const fallbackRooms: Room[] = [
   {
     id: 1,
     slug: "double-room-one-bed-or-two",
@@ -307,17 +307,17 @@ const demoRooms: Room[] = [
   }
 ];
 
-const demoReviews: Review[] = [
+const fallbackReviews: Review[] = [
   {
     id: 1,
     rating: 5,
     title: "Excellent weekend stay",
     comment: "Beautiful interiors, attentive staff, and the spa access made the value feel exceptional.",
-    user: { full_name: "Demo Guest", email: "guest@diyorhotel.uz" }
+    user: { full_name: "DIYOR Guest", email: "guest@diyorhotel.uz" }
   }
 ];
 
-const demoSummary: HotelSummary = {
+const fallbackSummary: HotelSummary = {
   name: "Diyor Tashkent Hotel",
   location: "Olmos Street 74A, Bektemir district, Tashkent 100037, Uzbekistan",
   phone: "+998 88 589 33 33",
@@ -333,9 +333,9 @@ const demoSummary: HotelSummary = {
     "https://diyortashkenthotel.uz/img/0df4c4147ce5830c.webp",
     "https://diyortashkenthotel.uz/img/dac01a4ffbd5aa31.webp"
   ],
-  highlight_rooms: demoRooms,
-  services: demoServices,
-  testimonials: demoReviews
+  highlight_rooms: fallbackRooms,
+  services: fallbackServices,
+  testimonials: fallbackReviews
 };
 
 async function fetchJson<T>(path: string, init?: RequestInit, fallback?: T): Promise<T> {
@@ -384,12 +384,12 @@ function buildRoomQuery(filters?: RoomSearchFilters) {
   return queryString ? `?${queryString}` : "";
 }
 
-function filterDemoRooms(filters?: RoomSearchFilters) {
+function filterFallbackRooms(filters?: RoomSearchFilters) {
   if (!filters) {
-    return demoRooms;
+    return fallbackRooms;
   }
 
-  return demoRooms.filter((room) => {
+  return fallbackRooms.filter((room) => {
     if (filters.minPrice !== undefined && Number(room.display_price) < filters.minPrice) {
       return false;
     }
@@ -410,7 +410,7 @@ function filterDemoRooms(filters?: RoomSearchFilters) {
 }
 
 export function getHotelSummary() {
-  return fetchJson<HotelSummary>("/hotel/summary", undefined, demoSummary);
+  return fetchJson<HotelSummary>("/hotel/summary", undefined, fallbackSummary);
 }
 
 export function getRooms(filters?: RoomSearchFilters) {
@@ -418,17 +418,21 @@ export function getRooms(filters?: RoomSearchFilters) {
   return fetchJson<Room[]>(
     `/rooms${query}`,
     filters ? { cache: "no-store" } : undefined,
-    filterDemoRooms(filters)
+    filterFallbackRooms(filters)
   );
 }
 
 export async function getRoomBySlug(slug: string) {
-  return fetchJson<Room>(`/rooms/${slug}`, undefined, demoRooms.find((room) => room.slug === slug) ?? demoRooms[0]);
+  return fetchJson<Room>(
+    `/rooms/${slug}`,
+    undefined,
+    fallbackRooms.find((room) => room.slug === slug) ?? fallbackRooms[0]
+  );
 }
 
 export function getReviews(roomId?: number) {
   const query = roomId ? `?room_id=${roomId}` : "";
-  return fetchJson<Review[]>(`/reviews${query}`, undefined, demoReviews);
+  return fetchJson<Review[]>(`/reviews${query}`, undefined, fallbackReviews);
 }
 
 export async function login(email: string, password: string) {

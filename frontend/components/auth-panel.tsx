@@ -17,8 +17,6 @@ type AuthPanelProps = {
 const authUiCopy: Record<
   Language,
   {
-    demoGuest: string;
-    demoLoaded: string;
     profileSummary: string;
     historySummary: string;
     stayDates: string;
@@ -27,8 +25,6 @@ const authUiCopy: Record<
   }
 > = {
   en: {
-    demoGuest: "Use demo guest",
-    demoLoaded: "Demo guest details loaded into the form.",
     profileSummary: "Your saved guest details will be attached to every confirmed reservation.",
     historySummary: "Every confirmed or cancelled stay appears here once you are signed in.",
     stayDates: "Stay dates",
@@ -36,8 +32,6 @@ const authUiCopy: Record<
     loading: "Loading reservations..."
   },
   uz: {
-    demoGuest: "Demo mehmonni qo'yish",
-    demoLoaded: "Demo mehmon ma'lumotlari formaga yuklandi.",
     profileSummary: "Saqlangan mehmon ma'lumotlaringiz har bir tasdiqlangan bron bilan bog'lanadi.",
     historySummary: "Kirgandan keyin barcha tasdiqlangan va bekor qilingan turar joylar shu yerda ko'rinadi.",
     stayDates: "Turar sanalari",
@@ -45,9 +39,8 @@ const authUiCopy: Record<
     loading: "Bronlar yuklanmoqda..."
   },
   ru: {
-    demoGuest: "Заполнить демо-гостя",
-    demoLoaded: "Демо-данные гостя загружены в форму.",
-    profileSummary: "Сохраненные данные гостя будут привязаны к каждому подтвержденному бронированию.",
+    profileSummary:
+      "Сохраненные данные гостя будут привязаны к каждому подтвержденному бронированию.",
     historySummary: "Все подтвержденные и отмененные проживания появляются здесь после входа.",
     stayDates: "Даты проживания",
     request: "Особое пожелание",
@@ -151,14 +144,6 @@ export function AuthPanel({ lang }: AuthPanelProps) {
     setMessage(copy.logoutSuccess);
   }
 
-  function loadDemoGuest() {
-    setName("Demo Guest");
-    setEmail("guest@diyorhotel.uz");
-    setPhone("+998 90 000 00 00");
-    setPassword("Guest123!");
-    setMessage(ui.demoLoaded);
-  }
-
   const totalSpent = useMemo(
     () =>
       bookings
@@ -240,7 +225,12 @@ export function AuthPanel({ lang }: AuthPanelProps) {
             </label>
 
             <div className="flex flex-wrap gap-3 pt-2">
-              <button type="button" onClick={handleLogin} disabled={pending} className="editorial-button disabled:opacity-60">
+              <button
+                type="button"
+                onClick={handleLogin}
+                disabled={pending}
+                className="editorial-button disabled:opacity-60"
+              >
                 {copy.login}
               </button>
               <button
@@ -250,9 +240,6 @@ export function AuthPanel({ lang }: AuthPanelProps) {
                 className="editorial-button-secondary disabled:opacity-60"
               >
                 {copy.register}
-              </button>
-              <button type="button" onClick={loadDemoGuest} className="editorial-button-secondary">
-                {ui.demoGuest}
               </button>
               {token ? (
                 <button type="button" onClick={handleLogout} className="editorial-button-secondary">
@@ -291,9 +278,7 @@ export function AuthPanel({ lang }: AuthPanelProps) {
           </div>
 
           <div className="editorial-panel">
-            {loading ? (
-              <div className="p-8 text-sm text-ink/68">{ui.loading}</div>
-            ) : null}
+            {loading ? <div className="p-8 text-sm text-ink/68">{ui.loading}</div> : null}
             {!loading && bookings.length === 0 ? (
               <div className="p-8 text-sm leading-7 text-ink/68">{copy.noBookings}</div>
             ) : null}
@@ -318,7 +303,9 @@ export function AuthPanel({ lang }: AuthPanelProps) {
                 <div className="grid gap-5 text-sm text-ink/72 md:grid-cols-2">
                   <div>
                     <div className="section-label">{ui.stayDates}</div>
-                    <div className="mt-3">{booking.check_in} - {booking.check_out}</div>
+                    <div className="mt-3">
+                      {booking.check_in} - {booking.check_out}
+                    </div>
                   </div>
                   <div>
                     <div className="section-label">{copy.totalSpent}</div>
