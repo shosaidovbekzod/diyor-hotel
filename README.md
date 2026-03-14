@@ -127,6 +127,13 @@ Production-ready full-stack hotel booking platform for DIYOR HOTEL, Tashkent.
    - Frontend: `http://localhost:3000`
    - API docs: `http://localhost:8000/docs`
 
+## Free Deploy
+
+Free deploy uchun Render + Supabase ishlatishingiz mumkin.
+
+- Render Blueprint config: `render.yaml`
+- Uzbek guide: `DEPLOY_FREE_UZ.md`
+
 ## Default Seed Accounts
 
 - Admin email: `admin@diyorhotel.uz`
@@ -140,3 +147,4 @@ Production-ready full-stack hotel booking platform for DIYOR HOTEL, Tashkent.
 - Frontend container is exposed on port `3000`
 - Replace the demo secret and default passwords before production deployment
 - Move from `create_all` to Alembic migrations for long-term production lifecycle management
+Shosaidov Bekzod tomonidan yaratildi
