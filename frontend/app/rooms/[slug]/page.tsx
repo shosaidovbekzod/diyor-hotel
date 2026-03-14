@@ -11,13 +11,34 @@ const detailCopy = {
   ru: { rating: "Оценка гостей" }
 } as const;
 
-export default async function RoomDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function RoomDetailPage({
+  params,
+  searchParams
+}: {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
   const { slug } = await params;
+  const resolvedSearchParams = await searchParams;
   const lang = await getServerLanguage();
   const copy = t(lang).rooms;
   const ui = detailCopy[lang];
   const room = localizeRoom(await getRoomBySlug(slug), lang);
   const reviews = await getReviews(room.id);
+  const defaultCheckIn =
+    typeof resolvedSearchParams.checkIn === "string" ? resolvedSearchParams.checkIn : "";
+  const defaultCheckOut =
+    typeof resolvedSearchParams.checkOut === "string" ? resolvedSearchParams.checkOut : "";
+  const defaultGuestsCount = Math.max(
+    1,
+    Number(
+      typeof resolvedSearchParams.guests === "string"
+        ? resolvedSearchParams.guests
+        : typeof resolvedSearchParams.adults === "string"
+          ? resolvedSearchParams.adults
+          : 2
+    )
+  );
 
   return (
     <div className="pb-16">
@@ -49,7 +70,14 @@ export default async function RoomDetailPage({ params }: { params: Promise<{ slu
             </div>
           ))}
         </div>
-        <BookingForm roomId={room.id} pricePerNight={Number(room.display_price)} lang={lang} />
+        <BookingForm
+          roomId={room.id}
+          pricePerNight={Number(room.display_price)}
+          lang={lang}
+          defaultCheckIn={defaultCheckIn}
+          defaultCheckOut={defaultCheckOut}
+          defaultGuestsCount={defaultGuestsCount}
+        />
       </section>
 
       <section className="shell mt-16 grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">

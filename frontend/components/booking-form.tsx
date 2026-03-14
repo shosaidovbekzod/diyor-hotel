@@ -8,13 +8,23 @@ type BookingFormProps = {
   roomId: number;
   pricePerNight: number;
   lang: Language;
+  defaultCheckIn?: string;
+  defaultCheckOut?: string;
+  defaultGuestsCount?: number;
 };
 
-export function BookingForm({ roomId, pricePerNight, lang }: BookingFormProps) {
+export function BookingForm({
+  roomId,
+  pricePerNight,
+  lang,
+  defaultCheckIn = "",
+  defaultCheckOut = "",
+  defaultGuestsCount = 2
+}: BookingFormProps) {
   const copy = t(lang).booking;
-  const [checkIn, setCheckIn] = useState("");
-  const [checkOut, setCheckOut] = useState("");
-  const [guestsCount, setGuestsCount] = useState(2);
+  const [checkIn, setCheckIn] = useState(defaultCheckIn);
+  const [checkOut, setCheckOut] = useState(defaultCheckOut);
+  const [guestsCount, setGuestsCount] = useState(defaultGuestsCount);
   const [specialRequest, setSpecialRequest] = useState("");
   const [message, setMessage] = useState("");
   const [pending, setPending] = useState(false);

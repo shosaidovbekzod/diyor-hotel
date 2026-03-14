@@ -8,6 +8,11 @@ import { t, type Language } from "@/lib/i18n";
 export function SiteChrome({ children, lang }: { children: React.ReactNode; lang: Language }) {
   const pathname = usePathname();
   const copy = t(lang);
+  const bookingLabel = {
+    en: "Book now",
+    uz: "Bandlov",
+    ru: "Бронирование"
+  }[lang];
   const nav = [
     { href: "/", label: copy.nav.home },
     { href: "/rooms", label: copy.nav.rooms },
@@ -30,6 +35,12 @@ export function SiteChrome({ children, lang }: { children: React.ReactNode; lang
             <div className="flex items-center justify-end gap-5">
               <a href="tel:+9988858933333" className="transition hover:text-ink">+998 88 589 33 33</a>
               <LanguageSwitcher current={lang} />
+              <Link
+                href="/booking"
+                className="border border-ink bg-ink px-5 py-3 text-[10px] uppercase tracking-[0.28em] text-white transition hover:bg-[#2a241d]"
+              >
+                {bookingLabel}
+              </Link>
             </div>
           </div>
         </div>

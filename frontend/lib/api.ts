@@ -29,6 +29,16 @@ export type Room = {
   reviews_count: number;
 };
 
+export type RoomSearchFilters = {
+  minPrice?: number;
+  maxPrice?: number;
+  guests?: number;
+  featuredOnly?: boolean;
+  availableOnly?: boolean;
+  checkIn?: string;
+  checkOut?: string;
+};
+
 export type Review = {
   id: number;
   rating: number;
@@ -82,9 +92,11 @@ export type HotelSummary = {
   name: string;
   location: string;
   phone: string;
+  email: string;
   telegram_url: string;
   youtube_url: string;
   hero_image: string;
+  map_embed_url: string;
   gallery: string[];
   highlight_rooms: Room[];
   services: Service[];
@@ -286,9 +298,12 @@ const demoSummary: HotelSummary = {
   name: "Diyor Tashkent Hotel",
   location: "Olmos Street 74A, Bektemir district, Tashkent 100037, Uzbekistan",
   phone: "+998 88 589 33 33",
+  email: "receptiondiyorhotel@gmail.com",
   telegram_url: "https://t.me/diyor_hoteln11",
   youtube_url: "https://www.youtube.com/@Diyorhoteluz",
   hero_image: "https://diyortashkenthotel.uz/img/838a38a4e81dd51c.webp",
+  map_embed_url:
+    "https://www.google.com/maps?q=Diyor%20Tashkent%20Hotel%20Olmos%2074A%20Bektemir%20Tashkent&output=embed",
   gallery: [
     "https://diyortashkenthotel.uz/img/86c5aa8d74083036.webp",
     "https://diyortashkenthotel.uz/img/813dbe414736ec61.webp",
@@ -302,7 +317,8 @@ const demoSummary: HotelSummary = {
 
 async function fetchJson<T>(path: string, init?: RequestInit, fallback?: T): Promise<T> {
   try {
-    const res = await fetch(`${API_URL}${path}`, { ...init, next: { revalidate: 60 } });
+    const requestInit = init ?? { next: { revalidate: 60 } };
+    const res = await fetch(`${API_URL}${path}`, requestInit);
     if (!res.ok) {
       throw new Error(`Failed ${path}`);
     }
@@ -315,12 +331,72 @@ async function fetchJson<T>(path: string, init?: RequestInit, fallback?: T): Pro
   }
 }
 
+function buildRoomQuery(filters?: RoomSearchFilters) {
+  if (!filters) {
+    return "";
+  }
+  const query = new URLSearchParams();
+  if (filters.minPrice !== undefined) {
+    query.set("min_price", String(filters.minPrice));
+  }
+  if (filters.maxPrice !== undefined) {
+    query.set("max_price", String(filters.maxPrice));
+  }
+  if (filters.guests !== undefined) {
+    query.set("guests", String(filters.guests));
+  }
+  if (filters.featuredOnly) {
+    query.set("featured_only", "true");
+  }
+  if (filters.availableOnly) {
+    query.set("available_only", "true");
+  }
+  if (filters.checkIn) {
+    query.set("check_in", filters.checkIn);
+  }
+  if (filters.checkOut) {
+    query.set("check_out", filters.checkOut);
+  }
+  const queryString = query.toString();
+  return queryString ? `?${queryString}` : "";
+}
+
+function filterDemoRooms(filters?: RoomSearchFilters) {
+  if (!filters) {
+    return demoRooms;
+  }
+
+  return demoRooms.filter((room) => {
+    if (filters.minPrice !== undefined && Number(room.display_price) < filters.minPrice) {
+      return false;
+    }
+    if (filters.maxPrice !== undefined && Number(room.display_price) > filters.maxPrice) {
+      return false;
+    }
+    if (filters.guests !== undefined && room.capacity < filters.guests) {
+      return false;
+    }
+    if (filters.featuredOnly && !room.is_featured) {
+      return false;
+    }
+    if (filters.availableOnly && !room.is_available) {
+      return false;
+    }
+    return true;
+  });
+}
+
 export function getHotelSummary() {
   return fetchJson<HotelSummary>("/hotel/summary", undefined, demoSummary);
 }
 
-export function getRooms() {
-  return fetchJson<Room[]>("/rooms", undefined, demoRooms);
+export function getRooms(filters?: RoomSearchFilters) {
+  const query = buildRoomQuery(filters);
+  return fetchJson<Room[]>(
+    `/rooms${query}`,
+    filters ? { cache: "no-store" } : undefined,
+    filterDemoRooms(filters)
+  );
 }
 
 export async function getRoomBySlug(slug: string) {

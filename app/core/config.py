@@ -17,9 +17,13 @@ class Settings(BaseSettings):
     hotel_name: str = "Diyor Tashkent Hotel"
     hotel_location: str = "Olmos Street 74A, Bektemir district, Tashkent 100037, Uzbekistan"
     hotel_phone: str = "+998 88 589 33 33"
+    hotel_email: str = "receptiondiyorhotel@gmail.com"
     hotel_telegram_url: str = "https://t.me/diyor_hoteln11"
     hotel_youtube_url: str = "https://www.youtube.com/@Diyorhoteluz"
     hotel_hero_image: str = "https://diyortashkenthotel.uz/img/838a38a4e81dd51c.webp"
+    hotel_map_embed_url: str = (
+        "https://www.google.com/maps?q=Diyor%20Tashkent%20Hotel%20Olmos%2074A%20Bektemir%20Tashkent&output=embed"
+    )
     hotel_gallery: list[str] = Field(
         default_factory=lambda: [
             "https://diyortashkenthotel.uz/img/86c5aa8d74083036.webp",

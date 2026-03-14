@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ContactMapSection } from "@/components/contact-map-section";
 import { getHotelSummary } from "@/lib/api";
 import { localizeRooms, localizeServices } from "@/lib/content";
 import { t } from "@/lib/i18n";
@@ -27,6 +28,9 @@ const pageCopy = {
     addressLabel: "Address",
     telegramLabel: "Telegram",
     guestRating: "Guest rating",
+    adultsLabel: "Adults",
+    childrenLabel: "Children",
+    bookNow: "Book now",
     offers: [
       {
         title: "Long stay with breakfast",
@@ -66,6 +70,9 @@ const pageCopy = {
     addressLabel: "Manzil",
     telegramLabel: "Telegram",
     guestRating: "Mehmon bahosi",
+    adultsLabel: "Kattalar",
+    childrenLabel: "Bolalar",
+    bookNow: "Bandlov",
     offers: [
       {
         title: "Nonushta bilan uzoq turar joy",
@@ -105,6 +112,9 @@ const pageCopy = {
     addressLabel: "Адрес",
     telegramLabel: "Telegram",
     guestRating: "Оценка гостей",
+    adultsLabel: "Взрослые",
+    childrenLabel: "Дети",
+    bookNow: "Бронирование",
     offers: [
       {
         title: "Длительное проживание с завтраком",
@@ -182,7 +192,7 @@ export default async function HomePage() {
           <div className="glass-panel self-end border border-white/15 p-7 text-ink">
             <div className="section-label">{copy.quickSearch}</div>
             <h2 className="mt-3 max-w-sm font-display text-4xl leading-tight">{copy.findRoom}</h2>
-            <form action="/rooms" className="mt-8 space-y-4">
+            <form action="/booking" className="mt-8 space-y-4">
               <input
                 name="checkIn"
                 type="date"
@@ -193,16 +203,38 @@ export default async function HomePage() {
                 type="date"
                 className="w-full border-b border-[#d6cab9] bg-transparent px-0 py-3 text-sm outline-none"
               />
-              <input
-                name="guests"
-                type="number"
-                min={1}
-                max={6}
-                defaultValue={2}
-                className="w-full border-b border-[#d6cab9] bg-transparent px-0 py-3 text-sm outline-none"
-              />
+              <div className="grid gap-4 md:grid-cols-2">
+                <label className="space-y-2 text-sm text-ink/68">
+                  <span>{ui.adultsLabel}</span>
+                  <select
+                    name="adults"
+                    defaultValue="2"
+                    className="w-full border-b border-[#d6cab9] bg-transparent px-0 py-3 text-sm outline-none"
+                  >
+                    {[1, 2, 3, 4, 5, 6].map((count) => (
+                      <option key={count} value={count}>
+                        {count}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="space-y-2 text-sm text-ink/68">
+                  <span>{ui.childrenLabel}</span>
+                  <select
+                    name="children"
+                    defaultValue="0"
+                    className="w-full border-b border-[#d6cab9] bg-transparent px-0 py-3 text-sm outline-none"
+                  >
+                    {[0, 1, 2, 3, 4].map((count) => (
+                      <option key={count} value={count}>
+                        {count}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
               <button className="mt-4 w-full border border-ink bg-ink px-6 py-4 text-sm uppercase tracking-[0.22em] text-white transition hover:bg-[#2a251f]">
-                {copy.search}
+                {ui.bookNow}
               </button>
             </form>
           </div>
@@ -213,7 +245,7 @@ export default async function HomePage() {
         <div className="shell grid gap-5 py-6 text-sm uppercase tracking-[0.24em] text-stone md:grid-cols-3">
           <div>{summary.location}</div>
           <div className="text-ink">{summary.phone}</div>
-          <div className="md:text-right">receptiondiyorhotel@gmail.com</div>
+          <div className="md:text-right">{summary.email}</div>
         </div>
       </section>
 
@@ -392,35 +424,13 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="shell mt-24 grid gap-12 lg:editorial-grid lg:items-start">
-        <div>
-          <div className="section-label">{ui.contactsLabel}</div>
-          <h2 className="mt-4 max-w-3xl font-display text-5xl leading-tight text-ink">{ui.contactsTitle}</h2>
-        </div>
-        <div className="grid gap-5 border-t border-[#d8cfc2] pt-5 text-sm leading-8 text-ink/72 md:grid-cols-2">
-          <div>
-            <div className="section-label">{ui.phoneLabel}</div>
-            <a href={`tel:${summary.phone.replace(/\s+/g, "")}`} className="mt-3 block text-ink hover:text-stone">
-              {summary.phone}
-            </a>
-          </div>
-          <div>
-            <div className="section-label">{ui.emailLabel}</div>
-            <a href="mailto:receptiondiyorhotel@gmail.com" className="mt-3 block text-ink hover:text-stone">
-              receptiondiyorhotel@gmail.com
-            </a>
-          </div>
-          <div>
-            <div className="section-label">{ui.addressLabel}</div>
-            <div className="mt-3 text-ink">{summary.location}</div>
-          </div>
-          <div>
-            <div className="section-label">{ui.telegramLabel}</div>
-            <a href={summary.telegram_url} className="mt-3 block text-ink hover:text-stone">
-              {summary.telegram_url}
-            </a>
-          </div>
-        </div>
+      <section className="shell mt-24">
+        <ContactMapSection
+          lang={lang}
+          summary={summary}
+          eyebrow={ui.contactsLabel}
+          title={ui.contactsTitle}
+        />
       </section>
     </div>
   );
