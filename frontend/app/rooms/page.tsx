@@ -1,14 +1,71 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getRooms } from "@/lib/api";
+import { getRooms, type RoomSearchFilters } from "@/lib/api";
 import { localizeRooms } from "@/lib/content";
 import { t } from "@/lib/i18n";
 import { getServerLanguage } from "@/lib/i18n-server";
 
-export default async function RoomsPage() {
+function parseDateValue(value: string | string[] | undefined) {
+  return typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : "";
+}
+
+function parseNumberValue(value: string | string[] | undefined) {
+  if (typeof value !== "string" || value.trim() === "") {
+    return undefined;
+  }
+  const parsed = Number.parseInt(value, 10);
+  return Number.isFinite(parsed) ? parsed : undefined;
+}
+
+export default async function RoomsPage({
+  searchParams
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
   const lang = await getServerLanguage();
   const copy = t(lang).rooms;
-  const rooms = localizeRooms(await getRooms(), lang);
+  const params = await searchParams;
+
+  const minPrice = parseNumberValue(params.minPrice);
+  const maxPrice = parseNumberValue(params.maxPrice);
+  const guests = parseNumberValue(params.guests);
+  const checkIn = parseDateValue(params.checkIn);
+  const checkOut = parseDateValue(params.checkOut);
+  const availableOnly = params.availableOnly === "on" || params.availableOnly === "true";
+  const datesValid = !checkIn || !checkOut || checkIn < checkOut;
+
+  const filters: RoomSearchFilters = {};
+  if (minPrice !== undefined) {
+    filters.minPrice = minPrice;
+  }
+  if (maxPrice !== undefined) {
+    filters.maxPrice = maxPrice;
+  }
+  if (guests !== undefined) {
+    filters.guests = guests;
+  }
+  if (availableOnly) {
+    filters.availableOnly = true;
+  }
+  if (checkIn && checkOut && datesValid) {
+    filters.checkIn = checkIn;
+    filters.checkOut = checkOut;
+  }
+
+  const hasFilters = Object.keys(filters).length > 0;
+  const rooms = localizeRooms(await getRooms(hasFilters ? filters : undefined), lang);
+  const availableCount = rooms.filter((room) => room.is_available).length;
+  const detailQuery = new URLSearchParams();
+  if (checkIn) {
+    detailQuery.set("checkIn", checkIn);
+  }
+  if (checkOut) {
+    detailQuery.set("checkOut", checkOut);
+  }
+  if (guests !== undefined) {
+    detailQuery.set("guests", String(guests));
+  }
+  const detailQueryString = detailQuery.toString();
 
   return (
     <div className="pb-16">
@@ -22,6 +79,86 @@ export default async function RoomsPage() {
           </div>
           <p className="max-w-xl text-base leading-8 text-ink/72">{copy.desc}</p>
         </div>
+      </section>
+
+      <section className="shell mt-12">
+        <form action="/rooms" className="editorial-panel p-8 md:p-10">
+          <div className="flex flex-wrap items-end justify-between gap-5 border-b border-[#d8cfc2] pb-5">
+            <div>
+              <div className="section-label">{copy.filtersTitle}</div>
+              <h2 className="mt-4 font-display text-4xl text-ink">{copy.filtersTitle}</h2>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <div className="border border-[#d8cfc2] px-4 py-2 text-[10px] uppercase tracking-[0.28em] text-stone">
+                {rooms.length} {copy.results}
+              </div>
+              <div className="border border-[#d8cfc2] px-4 py-2 text-[10px] uppercase tracking-[0.28em] text-stone">
+                {availableCount} {copy.availableCount}
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-[0.9fr_0.9fr_0.8fr_0.8fr_0.7fr_0.7fr]">
+            <label className="space-y-2 text-sm text-ink/70">
+              <span>{copy.checkIn}</span>
+              <input type="date" name="checkIn" defaultValue={checkIn} className="editorial-input" />
+            </label>
+            <label className="space-y-2 text-sm text-ink/70">
+              <span>{copy.checkOut}</span>
+              <input type="date" name="checkOut" defaultValue={checkOut} className="editorial-input" />
+            </label>
+            <label className="space-y-2 text-sm text-ink/70">
+              <span>{copy.guests}</span>
+              <input
+                type="number"
+                name="guests"
+                min={1}
+                max={12}
+                defaultValue={guests}
+                className="editorial-input"
+              />
+            </label>
+            <label className="space-y-2 text-sm text-ink/70">
+              <span>{copy.minPrice}</span>
+              <input
+                type="number"
+                name="minPrice"
+                min={0}
+                step={10000}
+                defaultValue={minPrice}
+                className="editorial-input"
+              />
+            </label>
+            <label className="space-y-2 text-sm text-ink/70">
+              <span>{copy.maxPrice}</span>
+              <input
+                type="number"
+                name="maxPrice"
+                min={0}
+                step={10000}
+                defaultValue={maxPrice}
+                className="editorial-input"
+              />
+            </label>
+            <label className="flex items-end gap-3 border-b border-[#d8cfc2] pb-4 text-sm text-ink/72">
+              <input type="checkbox" name="availableOnly" defaultChecked={availableOnly} className="h-4 w-4" />
+              <span>{copy.availableOnly}</span>
+            </label>
+          </div>
+
+          {!datesValid ? (
+            <div className="mt-6 border border-[#e3c9c2] bg-[#f7eae6] px-5 py-4 text-sm text-[#8b4338]">
+              {copy.invalidDates}
+            </div>
+          ) : null}
+
+          <div className="mt-8 flex flex-wrap gap-3">
+            <button className="editorial-button">{copy.apply}</button>
+            <Link href="/rooms" className="editorial-button-secondary">
+              {copy.reset}
+            </Link>
+          </div>
+        </form>
       </section>
 
       <section className="shell mt-14 grid gap-10">
@@ -74,7 +211,7 @@ export default async function RoomsPage() {
                     </div>
                   </div>
                   <Link
-                    href={`/rooms/${room.slug}`}
+                    href={`/rooms/${room.slug}${detailQueryString ? `?${detailQueryString}` : ""}`}
                     className="border border-ink bg-ink px-7 py-3 text-xs uppercase tracking-[0.24em] text-white transition hover:bg-[#2c2721]"
                   >
                     {copy.details}

@@ -72,7 +72,6 @@ export default async function RoomDetailPage({
         </div>
         <BookingForm
           roomId={room.id}
-          pricePerNight={Number(room.display_price)}
           lang={lang}
           defaultCheckIn={defaultCheckIn}
           defaultCheckOut={defaultCheckOut}

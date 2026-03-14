@@ -22,6 +22,8 @@ import {
 import type { Room } from "@/lib/api";
 import type { Language } from "@/lib/i18n";
 
+type RoomSort = "recommended" | "price-asc" | "price-desc" | "space-desc";
+
 type BookingRoomSelectionProps = {
   lang: Language;
   ui: {
@@ -37,6 +39,15 @@ type BookingRoomSelectionProps = {
     search: string;
     invalidDates: string;
     options: string;
+    staySummary: string;
+    sortLabel: string;
+    recommended: string;
+    priceLowHigh: string;
+    priceHighLow: string;
+    largestSpace: string;
+    availableOnly: string;
+    availableSummary: string;
+    soldOutSummary: string;
     roomCta: string;
     details: string;
     perNight: string;
@@ -85,6 +96,44 @@ export function BookingRoomSelection({
   validDates,
   resultHrefSuffix
 }: BookingRoomSelectionProps) {
+  const [sortBy, setSortBy] = useState<RoomSort>("recommended");
+  const [availableOnly, setAvailableOnly] = useState(false);
+  const roomStats = useMemo(() => {
+    const available = rooms.filter((room) => room.is_available).length;
+    return {
+      available,
+      soldOut: Math.max(rooms.length - available, 0)
+    };
+  }, [rooms]);
+  const visibleRooms = useMemo(() => {
+    const filtered = availableOnly ? rooms.filter((room) => room.is_available) : [...rooms];
+    const sorted = [...filtered];
+
+    if (sortBy === "price-asc") {
+      sorted.sort((left, right) => Number(left.display_price) - Number(right.display_price));
+      return sorted;
+    }
+    if (sortBy === "price-desc") {
+      sorted.sort((left, right) => Number(right.display_price) - Number(left.display_price));
+      return sorted;
+    }
+    if (sortBy === "space-desc") {
+      sorted.sort((left, right) => right.size_sqm - left.size_sqm);
+      return sorted;
+    }
+
+    sorted.sort((left, right) => {
+      if (left.is_available !== right.is_available) {
+        return left.is_available ? -1 : 1;
+      }
+      if (left.is_featured !== right.is_featured) {
+        return left.is_featured ? -1 : 1;
+      }
+      return Number(left.display_price) - Number(right.display_price);
+    });
+    return sorted;
+  }, [availableOnly, rooms, sortBy]);
+
   return (
     <>
       <section className="shell mt-12">
@@ -166,20 +215,65 @@ export function BookingRoomSelection({
             <div className="section-label">{ui.eyebrow}</div>
             <h2 className="mt-4 font-display text-5xl leading-none text-ink">{ui.panelTitle}</h2>
           </div>
-          <div className="inline-flex items-center gap-2 border border-[#d8cfc2] px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-stone">
-            <CalendarDays className="h-4 w-4" />
-            {rooms.length} {ui.options}
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="inline-flex items-center gap-2 border border-[#d8cfc2] px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-stone">
+              <CalendarDays className="h-4 w-4" />
+              {visibleRooms.length} {ui.options}
+            </div>
+            <div className="inline-flex items-center gap-2 border border-[#d8cfc2] px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-stone">
+              <CheckCircle2 className="h-4 w-4" />
+              {roomStats.available} {ui.availableSummary}
+            </div>
+            <div className="inline-flex items-center gap-2 border border-[#d8cfc2] px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-stone">
+              <XCircle className="h-4 w-4" />
+              {roomStats.soldOut} {ui.soldOutSummary}
+            </div>
           </div>
         </div>
 
-        {rooms.length === 0 ? (
+        <div className="mt-6 grid gap-5 editorial-panel p-6 md:grid-cols-[1fr_240px_220px] md:items-end">
+          <div>
+            <div className="section-label">{ui.staySummary}</div>
+            <div className="mt-4 flex flex-wrap gap-3 text-[11px] uppercase tracking-[0.22em] text-stone">
+              <span className="border border-[#d8cfc2] px-4 py-2">{defaultCheckIn}</span>
+              <span className="border border-[#d8cfc2] px-4 py-2">{defaultCheckOut}</span>
+              <span className="border border-[#d8cfc2] px-4 py-2">
+                {adults} / {children} / {guests}
+              </span>
+            </div>
+          </div>
+          <label className="space-y-2 text-sm text-ink/72">
+            <span>{ui.sortLabel}</span>
+            <select
+              value={sortBy}
+              onChange={(event) => setSortBy(event.target.value as RoomSort)}
+              className="editorial-input"
+            >
+              <option value="recommended">{ui.recommended}</option>
+              <option value="price-asc">{ui.priceLowHigh}</option>
+              <option value="price-desc">{ui.priceHighLow}</option>
+              <option value="space-desc">{ui.largestSpace}</option>
+            </select>
+          </label>
+          <label className="flex items-center gap-3 border-b border-[#d8cfc2] pb-4 text-sm text-ink/72">
+            <input
+              type="checkbox"
+              checked={availableOnly}
+              onChange={(event) => setAvailableOnly(event.target.checked)}
+              className="h-4 w-4"
+            />
+            <span>{ui.availableOnly}</span>
+          </label>
+        </div>
+
+        {visibleRooms.length === 0 ? (
           <div className="editorial-panel mt-8 p-8 md:p-10">
             <h3 className="font-display text-4xl text-ink">{ui.noResultsTitle}</h3>
             <p className="mt-5 max-w-2xl text-base leading-8 text-ink/72">{ui.noResultsBody}</p>
           </div>
         ) : (
           <div className="mt-8 space-y-8">
-            {rooms.map((room) => (
+            {visibleRooms.map((room) => (
               <RoomBookingCard
                 key={room.id}
                 room={room}

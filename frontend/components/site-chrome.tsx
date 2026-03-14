@@ -73,7 +73,7 @@ export function SiteChrome({ children, lang }: { children: React.ReactNode; lang
             <div className="mt-4 flex items-center gap-4">
               <img src="/diyor-logo.webp" alt="Diyor Tashkent Hotel logo" className="h-16 w-auto" />
               <h2 className="max-w-2xl font-display text-4xl leading-[0.98] text-ink">
-                Diyor Tashkent Hotel with the comfort, hospitality, and central convenience of the original property.
+                {copy.footer.tagline}
               </h2>
             </div>
           </div>

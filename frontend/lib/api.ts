@@ -80,6 +80,15 @@ export type Booking = {
 
 export type BookingStatus = "pending" | "confirmed" | "cancelled" | "completed";
 
+export type BookingQuote = {
+  room_id: number;
+  nights: number;
+  subtotal: number | string;
+  taxes: number | string;
+  total_price: number | string;
+  currency: string;
+};
+
 export type AdminDashboard = {
   analytics: {
     total_revenue: number;
@@ -484,9 +493,29 @@ export async function createBooking(token: string, payload: Record<string, unkno
     body: JSON.stringify(payload)
   });
   if (!res.ok) {
-    throw new Error("Booking failed");
+    const detail = await res.json().catch(() => null);
+    throw new Error(detail?.detail ?? "Booking failed");
   }
   return res.json();
+}
+
+export async function quoteBooking(payload: {
+  room_id: number;
+  check_in: string;
+  check_out: string;
+  guests_count: number;
+  special_request?: string;
+}) {
+  const res = await fetch(`${API_URL}/bookings/quote`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+  if (!res.ok) {
+    const detail = await res.json().catch(() => null);
+    throw new Error(detail?.detail ?? "Quote unavailable");
+  }
+  return (await res.json()) as BookingQuote;
 }
 
 export async function cancelBooking(token: string, bookingId: number) {

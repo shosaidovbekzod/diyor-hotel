@@ -1,12 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { createBooking } from "@/lib/api";
+import { useEffect, useMemo, useState } from "react";
+import { createBooking, quoteBooking, type BookingQuote } from "@/lib/api";
 import { t, type Language } from "@/lib/i18n";
 
 type BookingFormProps = {
   roomId: number;
-  pricePerNight: number;
   lang: Language;
   defaultCheckIn?: string;
   defaultCheckOut?: string;
@@ -15,7 +14,6 @@ type BookingFormProps = {
 
 export function BookingForm({
   roomId,
-  pricePerNight,
   lang,
   defaultCheckIn = "",
   defaultCheckOut = "",
@@ -28,16 +26,77 @@ export function BookingForm({
   const [specialRequest, setSpecialRequest] = useState("");
   const [message, setMessage] = useState("");
   const [pending, setPending] = useState(false);
+  const [quote, setQuote] = useState<BookingQuote | null>(null);
+  const [quotePending, setQuotePending] = useState(false);
+  const [quoteMessage, setQuoteMessage] = useState<string>(copy.selectDatesHint);
 
-  const estimate = (() => {
-    if (!checkIn || !checkOut) {
-      return 0;
+  const today = new Date().toISOString().slice(0, 10);
+  const dateRangeReady = Boolean(checkIn && checkOut);
+  const dateRangeValid = useMemo(() => {
+    if (!dateRangeReady) {
+      return false;
     }
-    const start = new Date(checkIn);
-    const end = new Date(checkOut);
-    const nights = Math.max(0, Math.ceil((end.getTime() - start.getTime()) / 86400000));
-    return nights * pricePerNight;
-  })();
+    return new Date(checkOut).getTime() > new Date(checkIn).getTime();
+  }, [checkIn, checkOut, dateRangeReady]);
+
+  useEffect(() => {
+    if (!dateRangeReady) {
+      setQuote(null);
+      setQuotePending(false);
+      setQuoteMessage(copy.selectDatesHint);
+      return;
+    }
+
+    if (!dateRangeValid) {
+      setQuote(null);
+      setQuotePending(false);
+      setQuoteMessage(copy.invalidDates);
+      return;
+    }
+
+    let cancelled = false;
+
+    async function loadQuote() {
+      setQuotePending(true);
+      setQuoteMessage(copy.checking);
+      try {
+        const nextQuote = await quoteBooking({
+          room_id: roomId,
+          check_in: checkIn,
+          check_out: checkOut,
+          guests_count: guestsCount
+        });
+        if (cancelled) {
+          return;
+        }
+        setQuote(nextQuote);
+        setQuoteMessage(copy.availableForDates);
+      } catch (error) {
+        if (cancelled) {
+          return;
+        }
+        setQuote(null);
+        setQuoteMessage(error instanceof Error ? error.message : copy.unavailableForDates);
+      } finally {
+        if (!cancelled) {
+          setQuotePending(false);
+        }
+      }
+    }
+
+    void loadQuote();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [checkIn, checkOut, copy.availableForDates, copy.checking, copy.invalidDates, copy.selectDatesHint, copy.unavailableForDates, dateRangeReady, dateRangeValid, guestsCount, roomId]);
+
+  const estimate = quote ? Number(quote.total_price) : 0;
+  const canSubmit = dateRangeValid && Boolean(quote) && !quotePending && !pending;
+
+  function money(value?: number | string | null) {
+    return Number(value ?? 0).toLocaleString("en-US");
+  }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -58,8 +117,8 @@ export function BookingForm({
         special_request: specialRequest
       });
       setMessage(`${copy.success} ${booking.booking_reference}`);
-    } catch {
-      setMessage(copy.error);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : copy.error);
     } finally {
       setPending(false);
     }
@@ -77,6 +136,7 @@ export function BookingForm({
             type="date"
             value={checkIn}
             onChange={(e) => setCheckIn(e.target.value)}
+            min={today}
             className="w-full border-b border-[#d8cfc2] bg-transparent px-0 py-3 text-ink outline-none"
             required
           />
@@ -87,6 +147,7 @@ export function BookingForm({
             type="date"
             value={checkOut}
             onChange={(e) => setCheckOut(e.target.value)}
+            min={checkIn || today}
             className="w-full border-b border-[#d8cfc2] bg-transparent px-0 py-3 text-ink outline-none"
             required
           />
@@ -117,16 +178,40 @@ export function BookingForm({
 
       <div className="mt-8 border-t border-[#d8cfc2] pt-6">
         <div className="section-label">{copy.estimate}</div>
-        <div className="mt-3 font-display text-5xl text-ink">{estimate.toLocaleString("en-US")} UZS</div>
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <QuoteMetric label={copy.nights} value={quote ? quote.nights : 0} />
+          <QuoteMetric label={copy.subtotal} value={`${money(quote?.subtotal)} UZS`} />
+          <QuoteMetric label={copy.taxes} value={`${money(quote?.taxes)} UZS`} />
+          <QuoteMetric label={copy.total} value={`${estimate.toLocaleString("en-US")} UZS`} />
+        </div>
+        <div className={`mt-5 border px-5 py-4 text-sm ${
+          quote
+            ? "border-[#c9dac5] bg-[#eef5eb] text-[#284527]"
+            : quotePending
+              ? "border-[#ddd1c0] bg-[#f4ede4] text-ink/72"
+              : "border-[#ead7d3] bg-[#f7eae6] text-[#8b4338]"
+        }`}>
+          <div className="section-label mb-2">{copy.liveAvailability}</div>
+          {quoteMessage}
+        </div>
       </div>
 
       <button
-        disabled={pending}
+        disabled={!canSubmit}
         className="mt-8 w-full border border-ink bg-ink px-6 py-4 text-xs uppercase tracking-[0.24em] text-white transition hover:bg-[#2c2721] disabled:opacity-60"
       >
         {pending ? copy.confirming : copy.confirm}
       </button>
       {message ? <p className="mt-4 text-sm text-ink/70">{message}</p> : null}
     </form>
+  );
+}
+
+function QuoteMetric({ label, value }: { label: string; value: string | number }) {
+  return (
+    <div className="border border-[#ddd1c0] bg-white/70 p-4">
+      <div className="section-label">{label}</div>
+      <div className="mt-3 text-base font-medium text-ink">{value}</div>
+    </div>
   );
 }

@@ -160,18 +160,25 @@ export function AuthPanel({ lang }: AuthPanelProps) {
   }
 
   const totalSpent = useMemo(
-    () => bookings.reduce((sum, booking) => sum + Number(booking.total_price || 0), 0),
+    () =>
+      bookings
+        .filter((booking) => booking.status === "confirmed" || booking.status === "completed")
+        .reduce((sum, booking) => sum + Number(booking.total_price || 0), 0),
     [bookings]
   );
+  const pendingBookings = bookings.filter((booking) => booking.status === "pending").length;
   const activeBookings = bookings.filter((booking) => booking.status === "confirmed").length;
-  const cancelledBookings = bookings.filter((booking) => booking.status === "cancelled").length;
+  const historyBookings = bookings.filter(
+    (booking) => booking.status === "cancelled" || booking.status === "completed"
+  ).length;
 
   return (
     <div className="space-y-10">
-      <div className="grid gap-px border border-[#d8cfc2] bg-[#d8cfc2] md:grid-cols-3">
+      <div className="grid gap-px border border-[#d8cfc2] bg-[#d8cfc2] md:grid-cols-4">
         <MetricCard label={copy.totalSpent} value={`${totalSpent.toLocaleString("en-US")} UZS`} />
+        <MetricCard label={copy.pendingRequests} value={pendingBookings} />
         <MetricCard label={copy.upcoming} value={activeBookings} />
-        <MetricCard label={copy.completed} value={cancelledBookings} />
+        <MetricCard label={copy.historyCount} value={historyBookings} />
       </div>
 
       <div className="grid gap-10 xl:grid-cols-[0.78fr_1.22fr]">
@@ -304,7 +311,7 @@ export function AuthPanel({ lang }: AuthPanelProps) {
                     </div>
                   </div>
                   <div className="border border-[#d8cfc2] px-4 py-2 text-[10px] uppercase tracking-[0.28em] text-stone">
-                    {booking.status}
+                    {localizeStatus(booking.status, copy)}
                   </div>
                 </div>
 
@@ -337,7 +344,7 @@ export function AuthPanel({ lang }: AuthPanelProps) {
                   ))}
                 </div>
 
-                {booking.status !== "cancelled" ? (
+                {booking.status === "pending" || booking.status === "confirmed" ? (
                   <div>
                     <button
                       type="button"
@@ -355,6 +362,19 @@ export function AuthPanel({ lang }: AuthPanelProps) {
       </div>
     </div>
   );
+}
+
+function localizeStatus(status: string, copy: ReturnType<typeof t>["account"]) {
+  if (status === "pending") {
+    return copy.pendingStatus;
+  }
+  if (status === "confirmed") {
+    return copy.confirmedStatus;
+  }
+  if (status === "cancelled") {
+    return copy.cancelledStatus;
+  }
+  return copy.completedStatus;
 }
 
 function MetricCard({ label, value }: { label: string; value: string | number }) {
