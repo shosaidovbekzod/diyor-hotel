@@ -53,6 +53,7 @@ export type Review = {
 export type Booking = {
   id: number;
   booking_reference: string;
+  created_at?: string;
   check_in: string;
   check_out: string;
   guests_count: number;
@@ -65,6 +66,7 @@ export type Booking = {
     id: number;
     full_name: string;
     email: string;
+    phone?: string | null;
   } | null;
 };
 
@@ -77,12 +79,14 @@ export type AdminDashboard = {
     average_rating: number;
     users_count: number;
   };
-  recent_bookings: Booking[];
+  current_bookings: Booking[];
+  customer_history: Booking[];
   rooms: Room[];
   users: Array<{
     id: number;
     full_name: string;
     email: string;
+    phone?: string | null;
     is_admin: boolean;
     is_active: boolean;
   }>;

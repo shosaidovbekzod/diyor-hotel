@@ -27,3 +27,4 @@ class UserSummary(BaseModel):
     id: int
     full_name: str
     email: EmailStr
+    phone: str | None = None

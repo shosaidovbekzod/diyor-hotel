@@ -18,6 +18,7 @@ class AdminAnalytics(BaseModel):
 
 class AdminDashboard(BaseModel):
     analytics: AdminAnalytics
-    recent_bookings: list[BookingRead]
+    current_bookings: list[BookingRead]
+    customer_history: list[BookingRead]
     rooms: list[RoomRead]
     users: list[UserRead]

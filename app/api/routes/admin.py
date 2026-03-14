@@ -1,3 +1,4 @@
+from datetime import date
 from decimal import Decimal
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -22,6 +23,21 @@ router = APIRouter()
 
 @router.get("/dashboard", response_model=AdminDashboard)
 def get_dashboard(_: User = Depends(get_current_admin), db: Session = Depends(get_db)):
+    today = date.today()
+    expired_bookings = list(
+        db.scalars(
+            select(Booking).where(
+                Booking.status == BookingStatus.CONFIRMED,
+                Booking.check_out < today,
+            )
+        ).all()
+    )
+    if expired_bookings:
+        for booking in expired_bookings:
+            booking.status = BookingStatus.COMPLETED
+            db.add(booking)
+        db.commit()
+
     total_revenue = db.scalar(
         select(func.coalesce(func.sum(Booking.total_price), Decimal("0.00"))).where(
             Booking.status.in_([BookingStatus.CONFIRMED, BookingStatus.COMPLETED])
@@ -29,20 +45,34 @@ def get_dashboard(_: User = Depends(get_current_admin), db: Session = Depends(ge
     )
     total_bookings = db.scalar(select(func.count(Booking.id))) or 0
     active_bookings = db.scalar(
-        select(func.count(Booking.id)).where(Booking.status == BookingStatus.CONFIRMED)
+        select(func.count(Booking.id)).where(
+            Booking.status == BookingStatus.CONFIRMED,
+            Booking.check_out >= today,
+        )
     ) or 0
     total_rooms = db.scalar(select(func.count(Room.id))) or 1
     avg_rating = db.scalar(select(func.coalesce(func.avg(Review.rating), 0.0))) or 0.0
     users_count = db.scalar(select(func.count(User.id))) or 0
 
-    recent_bookings = list(
+    all_bookings = list(
         db.scalars(
             select(Booking)
             .options(joinedload(Booking.room), joinedload(Booking.payment), joinedload(Booking.user))
             .order_by(Booking.created_at.desc())
-            .limit(10)
         ).unique().all()
     )
+    current_bookings = [
+        booking
+        for booking in all_bookings
+        if booking.status in [BookingStatus.PENDING, BookingStatus.CONFIRMED]
+        and booking.check_out >= today
+    ]
+    customer_history = [
+        booking
+        for booking in all_bookings
+        if booking.status in [BookingStatus.CANCELLED, BookingStatus.COMPLETED]
+        or booking.check_out < today
+    ]
     rooms = [room_to_dict(room) for room in db.scalars(select(Room).order_by(Room.id)).all()]
     users = list(db.scalars(select(User).order_by(User.created_at.desc())).all())
 
@@ -55,7 +85,8 @@ def get_dashboard(_: User = Depends(get_current_admin), db: Session = Depends(ge
             average_rating=round(float(avg_rating), 2),
             users_count=users_count,
         ),
-        "recent_bookings": recent_bookings,
+        "current_bookings": current_bookings,
+        "customer_history": customer_history,
         "rooms": rooms,
         "users": users,
     }
