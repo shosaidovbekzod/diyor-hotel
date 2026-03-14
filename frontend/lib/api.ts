@@ -62,6 +62,14 @@ export type Booking = {
   status: string;
   room: Room;
   special_request?: string | null;
+  payment?: {
+    id: number;
+    status: string;
+    amount: number;
+    currency: string;
+    method: string;
+    transaction_reference: string;
+  } | null;
   user?: {
     id: number;
     full_name: string;
@@ -69,6 +77,8 @@ export type Booking = {
     phone?: string | null;
   } | null;
 };
+
+export type BookingStatus = "pending" | "confirmed" | "cancelled" | "completed";
 
 export type AdminDashboard = {
   analytics: {
@@ -499,4 +509,19 @@ export async function getAdminDashboard(token: string) {
     throw new Error("Admin dashboard unavailable");
   }
   return (await res.json()) as AdminDashboard;
+}
+
+export async function updateAdminBookingStatus(token: string, bookingId: number, status: BookingStatus) {
+  const res = await fetch(`${API_URL}/admin/bookings/${bookingId}/status`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify({ status })
+  });
+  if (!res.ok) {
+    throw new Error("Admin booking update failed");
+  }
+  return (await res.json()) as Booking;
 }

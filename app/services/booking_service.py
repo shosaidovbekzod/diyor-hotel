@@ -80,7 +80,7 @@ def create_booking_or_raise(db: Session, user: User, payload: BookingCreate) -> 
         subtotal=quote.subtotal,
         taxes=quote.taxes,
         total_price=quote.total_price,
-        status=BookingStatus.CONFIRMED,
+        status=BookingStatus.PENDING,
         special_request=payload.special_request,
     )
     db.add(booking)
@@ -89,7 +89,7 @@ def create_booking_or_raise(db: Session, user: User, payload: BookingCreate) -> 
     payment = Payment(
         booking_id=booking.id,
         amount=quote.total_price,
-        status=PaymentStatus.PAID,
+        status=PaymentStatus.PENDING,
         transaction_reference=f"PAY-{uuid4().hex[:12].upper()}",
     )
     db.add(payment)
@@ -100,6 +100,22 @@ def create_booking_or_raise(db: Session, user: User, payload: BookingCreate) -> 
         .options(joinedload(Booking.room), joinedload(Booking.payment), joinedload(Booking.user))
         .where(Booking.id == booking.id)
     )
+
+
+def sync_payment_status(booking: Booking) -> None:
+    if not booking.payment:
+        return
+
+    if booking.status == BookingStatus.PENDING:
+        booking.payment.status = PaymentStatus.PENDING
+        return
+
+    if booking.status in [BookingStatus.CONFIRMED, BookingStatus.COMPLETED]:
+        booking.payment.status = PaymentStatus.PAID
+        return
+
+    if booking.status == BookingStatus.CANCELLED:
+        booking.payment.status = PaymentStatus.REFUNDED
 
 
 def room_rating_summary(db: Session, room_id: int) -> tuple[float, int]:

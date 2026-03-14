@@ -50,3 +50,7 @@ class BookingRead(TimestampedSchema):
     room: RoomRead
     user: UserSummary | None = None
     payment: PaymentRead | None = None
+
+
+class BookingStatusUpdate(BaseModel):
+    status: BookingStatus

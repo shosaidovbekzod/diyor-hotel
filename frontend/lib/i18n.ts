@@ -103,10 +103,10 @@ export const dictionary = {
       specialRequest: "Special request",
       requestPlaceholder: "Airport transfer, breakfast timing, celebration setup...",
       estimate: "Estimated stay total",
-      confirming: "Confirming...",
-      confirm: "Confirm booking",
+      confirming: "Sending request...",
+      confirm: "Send booking request",
       loginRequired: "Log in from the Account page to confirm a booking.",
-      success: "Booking confirmed:",
+      success: "Booking request sent:",
       error: "Booking could not be completed. Please verify dates and try again."
     },
     admin: {
@@ -223,10 +223,10 @@ export const dictionary = {
       specialRequest: "Maxsus so'rov",
       requestPlaceholder: "Transfer, nonushta vaqti, bayram bezagi...",
       estimate: "Taxminiy umumiy narx",
-      confirming: "Tasdiqlanmoqda...",
-      confirm: "Bronni tasdiqlash",
+      confirming: "So'rov yuborilmoqda...",
+      confirm: "Bron so'rovini yuborish",
       loginRequired: "Bronni tasdiqlash uchun Account sahifasidan kiring.",
-      success: "Bron tasdiqlandi:",
+      success: "Bron so'rovi yuborildi:",
       error: "Bron amalga oshmadi. Sanalarni tekshirib qayta urinib ko'ring."
     },
     admin: {
@@ -343,10 +343,10 @@ export const dictionary = {
       specialRequest: "Особое пожелание",
       requestPlaceholder: "Трансфер, время завтрака, оформление для праздника...",
       estimate: "Предварительная стоимость",
-      confirming: "Подтверждение...",
-      confirm: "Подтвердить бронь",
+      confirming: "Отправка запроса...",
+      confirm: "Отправить запрос",
       loginRequired: "Войдите на странице Account, чтобы подтвердить бронь.",
-      success: "Бронирование подтверждено:",
+      success: "Запрос на бронь отправлен:",
       error: "Не удалось завершить бронирование. Проверьте даты и попробуйте снова."
     },
     admin: {

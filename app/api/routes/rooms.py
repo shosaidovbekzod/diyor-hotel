@@ -40,11 +40,12 @@ def list_rooms(
     rooms = list(db.scalars(query).all())
     items: list[dict] = []
     for room in rooms:
+        computed_availability = room.is_available
         if check_in and check_out and guests:
             try:
                 ensure_room_available(db, room, check_in, check_out, guests)
             except HTTPException:
-                continue
+                computed_availability = False
 
         avg_rating, reviews_count = db.execute(
             select(
@@ -52,7 +53,11 @@ def list_rooms(
                 func.count(Review.id),
             ).where(Review.room_id == room.id, Review.status == ReviewStatus.PUBLISHED)
         ).one()
-        items.append(room_to_dict(room, float(avg_rating or 0.0), int(reviews_count or 0)))
+        room_payload = room_to_dict(room, float(avg_rating or 0.0), int(reviews_count or 0))
+        room_payload["is_available"] = computed_availability
+        if available_only and not computed_availability:
+            continue
+        items.append(room_payload)
     return items
 
 

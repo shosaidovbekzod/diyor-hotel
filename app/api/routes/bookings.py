@@ -5,11 +5,15 @@ from sqlalchemy.orm import Session, joinedload
 from app.api.deps import get_current_user
 from app.db.session import get_db
 from app.models.booking import Booking, BookingStatus
-from app.models.payment import PaymentStatus
 from app.models.room import Room
 from app.models.user import User
 from app.schemas.booking import BookingCreate, BookingPriceQuote, BookingRead
-from app.services.booking_service import calculate_booking_quote, create_booking_or_raise, ensure_room_available
+from app.services.booking_service import (
+    calculate_booking_quote,
+    create_booking_or_raise,
+    ensure_room_available,
+    sync_payment_status,
+)
 
 router = APIRouter()
 
@@ -61,8 +65,7 @@ def cancel_booking(
         raise HTTPException(status_code=400, detail="Booking already cancelled")
 
     booking.status = BookingStatus.CANCELLED
-    if booking.payment:
-        booking.payment.status = PaymentStatus.REFUNDED
+    sync_payment_status(booking)
     db.add(booking)
     db.commit()
     db.refresh(booking)

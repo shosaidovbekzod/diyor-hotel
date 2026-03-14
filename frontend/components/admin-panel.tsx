@@ -1,10 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getAdminDashboard, login, type AdminDashboard, type Booking } from "@/lib/api";
+import {
+  getAdminDashboard,
+  login,
+  updateAdminBookingStatus,
+  type AdminDashboard,
+  type Booking,
+  type BookingStatus
+} from "@/lib/api";
 import { t, type Language } from "@/lib/i18n";
 
 const ADMIN_TOKEN_KEY = "diyor_admin_token";
+const BOOKING_STATUS_OPTIONS: BookingStatus[] = ["pending", "confirmed", "cancelled", "completed"];
 
 const adminUiCopy: Record<
   Language,
@@ -17,6 +25,7 @@ const adminUiCopy: Record<
     noUsers: string;
     noRooms: string;
     guest: string;
+    emailLabel: string;
     phone: string;
     room: string;
     roomNumber: string;
@@ -25,6 +34,10 @@ const adminUiCopy: Record<
     guestsCount: string;
     createdAt: string;
     specialRequest: string;
+    paymentStatus: string;
+    paymentPending: string;
+    paymentPaid: string;
+    paymentRefunded: string;
     usersTitle: string;
     roomsTitle: string;
     roomRate: string;
@@ -36,6 +49,18 @@ const adminUiCopy: Record<
     historyList: string;
     bookingDetails: string;
     autoArchive: string;
+    actionsTitle: string;
+    confirmAction: string;
+    cancelAction: string;
+    completeAction: string;
+    saveStatus: string;
+    statusLabel: string;
+    actionSuccess: string;
+    actionError: string;
+    pendingStatus: string;
+    confirmedStatus: string;
+    cancelledStatus: string;
+    completedStatus: string;
   }
 > = {
   en: {
@@ -47,6 +72,7 @@ const adminUiCopy: Record<
     noUsers: "No guest accounts found yet.",
     noRooms: "No room inventory loaded yet.",
     guest: "Guest",
+    emailLabel: "Email",
     phone: "Phone",
     room: "Room",
     roomNumber: "Room number",
@@ -55,6 +81,10 @@ const adminUiCopy: Record<
     guestsCount: "Guests",
     createdAt: "Booked at",
     specialRequest: "Special request",
+    paymentStatus: "Payment",
+    paymentPending: "Pending payment",
+    paymentPaid: "Paid",
+    paymentRefunded: "Refunded",
     usersTitle: "Guest directory",
     roomsTitle: "Room inventory",
     roomRate: "Rate",
@@ -65,7 +95,19 @@ const adminUiCopy: Record<
     activeList: "Active bookings",
     historyList: "Customer history",
     bookingDetails: "Booking details",
-    autoArchive: "Bookings move here automatically after the reservation period passes."
+    autoArchive: "Bookings move here automatically after the reservation period passes.",
+    actionsTitle: "Admin actions",
+    confirmAction: "Confirm",
+    cancelAction: "Cancel",
+    completeAction: "Complete",
+    saveStatus: "Save status",
+    statusLabel: "Status",
+    actionSuccess: "Booking status updated.",
+    actionError: "Booking status could not be updated.",
+    pendingStatus: "Pending",
+    confirmedStatus: "Confirmed",
+    cancelledStatus: "Cancelled",
+    completedStatus: "Completed"
   },
   uz: {
     signInHelp: "Jonli operatsiyalarni ochish uchun admin email va parolini kiriting.",
@@ -76,6 +118,7 @@ const adminUiCopy: Record<
     noUsers: "Hozircha mehmon akkauntlari topilmadi.",
     noRooms: "Xonalar inventari hali yuklanmadi.",
     guest: "Mehmon",
+    emailLabel: "Email",
     phone: "Telefon",
     room: "Xona",
     roomNumber: "Xona raqami",
@@ -84,6 +127,10 @@ const adminUiCopy: Record<
     guestsCount: "Mehmonlar soni",
     createdAt: "Bron qilingan vaqt",
     specialRequest: "Maxsus so'rov",
+    paymentStatus: "To'lov holati",
+    paymentPending: "To'lov kutilmoqda",
+    paymentPaid: "To'langan",
+    paymentRefunded: "Qaytarilgan",
     usersTitle: "Mehmonlar ro'yxati",
     roomsTitle: "Xonalar inventari",
     roomRate: "Narx",
@@ -94,25 +141,42 @@ const adminUiCopy: Record<
     activeList: "Faol bronlar",
     historyList: "Mijozlar tarixi",
     bookingDetails: "Bron tafsilotlari",
-    autoArchive: "Bron muddati tugashi bilan yozuv avtomatik ravishda tarix bo'limiga o'tadi."
+    autoArchive: "Bron muddati tugashi bilan yozuv avtomatik ravishda tarix bo'limiga o'tadi.",
+    actionsTitle: "Admin amallari",
+    confirmAction: "Tasdiqlash",
+    cancelAction: "Bekor qilish",
+    completeAction: "Yakunlash",
+    saveStatus: "Statusni saqlash",
+    statusLabel: "Status",
+    actionSuccess: "Bron statusi yangilandi.",
+    actionError: "Bron statusini yangilab bo'lmadi.",
+    pendingStatus: "Kutilmoqda",
+    confirmedStatus: "Tasdiqlangan",
+    cancelledStatus: "Bekor qilingan",
+    completedStatus: "Tugallangan"
   },
   ru: {
-    signInHelp: "Введите email и пароль администратора, чтобы открыть живые операции.",
+    signInHelp: "Введите email и пароль администратора, чтобы открыть панель операций.",
     signedIn: "Сессия администратора активна. Новые брони обновляются автоматически.",
     refresh: "Обновить",
     noCurrentBookings: "Сейчас нет активных бронирований.",
-    noHistory: "Завершенные и отмененные бронирования будут появляться здесь автоматически.",
+    noHistory: "Завершенные и отмененные брони будут появляться здесь автоматически.",
     noUsers: "Гостевые аккаунты пока не найдены.",
     noRooms: "Инвентарь номеров пока не загружен.",
     guest: "Гость",
+    emailLabel: "Email",
     phone: "Телефон",
     room: "Номер",
     roomNumber: "Номер комнаты",
     dates: "Даты проживания",
     total: "Итого",
-    guestsCount: "Количество гостей",
+    guestsCount: "Гостей",
     createdAt: "Забронировано",
     specialRequest: "Особое пожелание",
+    paymentStatus: "Оплата",
+    paymentPending: "Ожидает оплату",
+    paymentPaid: "Оплачено",
+    paymentRefunded: "Возвращено",
     usersTitle: "База гостей",
     roomsTitle: "Инвентарь номеров",
     roomRate: "Тариф",
@@ -123,7 +187,19 @@ const adminUiCopy: Record<
     activeList: "Активные брони",
     historyList: "История клиентов",
     bookingDetails: "Детали брони",
-    autoArchive: "После окончания срока брони запись автоматически переходит в историю."
+    autoArchive: "После завершения срока брони запись автоматически переходит в историю.",
+    actionsTitle: "Действия администратора",
+    confirmAction: "Подтвердить",
+    cancelAction: "Отменить",
+    completeAction: "Завершить",
+    saveStatus: "Сохранить статус",
+    statusLabel: "Статус",
+    actionSuccess: "Статус брони обновлен.",
+    actionError: "Не удалось обновить статус брони.",
+    pendingStatus: "Ожидает",
+    confirmedStatus: "Подтверждено",
+    cancelledStatus: "Отменено",
+    completedStatus: "Завершено"
   }
 };
 
@@ -139,6 +215,7 @@ export function AdminPanel({ lang }: { lang: Language }) {
   const [message, setMessage] = useState(ui.signInHelp);
   const [pending, setPending] = useState(false);
   const [view, setView] = useState<BookingView>("current");
+  const [actionBookingId, setActionBookingId] = useState<number | null>(null);
 
   useEffect(() => {
     setMessage((current) => (current === ui.signInHelp || current === ui.signedIn ? ui.signInHelp : current));
@@ -199,6 +276,23 @@ export function AdminPanel({ lang }: { lang: Language }) {
     }
   }
 
+  async function handleStatusUpdate(bookingId: number, status: BookingStatus) {
+    if (!token) {
+      setMessage(copy.error);
+      return;
+    }
+
+    setActionBookingId(bookingId);
+    try {
+      await updateAdminBookingStatus(token, bookingId, status);
+      await hydrateDashboard(token, ui.actionSuccess, false);
+    } catch {
+      setMessage(ui.actionError);
+    } finally {
+      setActionBookingId(null);
+    }
+  }
+
   function logoutAdmin() {
     window.localStorage.removeItem(ADMIN_TOKEN_KEY);
     setToken("");
@@ -213,7 +307,6 @@ export function AdminPanel({ lang }: { lang: Language }) {
   const historyBookings = dashboard?.customer_history ?? [];
   const visibleBookings = view === "current" ? currentBookings : historyBookings;
   const emptyMessage = view === "current" ? ui.noCurrentBookings : ui.noHistory;
-
   const bookingCountLabel = `${visibleBookings.length} ${view === "current" ? ui.activeList : ui.historyList}`;
 
   return (
@@ -319,6 +412,8 @@ export function AdminPanel({ lang }: { lang: Language }) {
                   key={booking.id}
                   booking={booking}
                   ui={ui}
+                  isBusy={actionBookingId === booking.id}
+                  onStatusChange={handleStatusUpdate}
                   className={index > 0 ? "border-t border-[#d8cfc2]" : ""}
                 />
               ))}
@@ -386,12 +481,22 @@ export function AdminPanel({ lang }: { lang: Language }) {
 function BookingCard({
   booking,
   ui,
-  className
+  className,
+  isBusy,
+  onStatusChange
 }: {
   booking: Booking;
   ui: (typeof adminUiCopy)[Language];
   className?: string;
+  isBusy: boolean;
+  onStatusChange: (bookingId: number, status: BookingStatus) => Promise<void>;
 }) {
+  const [selectedStatus, setSelectedStatus] = useState<BookingStatus>(booking.status as BookingStatus);
+
+  useEffect(() => {
+    setSelectedStatus(booking.status as BookingStatus);
+  }, [booking.status]);
+
   return (
     <div className={`grid gap-5 p-8 ${className ?? ""}`}>
       <div className="flex flex-wrap items-start justify-between gap-4">
@@ -403,19 +508,20 @@ function BookingCard({
           </div>
         </div>
         <div className="border border-[#d8cfc2] px-4 py-2 text-[10px] uppercase tracking-[0.28em] text-stone">
-          {booking.status}
+          {localizeStatus(booking.status as BookingStatus, ui)}
         </div>
       </div>
 
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
         <InfoBlock label={ui.guest} value={booking.user?.full_name || "-"} />
-        <InfoBlock label="Email" value={booking.user?.email || "-"} />
+        <InfoBlock label={ui.emailLabel} value={booking.user?.email || "-"} />
         <InfoBlock label={ui.phone} value={booking.user?.phone || "-"} />
         <InfoBlock label={ui.roomNumber} value={booking.room.room_number} />
         <InfoBlock label={ui.guestsCount} value={String(booking.guests_count)} />
         <InfoBlock label={ui.createdAt} value={formatDateTime(booking.created_at)} />
         <InfoBlock label={ui.dates} value={`${booking.check_in} - ${booking.check_out}`} />
         <InfoBlock label={ui.total} value={`${Number(booking.total_price).toLocaleString("en-US")} UZS`} />
+        <InfoBlock label={ui.paymentStatus} value={booking.payment ? localizePaymentStatus(booking.payment.status, ui) : "-"} />
       </div>
 
       {booking.special_request ? (
@@ -424,6 +530,62 @@ function BookingCard({
           <div className="mt-3">{booking.special_request}</div>
         </div>
       ) : null}
+
+      <div className="border-t border-[#d8cfc2] pt-5">
+        <div className="section-label">{ui.actionsTitle}</div>
+        <div className="mt-4 flex flex-wrap gap-3">
+          <button
+            type="button"
+            onClick={() => onStatusChange(booking.id, "confirmed")}
+            disabled={isBusy || booking.status === "confirmed"}
+            className="editorial-button disabled:opacity-50"
+          >
+            {ui.confirmAction}
+          </button>
+          <button
+            type="button"
+            onClick={() => onStatusChange(booking.id, "cancelled")}
+            disabled={isBusy || booking.status === "cancelled"}
+            className="editorial-button-secondary disabled:opacity-50"
+          >
+            {ui.cancelAction}
+          </button>
+          <button
+            type="button"
+            onClick={() => onStatusChange(booking.id, "completed")}
+            disabled={isBusy || booking.status === "completed"}
+            className="editorial-button-secondary disabled:opacity-50"
+          >
+            {ui.completeAction}
+          </button>
+        </div>
+
+        <div className="mt-5 grid gap-3 md:grid-cols-[minmax(0,1fr)_auto]">
+          <label className="space-y-2 text-sm text-ink/70">
+            <span>{ui.statusLabel}</span>
+            <select
+              value={selectedStatus}
+              onChange={(event) => setSelectedStatus(event.target.value as BookingStatus)}
+              className="editorial-input"
+              disabled={isBusy}
+            >
+              {BOOKING_STATUS_OPTIONS.map((status) => (
+                <option key={status} value={status}>
+                  {localizeStatus(status, ui)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <button
+            type="button"
+            onClick={() => onStatusChange(booking.id, selectedStatus)}
+            disabled={isBusy || selectedStatus === booking.status}
+            className="editorial-button disabled:opacity-50 md:mt-7"
+          >
+            {ui.saveStatus}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
@@ -463,4 +625,30 @@ function formatDateTime(value?: string) {
     hour: "2-digit",
     minute: "2-digit"
   }).format(parsed);
+}
+
+function localizeStatus(status: BookingStatus, ui: (typeof adminUiCopy)[Language]) {
+  if (status === "pending") {
+    return ui.pendingStatus;
+  }
+  if (status === "confirmed") {
+    return ui.confirmedStatus;
+  }
+  if (status === "cancelled") {
+    return ui.cancelledStatus;
+  }
+  return ui.completedStatus;
+}
+
+function localizePaymentStatus(status: string, ui: (typeof adminUiCopy)[Language]) {
+  if (status === "pending") {
+    return ui.paymentPending;
+  }
+  if (status === "paid") {
+    return ui.paymentPaid;
+  }
+  if (status === "refunded") {
+    return ui.paymentRefunded;
+  }
+  return status;
 }

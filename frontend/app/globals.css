@@ -61,3 +61,59 @@ body {
 .editorial-button-secondary {
   @apply inline-flex items-center justify-center border border-[#d8cfc2] bg-transparent px-6 py-3 text-[11px] uppercase tracking-[0.28em] text-ink transition hover:bg-white/65;
 }
+
+.booking-benefits-panel {
+  @apply grid gap-6 border border-[#e3b15d] bg-[#fff6ea] px-6 py-8 text-ink shadow-[0_20px_60px_rgba(175,116,32,0.08)] md:grid-cols-[1fr_1.2fr_auto] md:items-center md:px-8;
+}
+
+.booking-benefits-chip {
+  @apply inline-flex items-center gap-2 rounded-full bg-[#e1f7df] px-4 py-3 text-sm font-medium text-[#236239];
+}
+
+.booking-room-card {
+  @apply overflow-hidden rounded-[28px] border border-[#e2d9ce] bg-white shadow-[0_24px_70px_rgba(35,31,25,0.08)] lg:grid lg:grid-cols-[0.95fr_1.05fr];
+}
+
+.booking-room-gallery {
+  @apply relative bg-[#f4ede4];
+}
+
+.booking-room-icon-strip {
+  @apply absolute left-5 top-5 z-10 inline-flex items-center gap-4 rounded-sm bg-white/95 px-4 py-3 text-[#848484] shadow-sm;
+}
+
+.booking-room-dots {
+  @apply absolute bottom-5 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2 rounded-full bg-black/20 px-3 py-2 backdrop-blur-sm;
+}
+
+.booking-room-dot {
+  @apply h-3 w-3 rounded-full bg-white/80 transition;
+}
+
+.booking-room-dot-active {
+  @apply bg-[#4d61cc];
+}
+
+.booking-room-body {
+  @apply p-6 md:p-8;
+}
+
+.booking-room-title {
+  @apply max-w-xl text-[2.2rem] font-semibold uppercase leading-[1.05] tracking-[0.01em] text-[#4959bf] md:text-[2.6rem];
+}
+
+.booking-room-expand {
+  @apply inline-flex h-14 w-14 items-center justify-center rounded-full border-2 border-[#5a6ad7] text-[#5a6ad7] transition hover:bg-[#eef1ff];
+}
+
+.booking-room-primary {
+  @apply inline-flex items-center justify-center rounded-2xl bg-[#4f61d1] px-6 py-4 text-base font-medium uppercase tracking-[0.12em] text-white shadow-[0_14px_28px_rgba(79,97,209,0.24)] transition hover:bg-[#4053c5];
+}
+
+.booking-room-secondary {
+  @apply inline-flex items-center justify-center rounded-2xl border border-[#dbe0ff] bg-[#eef2ff] px-6 py-4 text-base font-medium uppercase tracking-[0.12em] text-[#5564ca] transition hover:bg-[#e4e9ff];
+}
+
+.booking-room-soldout {
+  @apply inline-flex items-center justify-center gap-2 rounded-2xl bg-[#eff1f4] px-6 py-4 text-base font-medium uppercase tracking-[0.12em] text-[#70767e];
+}

@@ -13,9 +13,10 @@ from app.models.review import Review
 from app.models.room import Room
 from app.models.user import User
 from app.schemas.admin import AdminAnalytics, AdminDashboard
-from app.schemas.booking import BookingRead
+from app.schemas.booking import BookingRead, BookingStatusUpdate
 from app.schemas.room import RoomCreate, RoomRead, RoomUpdate
 from app.schemas.user import UserRead
+from app.services.booking_service import sync_payment_status
 from app.services.serializers import room_to_dict
 
 router = APIRouter()
@@ -46,7 +47,7 @@ def get_dashboard(_: User = Depends(get_current_admin), db: Session = Depends(ge
     total_bookings = db.scalar(select(func.count(Booking.id))) or 0
     active_bookings = db.scalar(
         select(func.count(Booking.id)).where(
-            Booking.status == BookingStatus.CONFIRMED,
+            Booking.status.in_([BookingStatus.PENDING, BookingStatus.CONFIRMED]),
             Booking.check_out >= today,
         )
     ) or 0
@@ -100,6 +101,33 @@ def list_all_bookings(_: User = Depends(get_current_admin), db: Session = Depend
             .options(joinedload(Booking.room), joinedload(Booking.payment), joinedload(Booking.user))
             .order_by(Booking.created_at.desc())
         ).unique().all()
+    )
+
+
+@router.patch("/bookings/{booking_id}/status", response_model=BookingRead)
+def update_booking_status(
+    booking_id: int,
+    payload: BookingStatusUpdate,
+    _: User = Depends(get_current_admin),
+    db: Session = Depends(get_db),
+):
+    booking = db.scalar(
+        select(Booking)
+        .options(joinedload(Booking.room), joinedload(Booking.payment), joinedload(Booking.user))
+        .where(Booking.id == booking_id)
+    )
+    if not booking:
+        raise HTTPException(status_code=404, detail="Booking not found")
+
+    booking.status = payload.status
+    sync_payment_status(booking)
+    db.add(booking)
+    db.commit()
+    db.refresh(booking)
+    return db.scalar(
+        select(Booking)
+        .options(joinedload(Booking.room), joinedload(Booking.payment), joinedload(Booking.user))
+        .where(Booking.id == booking_id)
     )
 
 
