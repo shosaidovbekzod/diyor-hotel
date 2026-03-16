@@ -95,6 +95,82 @@ const INVENTORY_CATALOG: InventoryCatalogItem[] = [
   }
 ];
 
+const ROOM_LABELS: Record<
+  string,
+  Record<Language, { title: string; collection: string }>
+> = {
+  "double-room-one-bed-or-two": {
+    en: {
+      title: "Double Room with 1 Bed or 2 Separate Beds",
+      collection: "City stay"
+    },
+    uz: {
+      title: "1 yoki 2 alohida karavotli ikki kishilik xona",
+      collection: "Shahar turi"
+    },
+    ru: {
+      title: "Двухместный номер с одной или двумя раздельными кроватями",
+      collection: "Городской формат"
+    }
+  },
+  "two-bedroom-suite": {
+    en: {
+      title: "2 Bedroom Suite",
+      collection: "Suite collection"
+    },
+    uz: {
+      title: "2 yotoqli lyuks",
+      collection: "Lyuks to'plami"
+    },
+    ru: {
+      title: "Люкс с 2 спальнями",
+      collection: "Коллекция люкс"
+    }
+  },
+  "one-bedroom-deluxe-apartment": {
+    en: {
+      title: "1 Bedroom Deluxe Apartment",
+      collection: "Deluxe apartment"
+    },
+    uz: {
+      title: "1 yotoqli deluxe apartament",
+      collection: "Deluxe apartament"
+    },
+    ru: {
+      title: "Апартаменты Делюкс с 1 спальней",
+      collection: "Апартаменты делюкс"
+    }
+  },
+  "deluxe-apartment-two-bedrooms": {
+    en: {
+      title: "Deluxe Apartment with 2 Bedrooms",
+      collection: "Apartment collection"
+    },
+    uz: {
+      title: "2 yotoqli deluxe apartament",
+      collection: "Apartamentlar to'plami"
+    },
+    ru: {
+      title: "Апартаменты Делюкс с 2 спальнями",
+      collection: "Коллекция апартаментов"
+    }
+  },
+  "deluxe-apartment-three-bedrooms": {
+    en: {
+      title: "Deluxe Apartment with 3 Bedrooms",
+      collection: "Residence collection"
+    },
+    uz: {
+      title: "3 yotoqli deluxe apartament",
+      collection: "Rezidensiya to'plami"
+    },
+    ru: {
+      title: "Апартаменты Делюкс с 3 спальнями",
+      collection: "Коллекция резиденций"
+    }
+  }
+};
+
 const adminUiCopy: Record<Language, Record<string, string>> = {
   en: {
     signInHelp: "Sign in with the admin email and password to open live operations.",
@@ -449,8 +525,8 @@ export function AdminPanel({ lang }: { lang: Language }) {
   const bookingCountLabel = `${visibleBookings.length} ${view === "current" ? ui.activeList : ui.historyList}`;
 
   const inventoryUnits = useMemo(
-    () => buildInventoryUnits(dashboard?.rooms ?? [], INVENTORY_CATALOG),
-    [dashboard?.rooms]
+    () => buildInventoryUnits(dashboard?.rooms ?? [], INVENTORY_CATALOG, ROOM_LABELS, lang),
+    [dashboard?.rooms, lang]
   );
   const inventoryAssignments = useMemo(
     () => assignBookingsToInventory(inventoryUnits, currentBookings),
@@ -599,6 +675,7 @@ export function AdminPanel({ lang }: { lang: Language }) {
                   key={booking.id}
                   booking={booking}
                   ui={ui}
+                  lang={lang}
                   isBusy={actionBookingId === booking.id}
                   onStatusChange={handleStatusUpdate}
                   className={index > 0 ? "border-t border-[#d8cfc2]" : ""}
@@ -636,9 +713,9 @@ export function AdminPanel({ lang }: { lang: Language }) {
               {dashboard.rooms.map((room, index) => (
                 <div key={room.id} className={`grid gap-4 p-8 ${index > 0 ? "border-t border-[#d8cfc2]" : ""}`}>
                   <div>
-                    <div className="font-display text-2xl text-ink">{room.title}</div>
+                    <div className="font-display text-2xl text-ink">{getLocalizedRoomLabels(room, lang).title}</div>
                     <div className="mt-2 text-xs uppercase tracking-[0.28em] text-stone">
-                      {room.room_number} · {room.view_label || room.bed_type}
+                      {room.room_number} · {getLocalizedRoomLabels(room, lang).collection}
                     </div>
                   </div>
                   <div className="grid gap-4 text-sm text-ink/72">
@@ -884,17 +961,20 @@ export function AdminPanel({ lang }: { lang: Language }) {
 function BookingCard({
   booking,
   ui,
+  lang,
   className,
   isBusy,
   onStatusChange
 }: {
   booking: Booking;
   ui: (typeof adminUiCopy)[Language];
+  lang: Language;
   className?: string;
   isBusy: boolean;
   onStatusChange: (bookingId: number, status: BookingStatus) => Promise<void>;
 }) {
   const [selectedStatus, setSelectedStatus] = useState<BookingStatus>(booking.status as BookingStatus);
+  const labels = getLocalizedRoomLabels(booking.room, lang);
 
   useEffect(() => {
     setSelectedStatus(booking.status as BookingStatus);
@@ -905,7 +985,7 @@ function BookingCard({
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <div className="section-label">{ui.room}</div>
-          <h4 className="mt-3 font-display text-3xl text-ink">{booking.room.title}</h4>
+          <h4 className="mt-3 font-display text-3xl text-ink">{labels.title}</h4>
           <div className="mt-2 text-xs uppercase tracking-[0.28em] text-stone">
             {booking.booking_reference}
           </div>
@@ -1011,13 +1091,19 @@ function Metric({ label, value }: { label: string; value: string | number }) {
   );
 }
 
-function buildInventoryUnits(rooms: AdminDashboard["rooms"], catalog: InventoryCatalogItem[]) {
+function buildInventoryUnits(
+  rooms: AdminDashboard["rooms"],
+  catalog: InventoryCatalogItem[],
+  labels: typeof ROOM_LABELS,
+  lang: Language
+) {
   return catalog.flatMap((item) => {
     const room = rooms.find((entry) => entry.slug === item.key);
+    const localized = labels[item.key]?.[lang];
     const baseNumber = item.startNumber;
     const rate = Number(room?.display_price ?? item.rate);
-    const title = room?.title ?? item.title;
-    const collection = room?.view_label ?? item.collection;
+    const title = localized?.title ?? room?.title ?? item.title;
+    const collection = localized?.collection ?? room?.view_label ?? item.collection;
 
     return Array.from({ length: item.count }, (_, index) => {
       const unitNumber = String(baseNumber + index);
@@ -1110,6 +1196,14 @@ function groupInventoryByType(rows: InventoryRow[]) {
     map.set(row.unit.typeKey, list);
   }
   return map;
+}
+
+function getLocalizedRoomLabels(room: AdminDashboard["rooms"][number], lang: Language) {
+  const labels = ROOM_LABELS[room.slug]?.[lang];
+  return {
+    title: labels?.title ?? room.title,
+    collection: labels?.collection ?? room.view_label ?? room.bed_type
+  };
 }
 
 function summarizeInventory(rows: InventoryRow[]) {
