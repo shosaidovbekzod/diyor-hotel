@@ -9,6 +9,7 @@ import {
   type Booking,
   type BookingStatus
 } from "@/lib/api";
+import { localizeRoom } from "@/lib/content";
 import { t, type Language } from "@/lib/i18n";
 
 const ADMIN_TOKEN_KEY = "diyor_admin_token";
@@ -95,81 +96,6 @@ const INVENTORY_CATALOG: InventoryCatalogItem[] = [
   }
 ];
 
-const ROOM_LABELS: Record<
-  string,
-  Record<Language, { title: string; collection: string }>
-> = {
-  "double-room-one-bed-or-two": {
-    en: {
-      title: "Double Room with 1 Bed or 2 Separate Beds",
-      collection: "City stay"
-    },
-    uz: {
-      title: "1 yoki 2 alohida karavotli ikki kishilik xona",
-      collection: "Shahar turi"
-    },
-    ru: {
-      title: "Двухместный номер с одной или двумя раздельными кроватями",
-      collection: "Городской формат"
-    }
-  },
-  "two-bedroom-suite": {
-    en: {
-      title: "2 Bedroom Suite",
-      collection: "Suite collection"
-    },
-    uz: {
-      title: "2 yotoqli lyuks",
-      collection: "Lyuks to'plami"
-    },
-    ru: {
-      title: "Люкс с 2 спальнями",
-      collection: "Коллекция люкс"
-    }
-  },
-  "one-bedroom-deluxe-apartment": {
-    en: {
-      title: "1 Bedroom Deluxe Apartment",
-      collection: "Deluxe apartment"
-    },
-    uz: {
-      title: "1 yotoqli deluxe apartament",
-      collection: "Deluxe apartament"
-    },
-    ru: {
-      title: "Апартаменты Делюкс с 1 спальней",
-      collection: "Апартаменты делюкс"
-    }
-  },
-  "deluxe-apartment-two-bedrooms": {
-    en: {
-      title: "Deluxe Apartment with 2 Bedrooms",
-      collection: "Apartment collection"
-    },
-    uz: {
-      title: "2 yotoqli deluxe apartament",
-      collection: "Apartamentlar to'plami"
-    },
-    ru: {
-      title: "Апартаменты Делюкс с 2 спальнями",
-      collection: "Коллекция апартаментов"
-    }
-  },
-  "deluxe-apartment-three-bedrooms": {
-    en: {
-      title: "Deluxe Apartment with 3 Bedrooms",
-      collection: "Residence collection"
-    },
-    uz: {
-      title: "3 yotoqli deluxe apartament",
-      collection: "Rezidensiya to'plami"
-    },
-    ru: {
-      title: "Апартаменты Делюкс с 3 спальнями",
-      collection: "Коллекция резиденций"
-    }
-  }
-};
 
 const adminUiCopy: Record<Language, Record<string, string>> = {
   en: {
@@ -525,7 +451,7 @@ export function AdminPanel({ lang }: { lang: Language }) {
   const bookingCountLabel = `${visibleBookings.length} ${view === "current" ? ui.activeList : ui.historyList}`;
 
   const inventoryUnits = useMemo(
-    () => buildInventoryUnits(dashboard?.rooms ?? [], INVENTORY_CATALOG, ROOM_LABELS, lang),
+    () => buildInventoryUnits(dashboard?.rooms ?? [], INVENTORY_CATALOG, lang),
     [dashboard?.rooms, lang]
   );
   const inventoryAssignments = useMemo(
@@ -1091,19 +1017,14 @@ function Metric({ label, value }: { label: string; value: string | number }) {
   );
 }
 
-function buildInventoryUnits(
-  rooms: AdminDashboard["rooms"],
-  catalog: InventoryCatalogItem[],
-  labels: typeof ROOM_LABELS,
-  lang: Language
-) {
+function buildInventoryUnits(rooms: AdminDashboard["rooms"], catalog: InventoryCatalogItem[], lang: Language) {
   return catalog.flatMap((item) => {
     const room = rooms.find((entry) => entry.slug === item.key);
-    const localized = labels[item.key]?.[lang];
+    const localizedRoom = room ? localizeRoom(room, lang) : null;
     const baseNumber = item.startNumber;
-    const rate = Number(room?.display_price ?? item.rate);
-    const title = localized?.title ?? room?.title ?? item.title;
-    const collection = localized?.collection ?? room?.view_label ?? item.collection;
+    const rate = Number(localizedRoom?.display_price ?? item.rate);
+    const title = localizedRoom?.title ?? item.title;
+    const collection = localizedRoom?.view_label ?? item.collection;
 
     return Array.from({ length: item.count }, (_, index) => {
       const unitNumber = String(baseNumber + index);
@@ -1199,10 +1120,10 @@ function groupInventoryByType(rows: InventoryRow[]) {
 }
 
 function getLocalizedRoomLabels(room: AdminDashboard["rooms"][number], lang: Language) {
-  const labels = ROOM_LABELS[room.slug]?.[lang];
+  const localized = localizeRoom(room, lang);
   return {
-    title: labels?.title ?? room.title,
-    collection: labels?.collection ?? room.view_label ?? room.bed_type
+    title: localized.title,
+    collection: localized.view_label ?? localized.bed_type
   };
 }
 

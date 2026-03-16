@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { cancelBooking, getCurrentUser, getMyBookings, login, register, type Booking } from "@/lib/api";
+import { localizeRoom } from "@/lib/content";
 import { t, type Language } from "@/lib/i18n";
 
 type Profile = {
@@ -61,6 +63,9 @@ export function AuthPanel({ lang }: AuthPanelProps) {
   const [profile, setProfile] = useState<Profile>(null);
   const [loading, setLoading] = useState(false);
   const [pending, setPending] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const returnTo = searchParams.get("returnTo");
 
   useEffect(() => {
     const stored = window.localStorage.getItem("diyor_token") ?? "";
@@ -69,6 +74,12 @@ export function AuthPanel({ lang }: AuthPanelProps) {
       void hydrate(stored);
     }
   }, []);
+
+  useEffect(() => {
+    if (token && returnTo) {
+      router.replace(returnTo);
+    }
+  }, [token, returnTo, router]);
 
   async function hydrate(nextToken: string) {
     setLoading(true);
@@ -97,6 +108,9 @@ export function AuthPanel({ lang }: AuthPanelProps) {
       setToken(response.access_token);
       await hydrate(response.access_token);
       setMessage(copy.loginSuccess);
+      if (returnTo) {
+        router.replace(returnTo);
+      }
     } catch {
       setMessage(copy.loginError);
     } finally {
@@ -108,7 +122,14 @@ export function AuthPanel({ lang }: AuthPanelProps) {
     setPending(true);
     try {
       await register({ full_name: name, email, phone, password });
-      setMessage(copy.registerSuccess);
+      const response = await login(email, password);
+      window.localStorage.setItem("diyor_token", response.access_token);
+      setToken(response.access_token);
+      await hydrate(response.access_token);
+      setMessage(copy.loginSuccess);
+      if (returnTo) {
+        router.replace(returnTo);
+      }
     } catch {
       setMessage(copy.registerError);
     } finally {
@@ -290,7 +311,9 @@ export function AuthPanel({ lang }: AuthPanelProps) {
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div>
                     <div className="section-label">{copy.bookingReference}</div>
-                    <h3 className="mt-3 font-display text-3xl text-ink">{booking.room.title}</h3>
+                    <h3 className="mt-3 font-display text-3xl text-ink">
+                      {localizeRoom(booking.room, lang).title}
+                    </h3>
                     <div className="mt-2 text-xs uppercase tracking-[0.28em] text-stone">
                       {booking.booking_reference}
                     </div>

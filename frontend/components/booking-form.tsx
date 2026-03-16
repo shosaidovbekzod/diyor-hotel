@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { createBooking, quoteBooking, type BookingQuote } from "@/lib/api";
 import { t, type Language } from "@/lib/i18n";
 
@@ -29,6 +30,7 @@ export function BookingForm({
   const [quote, setQuote] = useState<BookingQuote | null>(null);
   const [quotePending, setQuotePending] = useState(false);
   const [quoteMessage, setQuoteMessage] = useState<string>(copy.selectDatesHint);
+  const router = useRouter();
 
   const today = new Date().toISOString().slice(0, 10);
   const dateRangeReady = Boolean(checkIn && checkOut);
@@ -102,7 +104,8 @@ export function BookingForm({
     event.preventDefault();
     const token = window.localStorage.getItem("diyor_token");
     if (!token) {
-      setMessage(copy.loginRequired);
+      const returnTo = `${window.location.pathname}${window.location.search}`;
+      router.push(`/account?returnTo=${encodeURIComponent(returnTo)}`);
       return;
     }
 
@@ -178,10 +181,9 @@ export function BookingForm({
 
       <div className="mt-8 border-t border-[#d8cfc2] pt-6">
         <div className="section-label">{copy.estimate}</div>
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           <QuoteMetric label={copy.nights} value={quote ? quote.nights : 0} />
           <QuoteMetric label={copy.subtotal} value={`${money(quote?.subtotal)} UZS`} />
-          <QuoteMetric label={copy.taxes} value={`${money(quote?.taxes)} UZS`} />
           <QuoteMetric label={copy.total} value={`${estimate.toLocaleString("en-US")} UZS`} />
         </div>
         <div className={`mt-5 border px-5 py-4 text-sm ${

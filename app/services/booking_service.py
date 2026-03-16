@@ -13,7 +13,7 @@ from app.models.room import Room
 from app.models.user import User
 from app.schemas.booking import BookingCreate, BookingPriceQuote
 
-TAX_RATE = Decimal("0.12")
+TAX_RATE = Decimal("0.00")
 
 
 def overlapping_booking_clause(check_in: date, check_out: date):
