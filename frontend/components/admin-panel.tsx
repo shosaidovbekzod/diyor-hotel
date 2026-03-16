@@ -30,6 +30,10 @@ type InventoryCatalogItem = {
 type InventoryOverride = {
   status: InventoryOverrideStatus;
   note?: string;
+  guestName?: string;
+  guestPhone?: string;
+  checkIn?: string;
+  checkOut?: string;
 };
 
 type InventoryUnit = {
@@ -61,7 +65,7 @@ const INVENTORY_CATALOG: InventoryCatalogItem[] = [
     key: "two-bedroom-suite",
     title: "2 Bedroom Suite",
     collection: "Suite collection",
-    startNumber: 305,
+    startNumber: 31,
     count: 20,
     rate: 890000
   },
@@ -69,7 +73,7 @@ const INVENTORY_CATALOG: InventoryCatalogItem[] = [
     key: "one-bedroom-deluxe-apartment",
     title: "1 Bedroom Deluxe Apartment",
     collection: "Deluxe apartment",
-    startNumber: 402,
+    startNumber: 51,
     count: 23,
     rate: 760000
   },
@@ -77,7 +81,7 @@ const INVENTORY_CATALOG: InventoryCatalogItem[] = [
     key: "deluxe-apartment-two-bedrooms",
     title: "Deluxe Apartment with 2 Bedrooms",
     collection: "Apartment collection",
-    startNumber: 501,
+    startNumber: 74,
     count: 27,
     rate: 990000
   },
@@ -85,7 +89,7 @@ const INVENTORY_CATALOG: InventoryCatalogItem[] = [
     key: "deluxe-apartment-three-bedrooms",
     title: "Deluxe Apartment with 3 Bedrooms",
     collection: "Residence collection",
-    startNumber: 502,
+    startNumber: 101,
     count: 17,
     rate: 1350000
   }
@@ -457,9 +461,23 @@ export function AdminPanel({ lang }: { lang: Language }) {
     [inventoryUnits, inventoryAssignments, inventoryOverrides]
   );
   const inventorySummary = useMemo(() => summarizeInventory(inventoryRows), [inventoryRows]);
+  const inventoryRowsByType = useMemo(() => groupInventoryByType(inventoryRows), [inventoryRows]);
 
   function updateInventoryOverride(unitId: string, next: InventoryOverride) {
     setInventoryOverrides((prev) => ({ ...prev, [unitId]: next }));
+  }
+
+  function updateInventoryOverrideField(unitId: string, partial: Partial<InventoryOverride>) {
+    setInventoryOverrides((prev) => {
+      const current = prev[unitId] ?? { status: "available" };
+      return {
+        ...prev,
+        [unitId]: {
+          ...current,
+          ...partial
+        }
+      };
+    });
   }
 
   function clearInventoryOverride(unitId: string) {
@@ -468,6 +486,14 @@ export function AdminPanel({ lang }: { lang: Language }) {
       delete next[unitId];
       return next;
     });
+  }
+
+  function handleInventoryStatusChange(unitId: string, status: InventoryOverrideStatus | "available") {
+    if (status === "available") {
+      clearInventoryOverride(unitId);
+      return;
+    }
+    updateInventoryOverrideField(unitId, { status });
   }
 
   return (
@@ -601,19 +627,8 @@ export function AdminPanel({ lang }: { lang: Language }) {
 
             <section className="editorial-panel">
               <div className="border-b border-[#d8cfc2] p-8">
-                <div className="flex flex-wrap items-start justify-between gap-4">
-                  <div>
-                    <div className="section-label">{ui.roomsTitle}</div>
-                    <h3 className="mt-4 font-display text-4xl text-ink">{ui.roomsTitle}</h3>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setInventoryOpen((prev) => !prev)}
-                    className="editorial-button-secondary"
-                  >
-                    {inventoryOpen ? ui.inventoryToggleClose : ui.inventoryToggleOpen}
-                  </button>
-                </div>
+                <div className="section-label">{ui.roomsTitle}</div>
+                <h3 className="mt-4 font-display text-4xl text-ink">{ui.roomsTitle}</h3>
               </div>
               {dashboard.rooms.length === 0 ? (
                 <div className="p-8 text-sm text-ink/68">{ui.noRooms}</div>
@@ -643,129 +658,221 @@ export function AdminPanel({ lang }: { lang: Language }) {
             </section>
           </div>
 
-          {inventoryOpen ? (
-            <section className="editorial-panel">
-              <div className="border-b border-[#d8cfc2] p-8">
-                <div className="section-label">{ui.inventorySummary}</div>
-                <h3 className="mt-4 font-display text-4xl text-ink">{ui.inventoryTitle}</h3>
-                <p className="mt-4 max-w-3xl text-sm leading-7 text-ink/68">{ui.inventoryDesc}</p>
-              </div>
+          <section className="editorial-panel">
+            <div className="border-b border-[#d8cfc2] p-8">
+              <div className="section-label">{ui.inventorySummary}</div>
+              <h3 className="mt-4 font-display text-4xl text-ink">{ui.inventoryTitle}</h3>
+              <p className="mt-4 max-w-3xl text-sm leading-7 text-ink/68">{ui.inventoryDesc}</p>
+            </div>
+            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#d8cfc2] bg-[#f6efe6] px-8 py-6">
+              <div className="text-xs uppercase tracking-[0.28em] text-stone">{ui.inventorySummary}</div>
+              <button
+                type="button"
+                onClick={() => setInventoryOpen((prev) => !prev)}
+                className="editorial-button"
+              >
+                {inventoryOpen ? ui.inventoryToggleClose : ui.inventoryToggleOpen}
+              </button>
+            </div>
 
-              <div className="grid gap-px border-b border-[#d8cfc2] bg-[#d8cfc2] md:grid-cols-6">
-                <Metric label={ui.inventoryTotal} value={inventorySummary.total} />
-                <Metric label={ui.inventoryAvailable} value={inventorySummary.available} />
-                <Metric label={ui.inventoryBooked} value={inventorySummary.booked} />
-                <Metric label={ui.inventoryOccupied} value={inventorySummary.occupied} />
-                <Metric label={ui.inventoryMaintenance} value={inventorySummary.maintenance} />
-                <Metric label={ui.inventoryBlocked} value={inventorySummary.blocked} />
-              </div>
-
-              {inventoryRows.length === 0 ? (
-                <div className="p-8 text-sm text-ink/68">{ui.inventoryEmpty}</div>
-              ) : (
-                <div className="p-6">
-                  <div className="overflow-x-auto">
-                    <table className="min-w-[1100px] border-collapse text-left text-sm text-ink/80">
-                      <thead className="border-b border-[#d8cfc2] text-xs uppercase tracking-[0.2em] text-stone">
-                        <tr>
-                          <th className="px-3 py-3">{ui.inventoryUnit}</th>
-                          <th className="px-3 py-3">{ui.inventoryRoomType}</th>
-                          <th className="px-3 py-3">{ui.inventoryRate}</th>
-                          <th className="px-3 py-3">{ui.inventoryStatus}</th>
-                          <th className="px-3 py-3">{ui.inventoryGuest}</th>
-                          <th className="px-3 py-3">{ui.inventoryPhone}</th>
-                          <th className="px-3 py-3">{ui.inventoryDates}</th>
-                          <th className="px-3 py-3">{ui.inventoryNote}</th>
-                          <th className="px-3 py-3">{ui.inventoryControls}</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {inventoryRows.map((row) => {
-                          const overrideStatus = row.override?.status ?? "available";
-                          const overrideNote = row.override?.note ?? "";
-                          const bookingGuest = row.booking?.user?.full_name ?? "-";
-                          const bookingPhone = row.booking?.user?.phone ?? "-";
-                          const bookingDates = row.booking
-                            ? formatDateRange(row.booking.check_in, row.booking.check_out)
-                            : "-";
-                          const bookingNote = row.booking?.special_request ?? "-";
-
-                          return (
-                            <tr key={row.unit.id} className="border-b border-[#efe6da]">
-                              <td className="px-3 py-4 font-display text-lg text-ink">{row.unit.unitNumber}</td>
-                              <td className="px-3 py-4">
-                                <div className="font-display text-lg text-ink">{row.unit.title}</div>
-                                <div className="mt-1 text-xs uppercase tracking-[0.2em] text-stone">
-                                  {row.unit.collection}
-                                </div>
-                              </td>
-                              <td className="px-3 py-4">{Number(row.unit.rate).toLocaleString("en-US")} UZS</td>
-                              <td className="px-3 py-4">
-                                <span className={inventoryStatusBadge(row.status)}>
-                                  {localizeInventoryStatus(row.status, ui)}
-                                </span>
-                              </td>
-                              <td className="px-3 py-4">{bookingGuest}</td>
-                              <td className="px-3 py-4">{bookingPhone}</td>
-                              <td className="px-3 py-4">{bookingDates}</td>
-                              <td className="px-3 py-4">
-                                {row.booking ? (
-                                  <div className="text-xs leading-6 text-ink/70">{bookingNote}</div>
-                                ) : (
-                                  <input
-                                    value={overrideNote}
-                                    onChange={(event) =>
-                                      updateInventoryOverride(row.unit.id, {
-                                        status: overrideStatus,
-                                        note: event.target.value
-                                      })
-                                    }
-                                    placeholder={ui.inventoryNotePlaceholder}
-                                    className="w-full rounded-full border border-[#e2d8ca] bg-white/80 px-4 py-2 text-xs text-ink/80"
-                                  />
-                                )}
-                              </td>
-                              <td className="px-3 py-4">
-                                {row.booking ? (
-                                  <span className="text-xs text-ink/60">—</span>
-                                ) : (
-                                  <div className="flex flex-wrap items-center gap-2">
-                                    <select
-                                      value={overrideStatus}
-                                      onChange={(event) =>
-                                        updateInventoryOverride(row.unit.id, {
-                                          status: event.target.value as InventoryOverrideStatus,
-                                          note: overrideNote
-                                        })
-                                      }
-                                      className="rounded-full border border-[#e2d8ca] bg-white/80 px-3 py-2 text-xs text-ink/80"
-                                    >
-                                      <option value="available">{ui.inventoryAvailableLabel}</option>
-                                      <option value="maintenance">{ui.inventoryMaintenanceLabel}</option>
-                                      <option value="blocked">{ui.inventoryBlockedLabel}</option>
-                                    </select>
-                                    {row.override ? (
-                                      <button
-                                        type="button"
-                                        onClick={() => clearInventoryOverride(row.unit.id)}
-                                        className="rounded-full border border-[#e2d8ca] px-3 py-2 text-xs text-ink/70"
-                                      >
-                                        {ui.inventoryClear}
-                                      </button>
-                                    ) : null}
-                                  </div>
-                                )}
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
+            {inventoryOpen ? (
+              <>
+                <div className="grid gap-px border-b border-[#d8cfc2] bg-[#d8cfc2] md:grid-cols-6">
+                  <Metric label={ui.inventoryTotal} value={inventorySummary.total} />
+                  <Metric label={ui.inventoryAvailable} value={inventorySummary.available} />
+                  <Metric label={ui.inventoryBooked} value={inventorySummary.booked} />
+                  <Metric label={ui.inventoryOccupied} value={inventorySummary.occupied} />
+                  <Metric label={ui.inventoryMaintenance} value={inventorySummary.maintenance} />
+                  <Metric label={ui.inventoryBlocked} value={inventorySummary.blocked} />
                 </div>
-              )}
-            </section>
-          ) : null}
+
+                {inventoryRows.length === 0 ? (
+                  <div className="p-8 text-sm text-ink/68">{ui.inventoryEmpty}</div>
+                ) : (
+                  <div className="space-y-10 p-6">
+                    {INVENTORY_CATALOG.map((catalog) => {
+                      const rows = inventoryRowsByType.get(catalog.key) ?? [];
+                      if (rows.length === 0) {
+                        return null;
+                      }
+                      return (
+                        <div key={catalog.key} className="overflow-hidden rounded-[28px] border border-[#e2d8ca] bg-white/80">
+                          <div className="flex flex-wrap items-start justify-between gap-4 border-b border-[#efe6da] p-6">
+                            <div>
+                              <div className="section-label">{ui.inventoryRoomType}</div>
+                              <h4 className="mt-3 font-display text-3xl text-ink">{rows[0]?.unit.title ?? catalog.title}</h4>
+                              <div className="mt-2 text-xs uppercase tracking-[0.2em] text-stone">
+                                {rows[0]?.unit.collection ?? catalog.collection}
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <div className="section-label">{ui.inventoryTotal}</div>
+                              <div className="mt-3 font-display text-3xl text-ink">{rows.length}</div>
+                            </div>
+                          </div>
+                          <div className="overflow-x-auto">
+                            <table className="min-w-[1100px] border-collapse text-left text-sm text-ink/80">
+                              <thead className="border-b border-[#efe6da] text-xs uppercase tracking-[0.2em] text-stone">
+                                <tr>
+                                  <th className="px-3 py-3">{ui.inventoryUnit}</th>
+                                  <th className="px-3 py-3">{ui.inventoryRoomType}</th>
+                                  <th className="px-3 py-3">{ui.inventoryRate}</th>
+                                  <th className="px-3 py-3">{ui.inventoryStatus}</th>
+                                  <th className="px-3 py-3">{ui.inventoryGuest}</th>
+                                  <th className="px-3 py-3">{ui.inventoryPhone}</th>
+                                  <th className="px-3 py-3">{ui.inventoryDates}</th>
+                                  <th className="px-3 py-3">{ui.inventoryNote}</th>
+                                  <th className="px-3 py-3">{ui.inventoryControls}</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {rows.map((row) => {
+                                  const overrideStatus = row.override?.status ?? "available";
+                                  const overrideNote = row.override?.note ?? "";
+                                  const offlineGuest = row.override?.guestName ?? "";
+                                  const offlinePhone = row.override?.guestPhone ?? "";
+                                  const offlineCheckIn = row.override?.checkIn ?? "";
+                                  const offlineCheckOut = row.override?.checkOut ?? "";
+                                  const isOffline = !row.booking && overrideStatus === "blocked";
+                                  const bookingGuest = row.booking?.user?.full_name ?? "-";
+                                  const bookingPhone = row.booking?.user?.phone ?? "-";
+                                  const bookingDates = row.booking
+                                    ? formatDateRange(row.booking.check_in, row.booking.check_out)
+                                    : "-";
+                                  const bookingNote = row.booking?.special_request ?? "-";
+
+                                  return (
+                                    <tr key={row.unit.id} className="border-b border-[#f2eadf]">
+                                      <td className="px-3 py-4 font-display text-lg text-ink">{row.unit.unitNumber}</td>
+                                      <td className="px-3 py-4">
+                                        <div className="font-display text-lg text-ink">{row.unit.title}</div>
+                                        <div className="mt-1 text-xs uppercase tracking-[0.2em] text-stone">
+                                          {row.unit.collection}
+                                        </div>
+                                      </td>
+                                      <td className="px-3 py-4">{Number(row.unit.rate).toLocaleString("en-US")} UZS</td>
+                                      <td className="px-3 py-4">
+                                        <span className={inventoryStatusBadge(row.status)}>
+                                          {localizeInventoryStatus(row.status, ui)}
+                                        </span>
+                                      </td>
+                                      <td className="px-3 py-4">
+                                        {row.booking ? (
+                                          bookingGuest
+                                        ) : isOffline ? (
+                                          <input
+                                            value={offlineGuest}
+                                            onChange={(event) =>
+                                              updateInventoryOverrideField(row.unit.id, { guestName: event.target.value })
+                                            }
+                                            placeholder={ui.inventoryGuest}
+                                            className="w-full rounded-full border border-[#e2d8ca] bg-white/80 px-3 py-2 text-xs text-ink/80"
+                                          />
+                                        ) : (
+                                          "-"
+                                        )}
+                                      </td>
+                                      <td className="px-3 py-4">
+                                        {row.booking ? (
+                                          bookingPhone
+                                        ) : isOffline ? (
+                                          <input
+                                            value={offlinePhone}
+                                            onChange={(event) =>
+                                              updateInventoryOverrideField(row.unit.id, { guestPhone: event.target.value })
+                                            }
+                                            placeholder={ui.inventoryPhone}
+                                            className="w-full rounded-full border border-[#e2d8ca] bg-white/80 px-3 py-2 text-xs text-ink/80"
+                                          />
+                                        ) : (
+                                          "-"
+                                        )}
+                                      </td>
+                                      <td className="px-3 py-4">
+                                        {row.booking ? (
+                                          bookingDates
+                                        ) : isOffline ? (
+                                          <div className="grid gap-2">
+                                            <input
+                                              type="date"
+                                              value={offlineCheckIn}
+                                              onChange={(event) =>
+                                                updateInventoryOverrideField(row.unit.id, { checkIn: event.target.value })
+                                              }
+                                              className="w-full rounded-full border border-[#e2d8ca] bg-white/80 px-3 py-2 text-xs text-ink/80"
+                                            />
+                                            <input
+                                              type="date"
+                                              value={offlineCheckOut}
+                                              onChange={(event) =>
+                                                updateInventoryOverrideField(row.unit.id, { checkOut: event.target.value })
+                                              }
+                                              className="w-full rounded-full border border-[#e2d8ca] bg-white/80 px-3 py-2 text-xs text-ink/80"
+                                            />
+                                          </div>
+                                        ) : (
+                                          "-"
+                                        )}
+                                      </td>
+                                      <td className="px-3 py-4">
+                                        {row.booking ? (
+                                          <div className="text-xs leading-6 text-ink/70">{bookingNote}</div>
+                                        ) : (
+                                          <input
+                                            value={overrideNote}
+                                            onChange={(event) =>
+                                              updateInventoryOverrideField(row.unit.id, { note: event.target.value })
+                                            }
+                                            placeholder={ui.inventoryNotePlaceholder}
+                                            className="w-full rounded-full border border-[#e2d8ca] bg-white/80 px-4 py-2 text-xs text-ink/80"
+                                          />
+                                        )}
+                                      </td>
+                                      <td className="px-3 py-4">
+                                        {row.booking ? (
+                                          <span className="text-xs text-ink/60">—</span>
+                                        ) : (
+                                          <div className="flex flex-wrap items-center gap-2">
+                                            <select
+                                              value={overrideStatus}
+                                              onChange={(event) =>
+                                                handleInventoryStatusChange(
+                                                  row.unit.id,
+                                                  event.target.value as InventoryOverrideStatus | "available"
+                                                )
+                                              }
+                                              className="rounded-full border border-[#e2d8ca] bg-white/80 px-3 py-2 text-xs text-ink/80"
+                                            >
+                                              <option value="available">{ui.inventoryAvailableLabel}</option>
+                                              <option value="maintenance">{ui.inventoryMaintenanceLabel}</option>
+                                              <option value="blocked">{ui.inventoryBlockedLabel}</option>
+                                            </select>
+                                            {row.override ? (
+                                              <button
+                                                type="button"
+                                                onClick={() => clearInventoryOverride(row.unit.id)}
+                                                className="rounded-full border border-[#e2d8ca] px-3 py-2 text-xs text-ink/70"
+                                              >
+                                                {ui.inventoryClear}
+                                              </button>
+                                            ) : null}
+                                          </div>
+                                        )}
+                                      </td>
+                                    </tr>
+                                  );
+                                })}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </>
+            ) : null}
+          </section>
         </>
       ) : (
         <div className="editorial-panel p-8 text-sm text-ink/68">{pending ? ui.loading : ui.signInHelp}</div>
@@ -993,6 +1100,16 @@ function buildInventoryRows(
       status
     };
   });
+}
+
+function groupInventoryByType(rows: InventoryRow[]) {
+  const map = new Map<string, InventoryRow[]>();
+  for (const row of rows) {
+    const list = map.get(row.unit.typeKey) ?? [];
+    list.push(row);
+    map.set(row.unit.typeKey, list);
+  }
+  return map;
 }
 
 function summarizeInventory(rows: InventoryRow[]) {
