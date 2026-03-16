@@ -30,7 +30,7 @@ body {
 }
 
 .section-label {
-  @apply text-[10px] uppercase tracking-[0.4em] text-stone;
+  @apply text-[9px] uppercase tracking-[0.32em] text-stone sm:text-[10px] sm:tracking-[0.4em];
 }
 
 .editorial-grid {
@@ -55,15 +55,15 @@ body {
 }
 
 .editorial-button {
-  @apply inline-flex items-center justify-center border border-ink bg-ink px-6 py-3 text-[11px] uppercase tracking-[0.28em] text-white transition hover:bg-[#2a241d];
+  @apply inline-flex items-center justify-center border border-ink bg-ink px-5 py-3 text-[10px] uppercase tracking-[0.24em] text-white transition hover:bg-[#2a241d] sm:px-6 sm:text-[11px] sm:tracking-[0.28em];
 }
 
 .editorial-button-secondary {
-  @apply inline-flex items-center justify-center border border-[#d8cfc2] bg-transparent px-6 py-3 text-[11px] uppercase tracking-[0.28em] text-ink transition hover:bg-white/65;
+  @apply inline-flex items-center justify-center border border-[#d8cfc2] bg-transparent px-5 py-3 text-[10px] uppercase tracking-[0.24em] text-ink transition hover:bg-white/65 sm:px-6 sm:text-[11px] sm:tracking-[0.28em];
 }
 
 .booking-benefits-panel {
-  @apply grid gap-6 border border-[#e3b15d] bg-[#fff6ea] px-6 py-8 text-ink shadow-[0_20px_60px_rgba(175,116,32,0.08)] md:grid-cols-[1fr_1.2fr_auto] md:items-center md:px-8;
+  @apply grid gap-6 border border-[#e3b15d] bg-[#fff6ea] px-5 py-7 text-ink shadow-[0_20px_60px_rgba(175,116,32,0.08)] sm:px-6 sm:py-8 md:grid-cols-[1fr_1.2fr_auto] md:items-center md:px-8;
 }
 
 .booking-benefits-chip {
@@ -71,7 +71,7 @@ body {
 }
 
 .booking-room-card {
-  @apply overflow-hidden rounded-[28px] border border-[#e2d9ce] bg-white shadow-[0_24px_70px_rgba(35,31,25,0.08)] lg:grid lg:grid-cols-[0.95fr_1.05fr];
+  @apply overflow-hidden rounded-[22px] border border-[#e2d9ce] bg-white shadow-[0_24px_70px_rgba(35,31,25,0.08)] sm:rounded-[28px] lg:grid lg:grid-cols-[0.95fr_1.05fr];
 }
 
 .booking-room-gallery {
@@ -79,11 +79,11 @@ body {
 }
 
 .booking-room-icon-strip {
-  @apply absolute left-5 top-5 z-10 inline-flex items-center gap-4 rounded-sm bg-white/95 px-4 py-3 text-[#848484] shadow-sm;
+  @apply absolute left-3 top-3 z-10 inline-flex items-center gap-3 rounded-sm bg-white/95 px-3 py-2 text-[#848484] shadow-sm sm:left-5 sm:top-5 sm:gap-4 sm:px-4 sm:py-3;
 }
 
 .booking-room-dots {
-  @apply absolute bottom-5 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2 rounded-full bg-black/20 px-3 py-2 backdrop-blur-sm;
+  @apply absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2 rounded-full bg-black/20 px-2.5 py-1.5 backdrop-blur-sm sm:bottom-5 sm:px-3 sm:py-2;
 }
 
 .booking-room-dot {
@@ -95,25 +95,25 @@ body {
 }
 
 .booking-room-body {
-  @apply p-6 md:p-8;
+  @apply p-5 sm:p-6 md:p-8;
 }
 
 .booking-room-title {
-  @apply max-w-xl text-[2.2rem] font-semibold uppercase leading-[1.05] tracking-[0.01em] text-[#4959bf] md:text-[2.6rem];
+  @apply max-w-xl text-[1.7rem] font-semibold uppercase leading-[1.08] tracking-[0.01em] text-[#4959bf] sm:text-[2.1rem] md:text-[2.6rem];
 }
 
 .booking-room-expand {
-  @apply inline-flex h-14 w-14 items-center justify-center rounded-full border-2 border-[#5a6ad7] text-[#5a6ad7] transition hover:bg-[#eef1ff];
+  @apply inline-flex h-12 w-12 items-center justify-center rounded-full border-2 border-[#5a6ad7] text-[#5a6ad7] transition hover:bg-[#eef1ff] sm:h-14 sm:w-14;
 }
 
 .booking-room-primary {
-  @apply inline-flex items-center justify-center rounded-2xl bg-[#4f61d1] px-6 py-4 text-base font-medium uppercase tracking-[0.12em] text-white shadow-[0_14px_28px_rgba(79,97,209,0.24)] transition hover:bg-[#4053c5];
+  @apply inline-flex items-center justify-center rounded-2xl bg-[#4f61d1] px-5 py-3 text-sm font-medium uppercase tracking-[0.12em] text-white shadow-[0_14px_28px_rgba(79,97,209,0.24)] transition hover:bg-[#4053c5] sm:px-6 sm:py-4 sm:text-base;
 }
 
 .booking-room-secondary {
-  @apply inline-flex items-center justify-center rounded-2xl border border-[#dbe0ff] bg-[#eef2ff] px-6 py-4 text-base font-medium uppercase tracking-[0.12em] text-[#5564ca] transition hover:bg-[#e4e9ff];
+  @apply inline-flex items-center justify-center rounded-2xl border border-[#dbe0ff] bg-[#eef2ff] px-5 py-3 text-sm font-medium uppercase tracking-[0.12em] text-[#5564ca] transition hover:bg-[#e4e9ff] sm:px-6 sm:py-4 sm:text-base;
 }
 
 .booking-room-soldout {
-  @apply inline-flex items-center justify-center gap-2 rounded-2xl bg-[#eff1f4] px-6 py-4 text-base font-medium uppercase tracking-[0.12em] text-[#70767e];
+  @apply inline-flex items-center justify-center gap-2 rounded-2xl bg-[#eff1f4] px-5 py-3 text-sm font-medium uppercase tracking-[0.12em] text-[#70767e] sm:px-6 sm:py-4 sm:text-base;
 }

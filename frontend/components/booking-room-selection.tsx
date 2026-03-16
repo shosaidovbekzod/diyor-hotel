@@ -136,17 +136,17 @@ export function BookingRoomSelection({
 
   return (
     <>
-      <section className="shell mt-12">
-        <form id="booking-search" action="/booking" className="editorial-panel p-8 md:p-10">
+      <section className="shell mt-10 sm:mt-12">
+        <form id="booking-search" action="/booking" className="editorial-panel p-6 sm:p-8 md:p-10">
           <div className="flex flex-wrap items-end justify-between gap-5 border-b border-[#d8cfc2] pb-5">
             <div>
               <div className="section-label">{ui.eyebrow}</div>
-              <h2 className="mt-4 font-display text-4xl text-ink">{ui.panelTitle}</h2>
+              <h2 className="mt-4 font-display text-3xl text-ink sm:text-4xl">{ui.panelTitle}</h2>
             </div>
             <div className="max-w-sm text-sm leading-7 text-ink/68">{ui.resultSummary}</div>
           </div>
 
-          <div className="mt-8 grid gap-5 xl:grid-cols-[1fr_1fr_0.9fr_0.9fr_auto]">
+          <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-[1fr_1fr_0.9fr_0.9fr_auto]">
             <label className="space-y-2 text-sm text-ink/70">
               <span>{ui.checkIn}</span>
               <input type="date" name="checkIn" defaultValue={defaultCheckIn} className="editorial-input" required />
@@ -177,7 +177,9 @@ export function BookingRoomSelection({
               </select>
               <div className="text-xs uppercase tracking-[0.2em] text-stone">{ui.childrenHint}</div>
             </label>
-            <button className="editorial-button h-[52px] self-start px-8 mt-7 xl:mt-0">{ui.search}</button>
+            <button className="editorial-button mt-2 h-[52px] w-full px-6 md:col-span-2 md:mt-0 md:w-auto xl:col-span-1 xl:mt-7 xl:px-8">
+              {ui.search}
+            </button>
           </div>
 
           {!validDates ? (
@@ -192,7 +194,7 @@ export function BookingRoomSelection({
         <div className="booking-benefits-panel">
           <div>
             <div className="section-label text-[#9b6a1f]">{ui.directOffer}</div>
-            <h3 className="mt-4 font-display text-4xl leading-none text-[#7f4d16]">{ui.directBookingTitle}</h3>
+            <h3 className="mt-4 font-display text-3xl leading-none text-[#7f4d16] sm:text-4xl">{ui.directBookingTitle}</h3>
           </div>
           <div className="grid gap-4 md:grid-cols-2">
             {ui.directBookingItems.map((item) => (
@@ -209,11 +211,11 @@ export function BookingRoomSelection({
         </div>
       </section>
 
-      <section className="shell mt-16">
+      <section className="shell mt-12 sm:mt-16">
         <div className="flex flex-wrap items-end justify-between gap-4 border-b border-[#d8cfc2] pb-5">
           <div>
             <div className="section-label">{ui.eyebrow}</div>
-            <h2 className="mt-4 font-display text-5xl leading-none text-ink">{ui.panelTitle}</h2>
+            <h2 className="mt-4 font-display text-3xl leading-none text-ink sm:text-4xl lg:text-5xl">{ui.panelTitle}</h2>
           </div>
           <div className="flex flex-wrap items-center gap-3">
             <div className="inline-flex items-center gap-2 border border-[#d8cfc2] px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-stone">
@@ -234,7 +236,7 @@ export function BookingRoomSelection({
         <div className="mt-6 grid gap-5 editorial-panel p-6 md:grid-cols-[1fr_240px_220px] md:items-end">
           <div>
             <div className="section-label">{ui.staySummary}</div>
-            <div className="mt-4 flex flex-wrap gap-3 text-[11px] uppercase tracking-[0.22em] text-stone">
+            <div className="mt-4 flex flex-wrap gap-3 text-[10px] uppercase tracking-[0.22em] text-stone sm:text-[11px]">
               <span className="border border-[#d8cfc2] px-4 py-2">{defaultCheckIn}</span>
               <span className="border border-[#d8cfc2] px-4 py-2">{defaultCheckOut}</span>
               <span className="border border-[#d8cfc2] px-4 py-2">

@@ -209,15 +209,15 @@ export default async function BookingPage({
   const resultHrefSuffix = `?checkIn=${defaultCheckIn}&checkOut=${defaultCheckOut}&guests=${guests}&adults=${adults}&children=${children}`;
 
   return (
-    <div className="pb-16">
+    <div className="pb-12 sm:pb-16">
       <section className="border-b border-[#d8cfc2] bg-[#efe6da]">
-        <div className="shell grid gap-10 py-16 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
+        <div className="shell grid gap-10 py-12 sm:py-16 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
           <div>
             <div className="section-label">{ui.eyebrow}</div>
-            <h1 className="mt-5 max-w-5xl font-display text-6xl leading-[0.94] text-ink md:text-7xl">
+            <h1 className="mt-5 max-w-5xl font-display text-4xl leading-[0.94] text-ink sm:text-5xl md:text-6xl lg:text-7xl">
               {ui.title}
             </h1>
-            <p className="mt-6 max-w-3xl text-lg leading-8 text-ink/72">{ui.description}</p>
+            <p className="mt-5 max-w-3xl text-base leading-8 text-ink/72 sm:text-lg">{ui.description}</p>
           </div>
         </div>
       </section>
@@ -235,7 +235,7 @@ export default async function BookingPage({
         resultHrefSuffix={resultHrefSuffix}
       />
 
-      <section className="shell mt-24">
+      <section className="shell mt-12 sm:mt-16 lg:mt-24">
         <ContactMapSection
           lang={lang}
           summary={summary}
