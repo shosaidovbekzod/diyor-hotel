@@ -27,7 +27,11 @@ export function SiteChrome({ children, lang }: { children: React.ReactNode; lang
           <div className="grid items-center gap-4 md:grid-cols-[1fr_auto_1fr]">
             <div className="text-center md:text-left">Olmos 74A, Tashkent</div>
             <Link href="/" className="justify-self-center flex items-center gap-3 text-ink">
-              <img src="/diyor-logo.webp" alt="Diyor Tashkent Hotel logo" className="h-10 w-auto sm:h-12 md:h-14" />
+              <img
+                src="/diyor-logo.webp"
+                alt="Diyor Tashkent Hotel logo"
+                className="h-10 w-10 rounded-full border border-[#d8cfc2] bg-white object-cover sm:h-12 sm:w-12 md:h-14 md:w-14"
+              />
               <span className="font-display text-[20px] tracking-[0.14em] sm:text-[24px] sm:tracking-[0.18em] md:text-[30px]">
                 DIYOR HOTEL
               </span>
@@ -71,7 +75,11 @@ export function SiteChrome({ children, lang }: { children: React.ReactNode; lang
           <div>
             <div className="section-label">DIYOR HOTEL</div>
             <div className="mt-4 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
-              <img src="/diyor-logo.webp" alt="Diyor Tashkent Hotel logo" className="h-14 w-auto sm:h-16" />
+              <img
+                src="/diyor-logo.webp"
+                alt="Diyor Tashkent Hotel logo"
+                className="h-14 w-14 rounded-full border border-[#d8cfc2] bg-white object-cover sm:h-16 sm:w-16"
+              />
               <h2 className="max-w-2xl font-display text-3xl leading-[0.98] text-ink sm:text-4xl">
                 {copy.footer.tagline}
               </h2>
