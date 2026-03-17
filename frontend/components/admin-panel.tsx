@@ -10,7 +10,7 @@ import {
   type BookingStatus
 } from "@/lib/api";
 import { localizeRoom } from "@/lib/content";
-import { t, type Language } from "@/lib/i18n";
+import { getLocale, t, type Language } from "@/lib/i18n";
 
 const ADMIN_TOKEN_KEY = "diyor_admin_token";
 const BOOKING_STATUS_OPTIONS: BookingStatus[] = ["pending", "confirmed", "cancelled", "completed"];
@@ -95,6 +95,82 @@ const INVENTORY_CATALOG: InventoryCatalogItem[] = [
     rate: 1350000
   }
 ];
+
+const inventoryCatalogLabels: Record<
+  string,
+  Record<Language, { title: string; collection: string }>
+> = {
+  "double-room-one-bed-or-two": {
+    en: {
+      title: "Double Room with 1 Bed or 2 Separate Beds",
+      collection: "Double collection"
+    },
+    uz: {
+      title: "1 ta katta karavotli yoki 2 alohida karavotli ikki kishilik xona",
+      collection: "Ikki kishilik xonalar"
+    },
+    ru: {
+      title: "Двухместный номер с 1 кроватью или 2 отдельными кроватями",
+      collection: "Коллекция двухместных номеров"
+    }
+  },
+  "two-bedroom-suite": {
+    en: {
+      title: "2 Bedroom Suite",
+      collection: "Suite collection"
+    },
+    uz: {
+      title: "2 yotoqxonali suit",
+      collection: "Suitlar to'plami"
+    },
+    ru: {
+      title: "Люкс с 2 спальнями",
+      collection: "Коллекция люксов"
+    }
+  },
+  "one-bedroom-deluxe-apartment": {
+    en: {
+      title: "1 Bedroom Deluxe Apartment",
+      collection: "Deluxe apartment"
+    },
+    uz: {
+      title: "1 yotoqxonali deluxe apartament",
+      collection: "Deluxe apartamentlar"
+    },
+    ru: {
+      title: "Делюкс-апартаменты с 1 спальней",
+      collection: "Делюкс-апартаменты"
+    }
+  },
+  "deluxe-apartment-two-bedrooms": {
+    en: {
+      title: "Deluxe Apartment with 2 Bedrooms",
+      collection: "Apartment collection"
+    },
+    uz: {
+      title: "2 yotoqxonali deluxe apartament",
+      collection: "Apartamentlar to'plami"
+    },
+    ru: {
+      title: "Делюкс-апартаменты с 2 спальнями",
+      collection: "Коллекция апартаментов"
+    }
+  },
+  "deluxe-apartment-three-bedrooms": {
+    en: {
+      title: "Deluxe Apartment with 3 Bedrooms",
+      collection: "Residence collection"
+    },
+    uz: {
+      title: "3 yotoqxonali deluxe apartament",
+      collection: "Residence to'plami"
+    },
+    ru: {
+      title: "Делюкс-апартаменты с 3 спальнями",
+      collection: "Коллекция residence"
+    }
+  }
+};
 
 
 const adminUiCopy: Record<Language, Record<string, string>> = {
@@ -290,40 +366,38 @@ const adminUiCopy: Record<Language, Record<string, string>> = {
     pendingStatus: "Ожидает",
     confirmedStatus: "Подтверждено",
     cancelledStatus: "Отменено",
-    completedStatus: "Завершено"
+    completedStatus: "Завершено",
+    inventoryTitle: "Инвентарь номеров",
+    inventoryDesc:
+      "Отслеживайте каждый физический номер, смотрите кто забронировал или проживает, и меняйте доступность прямо в таблице.",
+    inventoryToggleOpen: "Открыть инвентарь",
+    inventoryToggleClose: "Скрыть инвентарь",
+    inventorySummary: "Сводка по инвентарю",
+    inventoryTotal: "Всего номеров",
+    inventoryAvailable: "Свободно",
+    inventoryBooked: "Забронировано",
+    inventoryOccupied: "Гость проживает",
+    inventoryMaintenance: "Техобслуживание",
+    inventoryBlocked: "Заблокировано",
+    inventoryRoomType: "Тип номера",
+    inventoryUnit: "Номер комнаты",
+    inventoryRate: "Тариф",
+    inventoryStatus: "Статус",
+    inventoryGuest: "Гость",
+    inventoryPhone: "Телефон",
+    inventoryDates: "Даты",
+    inventoryNote: "Заметка администратора",
+    inventoryControls: "Управление",
+    inventoryEmpty: "Данные по инвентарю пока не загружены.",
+    inventoryNotePlaceholder: "Техническая заметка или внутренний комментарий",
+    inventoryClear: "Очистить",
+    inventoryBookedLabel: "Забронировано",
+    inventoryOccupiedLabel: "Проживает",
+    inventoryAvailableLabel: "Свободно",
+    inventoryMaintenanceLabel: "Техобслуживание",
+    inventoryBlockedLabel: "Заблокировано"
   }
 };
-
-Object.assign(adminUiCopy.ru, {
-  inventoryTitle: adminUiCopy.en.inventoryTitle,
-  inventoryDesc: adminUiCopy.en.inventoryDesc,
-  inventoryToggleOpen: adminUiCopy.en.inventoryToggleOpen,
-  inventoryToggleClose: adminUiCopy.en.inventoryToggleClose,
-  inventorySummary: adminUiCopy.en.inventorySummary,
-  inventoryTotal: adminUiCopy.en.inventoryTotal,
-  inventoryAvailable: adminUiCopy.en.inventoryAvailable,
-  inventoryBooked: adminUiCopy.en.inventoryBooked,
-  inventoryOccupied: adminUiCopy.en.inventoryOccupied,
-  inventoryMaintenance: adminUiCopy.en.inventoryMaintenance,
-  inventoryBlocked: adminUiCopy.en.inventoryBlocked,
-  inventoryRoomType: adminUiCopy.en.inventoryRoomType,
-  inventoryUnit: adminUiCopy.en.inventoryUnit,
-  inventoryRate: adminUiCopy.en.inventoryRate,
-  inventoryStatus: adminUiCopy.en.inventoryStatus,
-  inventoryGuest: adminUiCopy.en.inventoryGuest,
-  inventoryPhone: adminUiCopy.en.inventoryPhone,
-  inventoryDates: adminUiCopy.en.inventoryDates,
-  inventoryNote: adminUiCopy.en.inventoryNote,
-  inventoryControls: adminUiCopy.en.inventoryControls,
-  inventoryEmpty: adminUiCopy.en.inventoryEmpty,
-  inventoryNotePlaceholder: adminUiCopy.en.inventoryNotePlaceholder,
-  inventoryClear: adminUiCopy.en.inventoryClear,
-  inventoryBookedLabel: adminUiCopy.en.inventoryBookedLabel,
-  inventoryOccupiedLabel: adminUiCopy.en.inventoryOccupiedLabel,
-  inventoryAvailableLabel: adminUiCopy.en.inventoryAvailableLabel,
-  inventoryMaintenanceLabel: adminUiCopy.en.inventoryMaintenanceLabel,
-  inventoryBlockedLabel: adminUiCopy.en.inventoryBlockedLabel
-});
 
 type BookingView = "current" | "history";
 
@@ -551,7 +625,10 @@ export function AdminPanel({ lang }: { lang: Language }) {
       {dashboard ? (
         <>
           <div className="grid gap-px border border-[#d8cfc2] bg-[#d8cfc2] md:grid-cols-5">
-            <Metric label={copy.revenue} value={`${Number(dashboard.analytics.total_revenue).toLocaleString("en-US")} UZS`} />
+            <Metric
+              label={copy.revenue}
+              value={`${Number(dashboard.analytics.total_revenue).toLocaleString(getLocale(lang))} UZS`}
+            />
             <Metric label={copy.bookings} value={dashboard.analytics.total_bookings} />
             <Metric label={copy.active} value={dashboard.analytics.active_bookings} />
             <Metric label={copy.occupancy} value={`${dashboard.analytics.occupancy_rate}%`} />
@@ -647,7 +724,7 @@ export function AdminPanel({ lang }: { lang: Language }) {
                   <div className="grid gap-4 text-sm text-ink/72">
                     <div>
                       <div className="section-label">{ui.roomRate}</div>
-                      <div className="mt-3">{Number(room.display_price).toLocaleString("en-US")} UZS</div>
+                      <div className="mt-3">{Number(room.display_price).toLocaleString(getLocale(lang))} UZS</div>
                     </div>
                     <div>
                       <div className="section-label">{ui.availability}</div>
@@ -739,9 +816,9 @@ export function AdminPanel({ lang }: { lang: Language }) {
                                   const isOffline = !row.booking && overrideStatus === "blocked";
                                   const bookingGuest = row.booking?.user?.full_name ?? "-";
                                   const bookingPhone = row.booking?.user?.phone ?? "-";
-                                  const bookingDates = row.booking
-                                    ? formatDateRange(row.booking.check_in, row.booking.check_out)
-                                    : "-";
+                                    const bookingDates = row.booking
+                                      ? formatDateRange(row.booking.check_in, row.booking.check_out, lang)
+                                      : "-";
                                   const bookingNote = row.booking?.special_request ?? "-";
 
                                   return (
@@ -753,7 +830,9 @@ export function AdminPanel({ lang }: { lang: Language }) {
                                           {row.unit.collection}
                                         </div>
                                       </td>
-                                      <td className="px-3 py-4">{Number(row.unit.rate).toLocaleString("en-US")} UZS</td>
+                                      <td className="px-3 py-4">
+                                        {Number(row.unit.rate).toLocaleString(getLocale(lang))} UZS
+                                      </td>
                                       <td className="px-3 py-4">
                                         <span className={inventoryStatusBadge(row.status)}>
                                           {localizeInventoryStatus(row.status, ui)}
@@ -927,9 +1006,15 @@ function BookingCard({
         <InfoBlock label={ui.phone} value={booking.user?.phone || "-"} />
         <InfoBlock label={ui.roomNumber} value={booking.room.room_number} />
         <InfoBlock label={ui.guestsCount} value={String(booking.guests_count)} />
-        <InfoBlock label={ui.createdAt} value={formatDateTime(booking.created_at)} />
-        <InfoBlock label={ui.dates} value={`${booking.check_in} - ${booking.check_out}`} />
-        <InfoBlock label={ui.total} value={`${Number(booking.total_price).toLocaleString("en-US")} UZS`} />
+        <InfoBlock label={ui.createdAt} value={formatDateTime(booking.created_at, lang)} />
+        <InfoBlock
+          label={ui.dates}
+          value={formatDateRange(booking.check_in, booking.check_out, lang)}
+        />
+        <InfoBlock
+          label={ui.total}
+          value={`${Number(booking.total_price).toLocaleString(getLocale(lang))} UZS`}
+        />
         <InfoBlock label={ui.paymentStatus} value={booking.payment ? localizePaymentStatus(booking.payment.status, ui) : "-"} />
       </div>
 
@@ -1021,10 +1106,11 @@ function buildInventoryUnits(rooms: AdminDashboard["rooms"], catalog: InventoryC
   return catalog.flatMap((item) => {
     const room = rooms.find((entry) => entry.slug === item.key);
     const localizedRoom = room ? localizeRoom(room, lang) : null;
+    const fallback = inventoryCatalogLabels[item.key]?.[lang] ?? inventoryCatalogLabels[item.key]?.en;
     const baseNumber = item.startNumber;
     const rate = Number(localizedRoom?.display_price ?? item.rate);
-    const title = localizedRoom?.title ?? item.title;
-    const collection = localizedRoom?.view_label ?? item.collection;
+    const title = localizedRoom?.title ?? fallback?.title ?? item.title;
+    const collection = localizedRoom?.view_label ?? fallback?.collection ?? item.collection;
 
     return Array.from({ length: item.count }, (_, index) => {
       const unitNumber = String(baseNumber + index);
@@ -1176,18 +1262,18 @@ function localizeInventoryStatus(status: InventoryStatus, ui: Record<string, str
   return ui.inventoryBlockedLabel;
 }
 
-function formatDateRange(checkIn: string, checkOut: string) {
-  const start = formatDateOnly(checkIn);
-  const end = formatDateOnly(checkOut);
+function formatDateRange(checkIn: string, checkOut: string, lang: Language) {
+  const start = formatDateOnly(checkIn, lang);
+  const end = formatDateOnly(checkOut, lang);
   return `${start} - ${end}`;
 }
 
-function formatDateOnly(value: string) {
+function formatDateOnly(value: string, lang: Language) {
   const parsed = parseLocalDate(value);
   if (Number.isNaN(parsed.getTime())) {
     return value;
   }
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat(getLocale(lang), {
     year: "numeric",
     month: "short",
     day: "2-digit"
@@ -1207,7 +1293,7 @@ function startOfToday() {
   return new Date(now.getFullYear(), now.getMonth(), now.getDate());
 }
 
-function formatDateTime(value?: string) {
+function formatDateTime(value: string | undefined, lang: Language) {
   if (!value) {
     return "-";
   }
@@ -1217,7 +1303,7 @@ function formatDateTime(value?: string) {
     return value;
   }
 
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat(getLocale(lang), {
     year: "numeric",
     month: "short",
     day: "2-digit",

@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { cancelBooking, getCurrentUser, getMyBookings, login, register, type Booking } from "@/lib/api";
 import { localizeRoom } from "@/lib/content";
-import { t, type Language } from "@/lib/i18n";
+import { getLocale, t, type Language } from "@/lib/i18n";
 
 type Profile = {
   full_name: string;
@@ -181,7 +181,7 @@ export function AuthPanel({ lang }: AuthPanelProps) {
   return (
     <div className="space-y-10">
       <div className="grid gap-px border border-[#d8cfc2] bg-[#d8cfc2] md:grid-cols-4">
-        <MetricCard label={copy.totalSpent} value={`${totalSpent.toLocaleString("en-US")} UZS`} />
+        <MetricCard label={copy.totalSpent} value={`${totalSpent.toLocaleString(getLocale(lang))} UZS`} />
         <MetricCard label={copy.pendingRequests} value={pendingBookings} />
         <MetricCard label={copy.upcoming} value={activeBookings} />
         <MetricCard label={copy.historyCount} value={historyBookings} />
@@ -308,63 +308,73 @@ export function AuthPanel({ lang }: AuthPanelProps) {
                 key={booking.id}
                 className={`grid gap-5 p-8 ${index > 0 ? "border-t border-[#d8cfc2]" : ""}`}
               >
-                <div className="flex flex-wrap items-start justify-between gap-4">
-                  <div>
-                    <div className="section-label">{copy.bookingReference}</div>
-                    <h3 className="mt-3 font-display text-3xl text-ink">
-                      {localizeRoom(booking.room, lang).title}
-                    </h3>
-                    <div className="mt-2 text-xs uppercase tracking-[0.28em] text-stone">
-                      {booking.booking_reference}
-                    </div>
-                  </div>
-                  <div className="border border-[#d8cfc2] px-4 py-2 text-[10px] uppercase tracking-[0.28em] text-stone">
-                    {localizeStatus(booking.status, copy)}
-                  </div>
-                </div>
+                {(() => {
+                  const localizedRoom = localizeRoom(booking.room, lang);
 
-                <div className="grid gap-5 text-sm text-ink/72 md:grid-cols-2">
-                  <div>
-                    <div className="section-label">{ui.stayDates}</div>
-                    <div className="mt-3">
-                      {booking.check_in} - {booking.check_out}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="section-label">{copy.totalSpent}</div>
-                    <div className="mt-3">{Number(booking.total_price).toLocaleString("en-US")} UZS</div>
-                  </div>
-                </div>
+                  return (
+                    <>
+                      <div className="flex flex-wrap items-start justify-between gap-4">
+                        <div>
+                          <div className="section-label">{copy.bookingReference}</div>
+                          <h3 className="mt-3 font-display text-3xl text-ink">
+                            {localizedRoom.title}
+                          </h3>
+                          <div className="mt-2 text-xs uppercase tracking-[0.28em] text-stone">
+                            {booking.booking_reference}
+                          </div>
+                        </div>
+                        <div className="border border-[#d8cfc2] px-4 py-2 text-[10px] uppercase tracking-[0.28em] text-stone">
+                          {localizeStatus(booking.status, copy)}
+                        </div>
+                      </div>
 
-                {booking.special_request ? (
-                  <div className="border-t border-[#d8cfc2] pt-4 text-sm leading-7 text-ink/68">
-                    <span className="section-label">{ui.request}</span>
-                    <div className="mt-3">{booking.special_request}</div>
-                  </div>
-                ) : null}
+                      <div className="grid gap-5 text-sm text-ink/72 md:grid-cols-2">
+                        <div>
+                          <div className="section-label">{ui.stayDates}</div>
+                          <div className="mt-3">
+                            {formatDate(booking.check_in, lang)} - {formatDate(booking.check_out, lang)}
+                          </div>
+                        </div>
+                        <div>
+                          <div className="section-label">{copy.totalSpent}</div>
+                          <div className="mt-3">
+                            {Number(booking.total_price).toLocaleString(getLocale(lang))} UZS
+                          </div>
+                        </div>
+                      </div>
 
-                <div className="flex flex-wrap gap-3">
-                  {booking.room.amenities?.slice(0, 4).map((amenity: string) => (
-                    <span
-                      key={amenity}
-                      className="border border-[#d8cfc2] px-3 py-2 text-[10px] uppercase tracking-[0.24em] text-stone"
-                    >
-                      {amenity}
-                    </span>
-                  ))}
-                </div>
+                      {booking.special_request ? (
+                        <div className="border-t border-[#d8cfc2] pt-4 text-sm leading-7 text-ink/68">
+                          <span className="section-label">{ui.request}</span>
+                          <div className="mt-3">{booking.special_request}</div>
+                        </div>
+                      ) : null}
 
-                {booking.status === "pending" || booking.status === "confirmed" ? (
-                  <div>
-                    <button
-                      type="button"
-                      onClick={() => void handleCancel(booking.id)}
-                      className="editorial-button-secondary"
-                    >
-                      {copy.cancel}
-                    </button>
-                  </div>
-                ) : null}
+                      <div className="flex flex-wrap gap-3">
+                        {localizedRoom.amenities?.slice(0, 4).map((amenity: string) => (
+                          <span
+                            key={amenity}
+                            className="border border-[#d8cfc2] px-3 py-2 text-[10px] uppercase tracking-[0.24em] text-stone"
+                          >
+                            {amenity}
+                          </span>
+                        ))}
+                      </div>
+
+                      {booking.status === "pending" || booking.status === "confirmed" ? (
+                        <div>
+                          <button
+                            type="button"
+                            onClick={() => void handleCancel(booking.id)}
+                            className="editorial-button-secondary"
+                          >
+                            {copy.cancel}
+                          </button>
+                        </div>
+                      ) : null}
+                    </>
+                  );
+                })()}
               </div>
             ))}
           </div>
@@ -394,4 +404,16 @@ function MetricCard({ label, value }: { label: string; value: string | number })
       <div className="mt-4 font-display text-4xl text-ink">{value}</div>
     </div>
   );
+}
+
+function formatDate(value: string, lang: Language) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+  return new Intl.DateTimeFormat(getLocale(lang), {
+    year: "numeric",
+    month: "short",
+    day: "2-digit"
+  }).format(date);
 }

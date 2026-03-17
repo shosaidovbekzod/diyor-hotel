@@ -20,7 +20,7 @@ import {
   XCircle
 } from "lucide-react";
 import type { Room } from "@/lib/api";
-import type { Language } from "@/lib/i18n";
+import { getLocale, type Language } from "@/lib/i18n";
 
 type RoomSort = "recommended" | "price-asc" | "price-desc" | "space-desc";
 
@@ -386,16 +386,16 @@ function RoomBookingCard({
               <div className="flex flex-wrap items-center gap-3 text-[#9b6a1f]">
                 <span className="rounded bg-[#af7420] px-3 py-1 text-sm font-semibold text-white">-{discountPercent}%</span>
                 <span className="text-lg line-through opacity-65">
-                  {originalPrice.toLocaleString("en-US")} UZS
+                  {originalPrice.toLocaleString(getLocale(lang))} UZS
                 </span>
               </div>
               <div className="font-display text-[2.7rem] leading-none text-[#a86916]">
-                {perNightPrice.toLocaleString("en-US")} UZS
+                {perNightPrice.toLocaleString(getLocale(lang))} UZS
               </div>
             </div>
           ) : (
             <div className="font-display text-[2.7rem] leading-none text-[#a86916]">
-              {perNightPrice.toLocaleString("en-US")} UZS
+              {perNightPrice.toLocaleString(getLocale(lang))} UZS
             </div>
           )}
 

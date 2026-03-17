@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createBooking, quoteBooking, type BookingQuote } from "@/lib/api";
-import { t, type Language } from "@/lib/i18n";
+import { getLocale, t, type Language } from "@/lib/i18n";
 
 type BookingFormProps = {
   roomId: number;
@@ -78,7 +78,7 @@ export function BookingForm({
           return;
         }
         setQuote(null);
-        setQuoteMessage(error instanceof Error ? error.message : copy.unavailableForDates);
+        setQuoteMessage(copy.unavailableForDates);
       } finally {
         if (!cancelled) {
           setQuotePending(false);
@@ -97,7 +97,7 @@ export function BookingForm({
   const canSubmit = dateRangeValid && Boolean(quote) && !quotePending && !pending;
 
   function money(value?: number | string | null) {
-    return Number(value ?? 0).toLocaleString("en-US");
+    return Number(value ?? 0).toLocaleString(getLocale(lang));
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -120,8 +120,8 @@ export function BookingForm({
         special_request: specialRequest
       });
       setMessage(`${copy.success} ${booking.booking_reference}`);
-    } catch (error) {
-      setMessage(error instanceof Error ? error.message : copy.error);
+    } catch {
+      setMessage(copy.error);
     } finally {
       setPending(false);
     }
@@ -184,7 +184,7 @@ export function BookingForm({
         <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           <QuoteMetric label={copy.nights} value={quote ? quote.nights : 0} />
           <QuoteMetric label={copy.subtotal} value={`${money(quote?.subtotal)} UZS`} />
-          <QuoteMetric label={copy.total} value={`${estimate.toLocaleString("en-US")} UZS`} />
+          <QuoteMetric label={copy.total} value={`${estimate.toLocaleString(getLocale(lang))} UZS`} />
         </div>
         <div className={`mt-5 border px-5 py-4 text-sm ${
           quote

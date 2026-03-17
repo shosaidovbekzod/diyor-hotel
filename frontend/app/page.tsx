@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ContactMapSection } from "@/components/contact-map-section";
 import { getHotelSummary } from "@/lib/api";
 import { localizeRooms, localizeServices } from "@/lib/content";
-import { t } from "@/lib/i18n";
+import { getLocale, t } from "@/lib/i18n";
 import { getServerLanguage } from "@/lib/i18n-server";
 
 const pageCopy = {
@@ -302,7 +302,7 @@ export default async function HomePage() {
               <div>
                 <div className="section-label">{copy.from}</div>
                 <div className="mt-2 font-display text-3xl text-ink sm:text-4xl md:text-5xl">
-                  {Number(leadRoom.display_price).toLocaleString("en-US")} UZS
+                  {Number(leadRoom.display_price).toLocaleString(getLocale(lang))} UZS
                 </div>
               </div>
               <Link
@@ -331,7 +331,7 @@ export default async function HomePage() {
               <div className="text-left md:text-right">
                 <div className="section-label">{copy.from}</div>
                 <div className="mt-3 font-display text-3xl text-ink sm:text-4xl">
-                  {Number(room.display_price).toLocaleString("en-US")} UZS
+                  {Number(room.display_price).toLocaleString(getLocale(lang))} UZS
                 </div>
               </div>
             </div>

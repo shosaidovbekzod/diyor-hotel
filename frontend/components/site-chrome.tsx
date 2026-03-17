@@ -111,45 +111,45 @@ const menuUi = {
   ru: {
     trigger: "Меню",
     close: "Закрыть",
-    welcome: "Welcome to",
-    navigate: "Navigate",
-    contact: "Direct line",
-    address: "Address",
-    openPage: "Open page",
+    welcome: "Добро пожаловать в",
+    navigate: "Разделы",
+    contact: "Прямая линия",
+    address: "Адрес",
+    openPage: "Открыть страницу",
     items: {
       home: {
-        eyebrow: "Arrival",
+        eyebrow: "Прибытие",
         title: "DIYOR Hotel",
         description:
-          "A composed city stay in Tashkent with direct booking, elegant rooms, and hotel service designed to feel personal.",
+          "Спокойный городской формат проживания в Ташкенте с прямым бронированием, элегантными номерами и внимательным сервисом.",
         image: "/diyor-hero-poster.webp"
       },
       rooms: {
-        eyebrow: "Collection",
-        title: "Rooms",
+        eyebrow: "Коллекция",
+        title: "Номера",
         description:
-          "Review signature room types, compare layouts, and move straight into the reservation flow without leaving the hotel site.",
+          "Просматривайте категории номеров, сравнивайте планировки и переходите к бронированию, не покидая сайт отеля.",
         image: "/diyor-about.webp"
       },
       booking: {
-        eyebrow: "Reservation",
-        title: "Book your stay",
+        eyebrow: "Бронирование",
+        title: "Забронируйте проживание",
         description:
-          "Confirm dates, guests, and stay preferences in one clean booking flow with direct hotel pricing.",
+          "Подтвердите даты, гостей и пожелания в одном аккуратном процессе бронирования с прямой ценой отеля.",
         image: "/diyor-hero-poster.webp"
       },
       account: {
-        eyebrow: "Guest area",
-        title: "Account",
+        eyebrow: "Кабинет гостя",
+        title: "Кабинет",
         description:
-          "Keep your profile ready, review reservations, and manage booking history from a dedicated guest cabinet.",
+          "Храните профиль готовым, проверяйте брони и управляйте историей проживаний из отдельного кабинета гостя.",
         image: "/diyor-about.webp"
       },
       admin: {
-        eyebrow: "Operations",
-        title: "Admin",
+        eyebrow: "Управление",
+        title: "Админ",
         description:
-          "Monitor bookings, room inventory, arrivals, and staff-facing hotel operations from the control panel.",
+          "Отслеживайте брони, инвентарь номеров, заезды и внутренние операции из панели управления.",
         image: "/diyor-hero-poster.webp"
       }
     }
@@ -177,11 +177,7 @@ export function SiteChrome({ children, lang }: { children: React.ReactNode; lang
   const [menuOpen, setMenuOpen] = useState(false);
   const copy = t(lang);
   const ui = menuUi[lang];
-  const bookingLabel = {
-    en: "Book now",
-    uz: "Bandlov",
-    ru: "Р‘СЂРѕРЅРёСЂРѕРІР°РЅРёРµ"
-  }[lang];
+  const bookingLabel = copy.nav.booking;
   const currentMenuHref = getActiveMenuHref(pathname);
   const [previewHref, setPreviewHref] = useState(currentMenuHref);
 
@@ -478,11 +474,11 @@ export function SiteChrome({ children, lang }: { children: React.ReactNode; lang
           </div>
           <div className="grid gap-8 text-sm text-ink/75 md:grid-cols-2">
             <div className="border-t border-[#d8cfc2] pt-4">
-              <div className="section-label">Visit</div>
+              <div className="section-label">{copy.footer.visit}</div>
               <p className="mt-4 max-w-xs leading-7">{copy.footer.address}</p>
             </div>
             <div className="border-t border-[#d8cfc2] pt-4">
-              <div className="section-label">Contact</div>
+              <div className="section-label">{copy.footer.contact}</div>
               <div className="mt-4 flex flex-col gap-3">
                 <a href="tel:+9988858933333" className="transition hover:text-ink">
                   +998 88 589 33 33
