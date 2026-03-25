@@ -1,9 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ContactMapSection } from "@/components/contact-map-section";
-import { getHotelSummary } from "@/lib/api";
+import { getHotelSummary, type Room } from "@/lib/api";
 import { localizeRooms, localizeServices } from "@/lib/content";
-import { getLocale, t } from "@/lib/i18n";
+import { getLocale, t, type Language } from "@/lib/i18n";
 import { getServerLanguage } from "@/lib/i18n-server";
 
 const pageCopy = {
@@ -137,15 +137,45 @@ const pageCopy = {
 
 const heroVideoSrc = "/hero-video.mp4?v=20260313";
 
+const homeRoomPreviewUi = {
+  en: {
+    from: "from",
+    details: "Details",
+    otherTitle: "See other rooms",
+    otherDesc: "Open the full room collection and browse every category in the compact card layout.",
+    otherButton: "All rooms",
+    available: "Available now",
+    roomsCount: "rooms"
+  },
+  uz: {
+    from: "narxi",
+    details: "Batafsil",
+    otherTitle: "Boshqa xonalarni ko'rish",
+    otherDesc: "Barcha xona turlarini ko'rish va ularni qulay kartochkalarda tanlash uchun to'liq xonalar bo'limiga o'ting.",
+    otherButton: "Xonalar bo'limi",
+    available: "Hozir mavjud",
+    roomsCount: "ta xona"
+  },
+  ru: {
+    from: "от",
+    details: "Подробнее",
+    otherTitle: "Посмотреть другие номера",
+    otherDesc: "Откройте полную коллекцию номеров и просматривайте все категории в удобном карточном формате.",
+    otherButton: "Все номера",
+    available: "Доступно сейчас",
+    roomsCount: "номеров"
+  }
+} as const;
+
 export default async function HomePage() {
   const lang = await getServerLanguage();
   const copy = t(lang).home;
   const ui = pageCopy[lang];
+  const roomPreviewUi = homeRoomPreviewUi[lang];
   const summary = await getHotelSummary();
   const rooms = localizeRooms(summary.highlight_rooms, lang);
   const services = localizeServices(summary.services, lang);
-  const leadRoom = rooms[0];
-  const supportingRooms = rooms.slice(1);
+  const featuredRooms = rooms.slice(0, 2);
 
   return (
     <div className="pb-12 sm:pb-16">
@@ -282,62 +312,40 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {leadRoom ? (
-        <section className="shell mt-12 grid gap-10 sm:mt-16 lg:mt-16 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
-          <div className="relative min-h-[320px] overflow-hidden border border-[#d8cfc2] sm:min-h-[420px] lg:min-h-[540px]">
-            <Image src={leadRoom.image_url} alt={leadRoom.title} fill className="object-cover" />
-          </div>
-          <div className="card p-6 sm:p-8 md:p-10">
-            <div className="section-label">{copy.signature}</div>
-            <h3 className="mt-4 font-display text-3xl leading-none text-ink sm:text-4xl md:text-5xl">{leadRoom.title}</h3>
-            <p className="mt-5 text-base leading-8 text-ink/72">{leadRoom.description}</p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              {leadRoom.amenities.slice(0, 5).map((amenity) => (
-                <span key={amenity} className="rounded-full border border-[#ddd1c0] px-4 py-2 text-xs uppercase tracking-[0.18em] text-stone">
-                  {amenity}
-                </span>
-              ))}
-            </div>
-            <div className="mt-10 flex items-end justify-between gap-6 border-t border-[#e6ddd2] pt-6">
+      {featuredRooms.length ? (
+        <section className="shell mt-12 sm:mt-16 lg:mt-18">
+          <div className="grid gap-5 xl:grid-cols-[1fr_1fr_0.78fr]">
+            {featuredRooms.map((room) => (
+              <HomePreviewRoomCard key={room.id} room={room} lang={lang} />
+            ))}
+
+            <div className="flex min-h-[320px] flex-col justify-between rounded-[22px] border border-[#ddd1c0] bg-[#16130f] p-6 text-white shadow-[0_18px_40px_rgba(19,15,10,0.18)] sm:min-h-[350px] sm:p-7">
               <div>
-                <div className="section-label">{copy.from}</div>
-                <div className="mt-2 font-display text-3xl text-ink sm:text-4xl md:text-5xl">
-                  {Number(leadRoom.display_price).toLocaleString(getLocale(lang))} UZS
-                </div>
+                <div className="section-label text-white/50">{ui.stayLabel}</div>
+                <h3 className="mt-4 font-display text-3xl leading-[1.02] sm:text-4xl">
+                  {roomPreviewUi.otherTitle}
+                </h3>
+                <p className="mt-5 text-sm leading-7 text-white/72 sm:text-base">
+                  {roomPreviewUi.otherDesc}
+                </p>
               </div>
-              <Link
-                href={`/rooms/${leadRoom.slug}`}
-                className="border border-ink bg-ink px-6 py-3 text-[11px] uppercase tracking-[0.24em] text-white transition hover:bg-[#2c2721] sm:text-xs"
-              >
-                {copy.viewAll}
-              </Link>
+
+              <div className="space-y-4">
+                <div className="grid gap-2 text-[10px] uppercase tracking-[0.22em] text-white/45">
+                  <span>{rooms.length} {roomPreviewUi.roomsCount}</span>
+                  <span>{summary.location}</span>
+                </div>
+                <Link
+                  href="/rooms"
+                  className="inline-flex w-full items-center justify-center rounded-full bg-[#15c954] px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-white transition hover:bg-[#11b84a]"
+                >
+                  {roomPreviewUi.otherButton}
+                </Link>
+              </div>
             </div>
           </div>
         </section>
       ) : null}
-
-      <section className="shell mt-12 grid gap-6 sm:mt-16 lg:mt-20 lg:grid-cols-2">
-        {supportingRooms.map((room) => (
-          <Link key={room.id} href={`/rooms/${room.slug}`} className="card overflow-hidden">
-            <div className="relative h-[220px] sm:h-[300px] lg:h-[360px]">
-              <Image src={room.image_url} alt={room.title} fill className="object-cover" />
-            </div>
-            <div className="grid gap-6 p-8 md:grid-cols-[1fr_auto] md:items-end">
-              <div>
-                <div className="section-label">{room.view_label}</div>
-                <h3 className="mt-4 font-display text-2xl text-ink sm:text-3xl lg:text-4xl">{room.title}</h3>
-                <p className="mt-4 max-w-xl text-base leading-8 text-ink/72">{room.subtitle}</p>
-              </div>
-              <div className="text-left md:text-right">
-                <div className="section-label">{copy.from}</div>
-                <div className="mt-3 font-display text-3xl text-ink sm:text-4xl">
-                  {Number(room.display_price).toLocaleString(getLocale(lang))} UZS
-                </div>
-              </div>
-            </div>
-          </Link>
-        ))}
-      </section>
 
       <section className="shell mt-12 grid gap-10 sm:mt-16 lg:mt-24 lg:editorial-grid lg:items-start">
         <div>
@@ -433,5 +441,67 @@ export default async function HomePage() {
         />
       </section>
     </div>
+  );
+}
+
+function HomePreviewRoomCard({
+  room,
+  lang
+}: {
+  room: Room;
+  lang: Language;
+}) {
+  const ui = homeRoomPreviewUi[lang];
+  const locale = getLocale(lang);
+
+  return (
+    <article className="overflow-hidden rounded-[22px] border border-[#ddd1c0] bg-white shadow-[0_18px_40px_rgba(37,31,24,0.08)]">
+      <div className="relative h-[210px] overflow-hidden">
+        <Image src={room.image_url} alt={room.title} fill className="object-cover" />
+        <div className="absolute right-3 top-3 rounded-full bg-white/92 px-3 py-1.5 text-[10px] uppercase tracking-[0.18em] text-ink">
+          DIYOR
+        </div>
+      </div>
+
+      <div className="p-5 sm:p-6">
+        <div className="section-label">{room.view_label}</div>
+        <h3 className="mt-3 min-h-[58px] font-display text-2xl leading-[1.02] text-ink sm:text-[2rem]">
+          {room.title}
+        </h3>
+        <p className="mt-3 line-clamp-3 text-sm leading-7 text-ink/72">
+          {room.subtitle}
+        </p>
+
+        <div className="mt-4 flex flex-wrap gap-2">
+          {room.amenities.slice(0, 3).map((amenity) => (
+            <span
+              key={amenity}
+              className="rounded-full border border-[#e2d7c8] px-3 py-1.5 text-[10px] uppercase tracking-[0.16em] text-stone"
+            >
+              {amenity}
+            </span>
+          ))}
+        </div>
+
+        <div className="mt-6 flex items-end justify-between gap-4 border-t border-[#efe5d9] pt-5">
+          <div>
+            <div className="section-label">{ui.from}</div>
+            <div className="mt-2 font-display text-3xl leading-none text-ink">
+              {Number(room.display_price).toLocaleString(locale)} UZS
+            </div>
+            <div className="mt-2 text-[11px] uppercase tracking-[0.18em] text-[#1e8751]">
+              {ui.available}
+            </div>
+          </div>
+
+          <Link
+            href={`/rooms/${room.slug}`}
+            className="inline-flex items-center justify-center rounded-full bg-[#18140f] px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-white transition hover:bg-[#2a241d]"
+          >
+            {ui.details}
+          </Link>
+        </div>
+      </div>
+    </article>
   );
 }
