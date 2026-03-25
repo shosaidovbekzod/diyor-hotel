@@ -9,150 +9,30 @@ import { t, type Language } from "@/lib/i18n";
 type MenuItem = {
   href: string;
   label: string;
-  eyebrow: string;
-  title: string;
   description: string;
-  image: string;
 };
 
 const menuUi = {
   en: {
     trigger: "Menu",
     close: "Close",
-    welcome: "Welcome to",
-    navigate: "Navigate",
+    sections: "Sections",
     contact: "Direct line",
-    address: "Address",
-    openPage: "Open page",
-    items: {
-      home: {
-        eyebrow: "Arrival",
-        title: "DIYOR Hotel",
-        description:
-          "A composed city stay in Tashkent with direct booking, elegant rooms, and hotel service designed to feel personal.",
-        image: "/diyor-hero-poster.webp"
-      },
-      rooms: {
-        eyebrow: "Collection",
-        title: "Rooms",
-        description:
-          "Review signature room types, compare layouts, and move straight into the reservation flow without leaving the hotel site.",
-        image: "/diyor-about.webp"
-      },
-      booking: {
-        eyebrow: "Reservation",
-        title: "Book your stay",
-        description:
-          "Confirm dates, guests, and stay preferences in one clean booking flow with direct hotel pricing.",
-        image: "/diyor-hero-poster.webp"
-      },
-      account: {
-        eyebrow: "Guest area",
-        title: "Account",
-        description:
-          "Keep your profile ready, review reservations, and manage booking history from a dedicated guest cabinet.",
-        image: "/diyor-about.webp"
-      },
-      admin: {
-        eyebrow: "Operations",
-        title: "Admin",
-        description:
-          "Monitor bookings, room inventory, arrivals, and staff-facing hotel operations from the control panel.",
-        image: "/diyor-hero-poster.webp"
-      }
-    }
+    address: "Address"
   },
   uz: {
     trigger: "Menyu",
     close: "Yopish",
-    welcome: "Xush kelibsiz",
-    navigate: "Bo'limlar",
+    sections: "Bo'limlar",
     contact: "To'g'ridan-to'g'ri aloqa",
-    address: "Manzil",
-    openPage: "Sahifani ochish",
-    items: {
-      home: {
-        eyebrow: "Kelish",
-        title: "DIYOR Hotel",
-        description:
-          "Toshkentdagi sokin va nafis turar joy tajribasi shu yerdan boshlanadi: to'g'ridan-to'g'ri bron, chiroyli xonalar va e'tiborli xizmat.",
-        image: "/diyor-hero-poster.webp"
-      },
-      rooms: {
-        eyebrow: "To'plam",
-        title: "Xonalar",
-        description:
-          "Asosiy xona turlarini ko'ring, rejalarni solishtiring va mehmonxonaning o'z saytida qolgan holda bron oqimiga o'ting.",
-        image: "/diyor-about.webp"
-      },
-      booking: {
-        eyebrow: "Bandlov",
-        title: "Turar joyni bron qiling",
-        description:
-          "Sana, mehmonlar soni va istaklarni bitta toza booking jarayonida tasdiqlang va to'g'ridan-to'g'ri mehmonxona narxidan foydalaning.",
-        image: "/diyor-hero-poster.webp"
-      },
-      account: {
-        eyebrow: "Mehmon hududi",
-        title: "Kabinet",
-        description:
-          "Profilingizni tayyor saqlang, bronlaringizni ko'ring va turar joy tarixini bitta qulay kabinetdan boshqaring.",
-        image: "/diyor-about.webp"
-      },
-      admin: {
-        eyebrow: "Boshqaruv",
-        title: "Admin",
-        description:
-          "Bronlar, xona inventari, kelishlar va ichki operatsiyalarni admin nazorat panelidan kuzating.",
-        image: "/diyor-hero-poster.webp"
-      }
-    }
+    address: "Manzil"
   },
   ru: {
     trigger: "Меню",
     close: "Закрыть",
-    welcome: "Добро пожаловать в",
-    navigate: "Разделы",
+    sections: "Разделы",
     contact: "Прямая линия",
-    address: "Адрес",
-    openPage: "Открыть страницу",
-    items: {
-      home: {
-        eyebrow: "Прибытие",
-        title: "DIYOR Hotel",
-        description:
-          "Спокойный городской формат проживания в Ташкенте с прямым бронированием, элегантными номерами и внимательным сервисом.",
-        image: "/diyor-hero-poster.webp"
-      },
-      rooms: {
-        eyebrow: "Коллекция",
-        title: "Номера",
-        description:
-          "Просматривайте категории номеров, сравнивайте планировки и переходите к бронированию, не покидая сайт отеля.",
-        image: "/diyor-about.webp"
-      },
-      booking: {
-        eyebrow: "Бронирование",
-        title: "Забронируйте проживание",
-        description:
-          "Подтвердите даты, гостей и пожелания в одном аккуратном процессе бронирования с прямой ценой отеля.",
-        image: "/diyor-hero-poster.webp"
-      },
-      account: {
-        eyebrow: "Кабинет гостя",
-        title: "Кабинет",
-        description:
-          "Храните профиль готовым, проверяйте брони и управляйте историей проживаний из отдельного кабинета гостя.",
-        image: "/diyor-about.webp"
-      },
-      admin: {
-        eyebrow: "Управление",
-        title: "Админ",
-        description:
-          "Отслеживайте брони, инвентарь номеров, заезды и внутренние операции из панели управления.",
-        image: "/diyor-hero-poster.webp"
-      }
-    }
+    address: "Адрес"
   }
 } as const;
 
@@ -178,68 +58,67 @@ export function SiteChrome({ children, lang }: { children: React.ReactNode; lang
   const copy = t(lang);
   const ui = menuUi[lang];
   const bookingLabel = copy.nav.booking;
-  const currentMenuHref = getActiveMenuHref(pathname);
-  const [previewHref, setPreviewHref] = useState(currentMenuHref);
+  const activeHref = getActiveMenuHref(pathname);
 
   const menuItems = useMemo<MenuItem[]>(
     () => [
       {
         href: "/",
         label: copy.nav.home,
-        eyebrow: ui.items.home.eyebrow,
-        title: ui.items.home.title,
-        description: ui.items.home.description,
-        image: ui.items.home.image
+        description:
+          lang === "uz"
+            ? "Mehmonxonaning asosiy sahifasi va asosiy takliflari."
+            : lang === "ru"
+              ? "Главная страница отеля и основные предложения."
+              : "Main hotel page and core offers."
       },
       {
         href: "/rooms",
         label: copy.nav.rooms,
-        eyebrow: ui.items.rooms.eyebrow,
-        title: ui.items.rooms.title,
-        description: ui.items.rooms.description,
-        image: ui.items.rooms.image
+        description:
+          lang === "uz"
+            ? "Xonalar turlari, qulayliklar va narxlar."
+            : lang === "ru"
+              ? "Категории номеров, удобства и цены."
+              : "Room categories, amenities, and pricing."
       },
       {
         href: "/booking",
         label: bookingLabel,
-        eyebrow: ui.items.booking.eyebrow,
-        title: ui.items.booking.title,
-        description: ui.items.booking.description,
-        image: ui.items.booking.image
+        description:
+          lang === "uz"
+            ? "Sanalarni tanlab bron oqimiga o'ting."
+            : lang === "ru"
+              ? "Выберите даты и перейдите к бронированию."
+              : "Choose dates and enter the booking flow."
       },
       {
         href: "/account",
         label: copy.nav.account,
-        eyebrow: ui.items.account.eyebrow,
-        title: ui.items.account.title,
-        description: ui.items.account.description,
-        image: ui.items.account.image
+        description:
+          lang === "uz"
+            ? "Profil, bron tarixi va boshqaruv."
+            : lang === "ru"
+              ? "Профиль, история бронирований и управление."
+              : "Profile, booking history, and controls."
       },
       {
         href: "/admin",
         label: copy.nav.admin,
-        eyebrow: ui.items.admin.eyebrow,
-        title: ui.items.admin.title,
-        description: ui.items.admin.description,
-        image: ui.items.admin.image
+        description:
+          lang === "uz"
+            ? "Admin panel va ichki boshqaruv."
+            : lang === "ru"
+              ? "Панель администратора и внутреннее управление."
+              : "Admin panel and internal controls."
       }
     ],
-    [bookingLabel, copy.nav.account, copy.nav.admin, copy.nav.home, copy.nav.rooms, ui.items.account, ui.items.admin, ui.items.booking, ui.items.home, ui.items.rooms]
-  );
-
-  const preview = menuItems.find((item) => item.href === previewHref) ?? menuItems[0];
-  const previewIndex = Math.max(
-    0,
-    menuItems.findIndex((item) => item.href === preview.href)
+    [bookingLabel, copy.nav.account, copy.nav.admin, copy.nav.home, copy.nav.rooms, lang]
   );
 
   useEffect(() => {
     setMenuOpen(false);
   }, [pathname]);
-
-  useEffect(() => {
-    setPreviewHref(currentMenuHref);
-  }, [currentMenuHref, menuOpen]);
 
   useEffect(() => {
     if (!menuOpen) {
@@ -264,10 +143,10 @@ export function SiteChrome({ children, lang }: { children: React.ReactNode; lang
   return (
     <div className="min-h-screen bg-sand">
       <header className="sticky top-0 z-50 border-b border-[#d8cfc2] bg-sand/95 backdrop-blur-xl">
-        <div className="shell border-b border-[#d8cfc2] py-3 text-[9px] uppercase tracking-[0.26em] text-stone sm:py-4 sm:text-[10px] sm:tracking-[0.34em]">
-          <div className="grid items-center gap-4 md:grid-cols-[1fr_auto_1fr]">
-            <div className="text-center md:text-left">Olmos 74A, Tashkent</div>
-            <Link href="/" className="justify-self-center flex items-center gap-3 text-ink">
+        <div className="shell py-3 text-[9px] uppercase tracking-[0.26em] text-stone sm:py-4 sm:text-[10px] sm:tracking-[0.34em]">
+          <div className="flex items-center justify-between gap-4">
+            <div className="hidden min-w-[180px] md:block">Olmos 74A, Tashkent</div>
+            <Link href="/" className="flex items-center gap-3 text-ink md:absolute md:left-1/2 md:-translate-x-1/2">
               <img
                 src="/diyor-logo.png"
                 alt="Diyor Tashkent Hotel logo"
@@ -277,8 +156,9 @@ export function SiteChrome({ children, lang }: { children: React.ReactNode; lang
                 DIYOR HOTEL
               </span>
             </Link>
-            <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-5 md:justify-end">
-              <a href="tel:+9988858933333" className="transition hover:text-ink">
+
+            <div className="ml-auto flex flex-wrap items-center justify-end gap-3 sm:gap-5">
+              <a href="tel:+9988858933333" className="hidden transition hover:text-ink lg:inline">
                 +998 88 589 33 33
               </a>
               <LanguageSwitcher current={lang} />
@@ -303,156 +183,83 @@ export function SiteChrome({ children, lang }: { children: React.ReactNode; lang
             </div>
           </div>
         </div>
-
-        <div className="shell flex items-center justify-between py-3 text-[9px] uppercase tracking-[0.22em] text-stone sm:py-4 sm:text-[11px] sm:tracking-[0.32em]">
-          <div className="border-b border-[#d8cfc2] pb-1 text-ink">
-            {menuItems.find((item) => item.href === currentMenuHref)?.label ?? copy.nav.home}
-          </div>
-          <div className="hidden items-center gap-6 md:flex">
-            {menuItems.map((item) => {
-              const active = currentMenuHref === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`border-b pb-1 transition ${
-                    active ? "border-ink text-ink" : "border-transparent hover:border-[#bfae95] hover:text-ink"
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              );
-            })}
-          </div>
-        </div>
       </header>
 
       <div
-        className={`fixed inset-0 z-[90] transition duration-500 ${
+        className={`fixed inset-0 z-[90] transition duration-300 ${
           menuOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
         }`}
       >
-        <div className="absolute inset-0 bg-black/35" />
-        <div className="relative grid min-h-screen lg:grid-cols-[300px_minmax(0,1fr)]">
-          <aside className="flex flex-col bg-[#171616]/96 text-white">
-            <div className="border-b border-white/10 p-6 sm:p-8">
-              <div className="flex items-start justify-between gap-4">
-                <Link href="/" className="flex items-center gap-3" onClick={() => setMenuOpen(false)}>
-                  <img
-                    src="/diyor-logo.png"
-                    alt="Diyor Tashkent Hotel logo"
-                    className="h-14 w-auto object-contain"
-                  />
-                </Link>
-                <button
-                  type="button"
-                  onClick={() => setMenuOpen(false)}
-                  className="inline-flex h-11 w-11 items-center justify-center border border-white/15 text-xl text-white/88 transition hover:bg-white/8"
-                >
-                  ×
-                </button>
-              </div>
-              <div className="mt-6 text-[10px] uppercase tracking-[0.34em] text-white/42">{ui.navigate}</div>
+        <button
+          type="button"
+          aria-label={ui.close}
+          onClick={() => setMenuOpen(false)}
+          className="absolute inset-0 bg-black/45 backdrop-blur-md"
+        />
+
+        <aside className="relative z-10 flex min-h-screen w-full max-w-[360px] flex-col bg-[#171412]/98 text-white shadow-[22px_0_70px_rgba(0,0,0,0.42)]">
+          <div className="border-b border-white/10 p-6 sm:p-8">
+            <div className="flex items-start justify-between gap-4">
+              <Link href="/" className="flex items-center gap-3" onClick={() => setMenuOpen(false)}>
+                <img
+                  src="/diyor-logo.png"
+                  alt="Diyor Tashkent Hotel logo"
+                  className="h-14 w-auto object-contain"
+                />
+              </Link>
+              <button
+                type="button"
+                onClick={() => setMenuOpen(false)}
+                className="inline-flex h-11 w-11 items-center justify-center border border-white/15 text-xl text-white/88 transition hover:bg-white/8"
+              >
+                ×
+              </button>
             </div>
+            <div className="mt-6 text-[10px] uppercase tracking-[0.34em] text-white/42">{ui.sections}</div>
+          </div>
 
-            <div className="flex-1 overflow-y-auto p-6 sm:p-8">
-              <div className="space-y-1">
-                {menuItems.map((item) => {
-                  const active = preview.href === item.href;
-                  const current = currentMenuHref === item.href;
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      onClick={() => setMenuOpen(false)}
-                      onMouseEnter={() => setPreviewHref(item.href)}
-                      onFocus={() => setPreviewHref(item.href)}
-                      className={`group flex items-center justify-between border-b border-white/8 py-4 text-base uppercase tracking-[0.08em] transition sm:text-lg ${
-                        active ? "text-white" : "text-white/82 hover:text-white"
-                      }`}
-                    >
-                      <span>{item.label}</span>
-                      <span
-                        className={`text-lg transition ${
-                          current ? "translate-x-0 text-[#dfc188]" : "translate-x-0 text-white/28 group-hover:translate-x-1 group-hover:text-[#dfc188]"
-                        }`}
-                      >
-                        ›
-                      </span>
-                    </Link>
-                  );
-                })}
-              </div>
+          <div className="flex-1 overflow-y-auto px-6 py-4 sm:px-8">
+            <div className="space-y-2">
+              {menuItems.map((item) => {
+                const active = activeHref === item.href;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setMenuOpen(false)}
+                    className={`block rounded-[18px] border px-4 py-4 transition ${
+                      active
+                        ? "border-[#dfc188] bg-white/8 text-white"
+                        : "border-white/8 text-white/82 hover:border-white/18 hover:bg-white/5 hover:text-white"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="text-base uppercase tracking-[0.08em]">{item.label}</span>
+                      <span className={`text-lg ${active ? "text-[#dfc188]" : "text-white/35"}`}>›</span>
+                    </div>
+                    <p className="mt-3 text-sm leading-6 text-white/58">{item.description}</p>
+                  </Link>
+                );
+              })}
             </div>
+          </div>
 
-            <div className="border-t border-white/10 p-6 text-sm leading-7 text-white/72 sm:p-8">
-              <div className="text-[10px] uppercase tracking-[0.34em] text-white/40">{ui.contact}</div>
-              <a href="tel:+9988858933333" className="mt-3 block text-lg text-white transition hover:text-[#dfc188]">
-                +998 88 589 33 33
-              </a>
-              <div className="mt-6 text-[10px] uppercase tracking-[0.34em] text-white/40">{ui.address}</div>
-              <div className="mt-3 text-white/78">{copy.footer.address}</div>
-            </div>
-          </aside>
-
-          <section className="relative min-h-[52vh] overflow-hidden lg:min-h-screen">
-            <img
-              src={preview.image}
-              alt={preview.title}
-              className={`absolute inset-0 h-full w-full object-cover transition duration-700 ${
-                menuOpen ? "scale-100" : "scale-105"
-              }`}
-            />
-            <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.72)_0%,rgba(255,255,255,0.58)_34%,rgba(14,13,11,0.18)_100%)]" />
-            <div className="absolute inset-y-0 left-[42%] hidden w-px bg-white/34 lg:block" />
-            <div className="absolute inset-y-0 left-[70%] hidden w-px bg-white/24 xl:block" />
-            <div className="absolute right-8 top-8 text-sm uppercase tracking-[0.26em] text-white/86">
-              {lang.toUpperCase()}
-            </div>
-
-            <div className="relative flex min-h-[52vh] items-center lg:min-h-screen">
-              <div className="shell w-full">
-                <div className="max-w-[760px] px-2 py-12 sm:px-6 lg:px-12">
-                  <div className="text-[10px] uppercase tracking-[0.34em] text-white/58">{preview.eyebrow}</div>
-                  <div className="mt-8 font-display text-4xl italic leading-none text-white/92 sm:text-5xl md:text-6xl">
-                    {ui.welcome}
-                  </div>
-                  <h2 className="mt-3 font-display text-6xl leading-[0.9] text-white sm:text-7xl md:text-[6.8rem]">
-                    {preview.title}
-                  </h2>
-                  <p className="mt-8 max-w-xl text-base leading-8 text-white/88 sm:text-lg">
-                    {preview.description}
-                  </p>
-
-                  <div className="mt-10 flex flex-wrap items-center gap-4">
-                    <Link
-                      href={preview.href}
-                      onClick={() => setMenuOpen(false)}
-                      className="inline-flex min-w-[200px] items-center justify-center bg-white px-7 py-4 text-xs uppercase tracking-[0.3em] text-ink transition hover:bg-[#f5ecdf]"
-                    >
-                      {ui.openPage}
-                    </Link>
-                    <Link
-                      href="/booking"
-                      onClick={() => setMenuOpen(false)}
-                      className="inline-flex min-w-[200px] items-center justify-center border border-white/35 bg-black/12 px-7 py-4 text-xs uppercase tracking-[0.3em] text-white backdrop-blur-sm transition hover:bg-black/20"
-                    >
-                      {bookingLabel}
-                    </Link>
-                  </div>
-
-                  <div className="mt-12 flex items-center gap-5 text-white/92">
-                    <span className="text-4xl leading-none">‹</span>
-                    <span className="text-xl tracking-[0.2em]">
-                      {previewIndex + 1} / {menuItems.length}
-                    </span>
-                    <span className="text-4xl leading-none">›</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-        </div>
+          <div className="border-t border-white/10 p-6 text-sm leading-7 text-white/72 sm:p-8">
+            <div className="text-[10px] uppercase tracking-[0.34em] text-white/40">{ui.contact}</div>
+            <a href="tel:+9988858933333" className="mt-3 block text-lg text-white transition hover:text-[#dfc188]">
+              +998 88 589 33 33
+            </a>
+            <div className="mt-6 text-[10px] uppercase tracking-[0.34em] text-white/40">{ui.address}</div>
+            <div className="mt-3 text-white/78">{copy.footer.address}</div>
+            <Link
+              href="/booking"
+              onClick={() => setMenuOpen(false)}
+              className="editorial-button mt-6 w-full justify-center"
+            >
+              {bookingLabel}
+            </Link>
+          </div>
+        </aside>
       </div>
 
       <main>{children}</main>

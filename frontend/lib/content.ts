@@ -106,7 +106,7 @@ const roomMap: Record<string, Record<Language, Partial<Room>>> = {
       description:
         "Большие апартаменты с тремя спальнями, кухней и гостиной для гостей, которым нужно много пространства без потери приватности отдельных комнат.",
       bed_type: "Апартаменты с 3 спальнями",
-      view_label: "Коллекция residence"
+      view_label: "Residence collection"
     }
   }
 };

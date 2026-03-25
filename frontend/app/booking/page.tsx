@@ -18,7 +18,7 @@ const bookingPageCopy = {
     adultsHint: "Guests aged 12+",
     childrenHint: "Add children if needed",
     search: "Check availability",
-    resultSummary: "Select dates, review room cards, compare direct rates, and move into a cleaner booking flow.",
+    resultSummary: "Select dates, compare room categories, review direct rates, and move into a cleaner booking flow.",
     noResultsTitle: "No rooms match this stay yet.",
     noResultsBody: "Try a different date range or reduce the total number of guests.",
     invalidDates: "Check-out must be after check-in.",
@@ -39,15 +39,15 @@ const bookingPageCopy = {
       "Guest details remain inside the hotel booking flow",
       "Cleaner room comparison before checkout"
     ],
-    staySummary: "Сводка по проживанию",
-    sortLabel: "Сортировка номеров",
-    recommended: "Рекомендуемые",
-    priceLowHigh: "Цена: от низкой к высокой",
-    priceHighLow: "Цена: от высокой к низкой",
-    largestSpace: "Самая большая площадь",
-    availableOnly: "Только доступные категории",
-    availableSummary: "Доступно сейчас",
-    soldOutSummary: "Распродано",
+    staySummary: "Stay summary",
+    sortLabel: "Sort rooms",
+    recommended: "Recommended",
+    priceLowHigh: "Price: low to high",
+    priceHighLow: "Price: high to low",
+    largestSpace: "Largest space",
+    availableOnly: "Only available categories",
+    availableSummary: "Available now",
+    soldOutSummary: "Sold out",
     showDates: "View other dates",
     expand: "Expand details",
     collapse: "Collapse details",
@@ -67,16 +67,16 @@ const bookingPageCopy = {
     adultsHint: "12 yosh va undan katta mehmonlar",
     childrenHint: "Kerak bo'lsa bolalarni qo'shing",
     search: "Bandlovni tekshirish",
-    resultSummary: "Sanalarni tanlang, xona kartalarini solishtiring, to'g'ridan-to'g'ri narxni ko'ring va yanada qulay bron oqimiga o'ting.",
+    resultSummary: "Sanalarni tanlang, xona toifalarini solishtiring, to'g'ridan-to'g'ri narxlarni ko'ring va qulayroq booking oqimiga o'ting.",
     noResultsTitle: "Hozircha bu sanalarga mos xona topilmadi.",
     noResultsBody: "Boshqa sana oralig'ini tanlang yoki mehmonlar sonini kamaytiring.",
     invalidDates: "Jo'nash sanasi kelish sanasidan keyin bo'lishi kerak.",
     roomCta: "Shu xonani tanlash",
     details: "Xona batafsili",
     perNight: "Bir kecha",
-    guests: "Mehmonlar",
+    guests: "mehmon",
     options: "xona varianti",
-    soldOut: "Sotib bo'lingan",
+    soldOut: "Band bo'lgan",
     soldOutHint: "Tanlangan sanalarda bu toifa band. Qidiruv sanalarini o'zgartirib keyingi bo'sh muddatni ko'ring.",
     bestRate: "To'g'ridan-to'g'ri eng yaxshi narx",
     directOffer: "To'g'ridan-to'g'ri bron afzalligi",
@@ -116,14 +116,14 @@ const bookingPageCopy = {
     adultsHint: "Гости 12+",
     childrenHint: "Добавьте детей при необходимости",
     search: "Проверить наличие",
-    resultSummary: "Выберите даты, сравните карточки номеров, посмотрите прямой тариф и перейдите к более удобному бронированию.",
+    resultSummary: "Выберите даты, сравните категории номеров, посмотрите прямой тариф и перейдите к более удобному бронированию.",
     noResultsTitle: "На эти даты подходящих номеров пока нет.",
     noResultsBody: "Попробуйте изменить диапазон дат или уменьшить количество гостей.",
     invalidDates: "Дата выезда должна быть позже даты заезда.",
     roomCta: "Выбрать этот номер",
     details: "Открыть номер",
     perNight: "За ночь",
-    guests: "Гостей",
+    guests: "гостей",
     options: "вариантов",
     soldOut: "Распродано",
     soldOutHint: "На выбранные даты эта категория недоступна. Измените даты поиска, чтобы посмотреть свободные варианты.",
@@ -137,15 +137,15 @@ const bookingPageCopy = {
       "Данные гостя остаются внутри потока бронирования отеля",
       "Номера удобнее сравнивать до оформления"
     ],
-    staySummary: "Stay summary",
-    sortLabel: "Sort rooms",
-    recommended: "Recommended",
-    priceLowHigh: "Price: low to high",
-    priceHighLow: "Price: high to low",
-    largestSpace: "Largest space",
-    availableOnly: "Only available categories",
-    availableSummary: "Available now",
-    soldOutSummary: "Sold out",
+    staySummary: "Сводка по проживанию",
+    sortLabel: "Сортировка номеров",
+    recommended: "Рекомендуемые",
+    priceLowHigh: "Цена: от низкой к высокой",
+    priceHighLow: "Цена: от высокой к низкой",
+    largestSpace: "Самая большая площадь",
+    availableOnly: "Только доступные категории",
+    availableSummary: "Доступно сейчас",
+    soldOutSummary: "Распродано",
     showDates: "Посмотреть другие даты",
     expand: "Открыть детали",
     collapse: "Скрыть детали",
@@ -162,8 +162,21 @@ function toIsoDate(date: Date) {
   return date.toISOString().slice(0, 10);
 }
 
+function normalizeDateValue(value: string | string[] | undefined) {
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) {
+    return null;
+  }
+
+  return toIsoDate(parsed);
+}
+
 function parseDateValue(value: string | string[] | undefined, fallback: string) {
-  return typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : fallback;
+  return normalizeDateValue(value) ?? fallback;
 }
 
 function parseNumberValue(value: string | string[] | undefined, fallback: number, min: number, max: number) {
@@ -186,10 +199,10 @@ export default async function BookingPage({
 
   const today = new Date();
   const tomorrow = new Date(today.getTime() + 86400000);
-  const defaultCheckIn = parseDateValue(params.checkIn, toIsoDate(today));
-  const defaultCheckOut = parseDateValue(params.checkOut, toIsoDate(tomorrow));
-  const adults = parseNumberValue(params.adults, 2, 1, 12);
-  const children = parseNumberValue(params.children, 0, 0, 6);
+  const defaultCheckIn = parseDateValue(params.checkIn ?? params.Arrival, toIsoDate(today));
+  const defaultCheckOut = parseDateValue(params.checkOut ?? params.Departure, toIsoDate(tomorrow));
+  const adults = parseNumberValue(params.adults ?? params.Adults, 2, 1, 12);
+  const children = parseNumberValue(params.children ?? params.Children, 0, 0, 6);
   const guests = parseNumberValue(params.guests, adults + children, 1, 18);
   const validDates = defaultCheckIn < defaultCheckOut;
 
