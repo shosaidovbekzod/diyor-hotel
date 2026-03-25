@@ -187,8 +187,14 @@ function RoomCard({
           <Image src={room.image_url} alt={room.title} fill className="object-cover" />
         </div>
 
-        <div className="absolute right-2 top-2 flex h-10 w-10 items-center justify-center rounded-full border-[2px] border-white bg-[#16b2d6] text-center text-[7px] font-semibold uppercase leading-tight text-white shadow-md">
-          DIYOR
+        <div className="absolute right-2 top-2 rounded-xl bg-white/92 p-1.5 shadow-md backdrop-blur-sm">
+          <Image
+            src="/diyor-logo.png"
+            alt="Diyor Hotel logo"
+            width={34}
+            height={34}
+            className="h-8 w-8 object-contain"
+          />
         </div>
 
         <div className="absolute bottom-2 right-2 rounded-md bg-white/95 px-2 py-1 text-[9px] font-medium text-ink shadow-sm">

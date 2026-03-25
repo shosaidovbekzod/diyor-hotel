@@ -458,8 +458,14 @@ function HomePreviewRoomCard({
     <article className="overflow-hidden rounded-[22px] border border-[#ddd1c0] bg-white shadow-[0_18px_40px_rgba(37,31,24,0.08)]">
       <div className="relative h-[210px] overflow-hidden">
         <Image src={room.image_url} alt={room.title} fill className="object-cover" />
-        <div className="absolute right-3 top-3 rounded-full bg-white/92 px-3 py-1.5 text-[10px] uppercase tracking-[0.18em] text-ink">
-          DIYOR
+        <div className="absolute right-3 top-3 rounded-xl bg-white/92 p-2 shadow-md backdrop-blur-sm">
+          <Image
+            src="/diyor-logo.png"
+            alt="Diyor Hotel logo"
+            width={40}
+            height={40}
+            className="h-9 w-9 object-contain"
+          />
         </div>
       </div>
 
