@@ -3,7 +3,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    app_name: str = "DIYOR HOTEL API"
+    app_name: str = "HOTEL TASHKENT API"
     app_env: str = "development"
     debug: bool = False
     api_v1_prefix: str = "/api/v1"
@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     frontend_url: str = "http://localhost:3000"
     first_admin_email: str = "admin@diyorhotel.uz"
     first_admin_password: str = "ChangeMe123!"
-    hotel_name: str = "Diyor Tashkent Hotel"
+    hotel_name: str = "Hotel Tashkent"
     hotel_location: str = "Olmos Street 74A, Bektemir district, Tashkent 100037, Uzbekistan"
     hotel_phone: str = "+998 88 589 33 33"
     hotel_email: str = "receptiondiyorhotel@gmail.com"
@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     hotel_youtube_url: str = "https://www.youtube.com/@Diyorhoteluz"
     hotel_hero_image: str = "https://diyortashkenthotel.uz/img/838a38a4e81dd51c.webp"
     hotel_map_embed_url: str = (
-        "https://www.google.com/maps?q=Diyor%20Tashkent%20Hotel%20Olmos%2074A%20Bektemir%20Tashkent&output=embed"
+        "https://www.google.com/maps?q=Hotel%20Tashkent%20Olmos%2074A%20Bektemir%20Tashkent&output=embed"
     )
     hotel_gallery: list[str] = Field(
         default_factory=lambda: [

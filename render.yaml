@@ -8,7 +8,7 @@ services:
     healthCheckPath: /
     envVars:
       - key: APP_NAME
-        value: DIYOR HOTEL API
+        value: HOTEL TASHKENT API
       - key: APP_ENV
         value: production
       - key: DEBUG

@@ -1,6 +1,6 @@
-# DIYOR HOTEL - TOSHKENT
+# HOTEL TASHKENT
 
-Bu loyiha DIYOR HOTEL uchun qilingan mehmonxona sayti va bron tizimi.
+Bu loyiha HOTEL TASHKENT uchun qilingan mehmonxona sayti va bron tizimi.
 
 Ichida mehmonlar uchun xonalarni ko'rish, bron qilish, akkaunt orqali bron tarixini kuzatish, admin orqali esa bronlar va mijozlarni boshqarish imkoniyati bor. Frontend `Next.js` da, backend `FastAPI` da yozilgan.
 

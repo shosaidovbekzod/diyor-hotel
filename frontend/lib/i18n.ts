@@ -29,7 +29,7 @@ export const dictionary = {
       admin: "Admin"
     },
     footer: {
-      title: "DIYOR HOTEL - TASHKENT",
+      title: "HOTEL TASHKENT",
       address: "Olmos 74A street, Tashkent, Uzbekistan",
       tagline:
         "A calmer hotel experience in Tashkent with premium rooms, wellness access, and attentive service.",
@@ -89,7 +89,7 @@ export const dictionary = {
     },
     home: {
       badge: "Luxury stay in Tashkent",
-      title: "A premium booking experience for DIYOR HOTEL.",
+      title: "A premium booking experience for HOTEL TASHKENT.",
       desc:
         "Discover elegant rooms, wellness-focused facilities, and a seamless direct reservation flow inspired by leading hospitality platforms.",
       explore: "Explore rooms",
@@ -195,7 +195,7 @@ export const dictionary = {
       admin: "Admin"
     },
     footer: {
-      title: "DIYOR HOTEL - TOSHKENT",
+      title: "HOTEL TASHKENT",
       address: "Olmos 74A ko'chasi, Toshkent, O'zbekiston",
       tagline:
         "Toshkentdagi premium xonalar, wellness hududi va e'tiborli xizmat bilan sokinroq mehmonxona tajribasi.",
@@ -256,7 +256,7 @@ export const dictionary = {
     },
     home: {
       badge: "Toshkentdagi premium mehmonxona",
-      title: "DIYOR HOTEL uchun premium bron tajribasi.",
+      title: "HOTEL TASHKENT uchun premium bron tajribasi.",
       desc:
         "Zamonaviy xonalar, wellness xizmatlari va qulay to'g'ridan-to'g'ri bron jarayonini kashf eting.",
       explore: "Xonalarni ko'rish",
@@ -362,7 +362,7 @@ export const dictionary = {
       admin: "Админ"
     },
     footer: {
-      title: "DIYOR HOTEL - ТАШКЕНТ",
+      title: "HOTEL TASHKENT",
       address: "улица Олмос 74A, Ташкент, Узбекистан",
       tagline:
         "Спокойный формат проживания в Ташкенте с премиальными номерами, wellness-зоной и внимательным сервисом.",
@@ -423,7 +423,7 @@ export const dictionary = {
     },
     home: {
       badge: "Премиальный отдых в Ташкенте",
-      title: "Премиальный опыт бронирования для DIYOR HOTEL.",
+      title: "Премиальный опыт бронирования для HOTEL TASHKENT.",
       desc:
         "Откройте для себя элегантные номера, wellness-услуги и удобный прямой онлайн-процесс бронирования.",
       explore: "Посмотреть номера",

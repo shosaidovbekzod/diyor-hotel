@@ -148,12 +148,12 @@ export function SiteChrome({ children, lang }: { children: React.ReactNode; lang
             <div className="hidden min-w-[180px] md:block">Olmos 74A, Tashkent</div>
             <Link href="/" className="flex items-center gap-3 text-ink md:absolute md:left-1/2 md:-translate-x-1/2">
               <img
-                src="/diyor-logo.png"
-                alt="Diyor Tashkent Hotel logo"
+                src="/hotel-tashkent-logo.svg"
+                alt="Hotel Tashkent logo"
                 className="h-10 w-auto object-contain sm:h-12 md:h-14"
               />
               <span className="font-display text-[20px] tracking-[0.14em] sm:text-[24px] sm:tracking-[0.18em] md:text-[30px]">
-                DIYOR HOTEL
+                HOTEL TASHKENT
               </span>
             </Link>
 
@@ -202,8 +202,8 @@ export function SiteChrome({ children, lang }: { children: React.ReactNode; lang
             <div className="flex items-start justify-between gap-4">
               <Link href="/" className="flex items-center gap-3" onClick={() => setMenuOpen(false)}>
                 <img
-                  src="/diyor-logo.png"
-                  alt="Diyor Tashkent Hotel logo"
+                  src="/hotel-tashkent-logo.svg"
+                  alt="Hotel Tashkent logo"
                   className="h-14 w-auto object-contain"
                 />
               </Link>
@@ -267,11 +267,11 @@ export function SiteChrome({ children, lang }: { children: React.ReactNode; lang
       <footer className="mt-24 border-t border-[#d8cfc2] bg-[#f0e9df] py-12 sm:py-16">
         <div className="shell grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
           <div>
-            <div className="section-label">DIYOR HOTEL</div>
+            <div className="section-label">{copy.footer.title}</div>
             <div className="mt-4 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
               <img
-                src="/diyor-logo.png"
-                alt="Diyor Tashkent Hotel logo"
+                src="/hotel-tashkent-logo.svg"
+                alt="Hotel Tashkent logo"
                 className="h-14 w-auto object-contain sm:h-16"
               />
               <h2 className="max-w-2xl font-display text-3xl leading-[0.98] text-ink sm:text-4xl">

@@ -9,11 +9,11 @@ import { getServerLanguage } from "@/lib/i18n-server";
 const pageCopy = {
   en: {
     badge: "Official website",
-    heroTitle: "Diyor Hotel & Spa Tashkent",
+    heroTitle: "Hotel Tashkent",
     heroDesc:
       "A direct booking experience for the real hotel: modern comfort, national hospitality, and a calmer stay in Tashkent.",
     aboutLabel: "About the hotel",
-    aboutTitle: "Welcome to Diyor Tashkent Hotel.",
+    aboutTitle: "Welcome to Hotel Tashkent.",
     aboutBody:
       "The hotel combines modern comfort, national hospitality, and a convenient location. Spacious rooms, practical layouts, and attentive service make it suitable for both rest and business travel.",
     stayLabel: "Stay",
@@ -51,11 +51,11 @@ const pageCopy = {
   },
   uz: {
     badge: "Rasmiy veb-sayt",
-    heroTitle: "Diyor Hotel & Spa Tashkent",
+    heroTitle: "Hotel Tashkent",
     heroDesc:
       "Haqiqiy mehmonxona uchun to'g'ridan-to'g'ri bron tajribasi: zamonaviy qulaylik, milliy mehmondo'stlik va Toshkentdagi sokinroq turar joy.",
     aboutLabel: "Mehmonxona haqida",
-    aboutTitle: "Diyor Tashkent Hotel'ga xush kelibsiz.",
+    aboutTitle: "Hotel Tashkent'ga xush kelibsiz.",
     aboutBody:
       "Mehmonxona zamonaviy qulaylik, milliy mehmondo'stlik va qulay joylashuvni birlashtiradi. Keng xonalar, amaliy reja va e'tiborli xizmat uni dam olish va xizmat safarlari uchun birdek mos qiladi.",
     stayLabel: "Turar joy",
@@ -93,11 +93,11 @@ const pageCopy = {
   },
   ru: {
     badge: "Официальный сайт",
-    heroTitle: "Diyor Hotel & Spa Tashkent",
+    heroTitle: "Hotel Tashkent",
     heroDesc:
       "Прямое бронирование для реального отеля: современный комфорт, национальное гостеприимство и более спокойное проживание в Ташкенте.",
     aboutLabel: "Об отеле",
-    aboutTitle: "Добро пожаловать в Diyor Tashkent Hotel.",
+    aboutTitle: "Добро пожаловать в Hotel Tashkent.",
     aboutBody:
       "Отель сочетает современный комфорт, национальное гостеприимство и удобное расположение. Просторные номера, практичные планировки и внимательный сервис подходят как для отдыха, так и для деловых поездок.",
     stayLabel: "Проживание",
@@ -281,7 +281,7 @@ export default async function HomePage() {
 
       <section className="shell mt-12 grid gap-10 sm:mt-16 lg:mt-20 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
         <div className="relative min-h-[320px] overflow-hidden border border-[#d8cfc2] sm:min-h-[420px] lg:min-h-[560px]">
-          <Image src="/diyor-about.webp" alt="Diyor Tashkent Hotel exterior" fill className="object-cover" />
+          <Image src="/diyor-about.webp" alt="Hotel Tashkent exterior" fill className="object-cover" />
         </div>
         <div className="card p-6 sm:p-8 md:p-10">
           <div className="section-label">{ui.aboutLabel}</div>
@@ -460,8 +460,8 @@ function HomePreviewRoomCard({
         <Image src={room.image_url} alt={room.title} fill className="object-cover" />
         <div className="absolute right-3 top-3 rounded-xl bg-white/92 p-2 shadow-md backdrop-blur-sm">
           <Image
-            src="/diyor-logo.png"
-            alt="Diyor Hotel logo"
+            src="/hotel-tashkent-logo.svg"
+            alt="Hotel Tashkent logo"
             width={40}
             height={40}
             className="h-9 w-9 object-contain"

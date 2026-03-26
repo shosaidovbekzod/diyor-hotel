@@ -313,12 +313,12 @@ const fallbackReviews: Review[] = [
     rating: 5,
     title: "Excellent weekend stay",
     comment: "Beautiful interiors, attentive staff, and the spa access made the value feel exceptional.",
-    user: { full_name: "DIYOR Guest", email: "guest@diyorhotel.uz" }
+    user: { full_name: "Hotel Tashkent Guest", email: "guest@diyorhotel.uz" }
   }
 ];
 
 const fallbackSummary: HotelSummary = {
-  name: "Diyor Tashkent Hotel",
+  name: "Hotel Tashkent",
   location: "Olmos Street 74A, Bektemir district, Tashkent 100037, Uzbekistan",
   phone: "+998 88 589 33 33",
   email: "receptiondiyorhotel@gmail.com",
@@ -326,7 +326,7 @@ const fallbackSummary: HotelSummary = {
   youtube_url: "https://www.youtube.com/@Diyorhoteluz",
   hero_image: "https://diyortashkenthotel.uz/img/838a38a4e81dd51c.webp",
   map_embed_url:
-    "https://www.google.com/maps?q=Diyor%20Tashkent%20Hotel%20Olmos%2074A%20Bektemir%20Tashkent&output=embed",
+    "https://www.google.com/maps?q=Hotel%20Tashkent%20Olmos%2074A%20Bektemir%20Tashkent&output=embed",
   gallery: [
     "https://diyortashkenthotel.uz/img/86c5aa8d74083036.webp",
     "https://diyortashkenthotel.uz/img/813dbe414736ec61.webp",
