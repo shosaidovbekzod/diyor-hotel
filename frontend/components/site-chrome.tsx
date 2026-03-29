@@ -144,21 +144,24 @@ export function SiteChrome({ children, lang }: { children: React.ReactNode; lang
     <div className="min-h-screen bg-sand">
       <header className="sticky top-0 z-50 border-b border-[#d8cfc2] bg-sand/95 backdrop-blur-xl">
         <div className="shell py-3 text-[9px] uppercase tracking-[0.26em] text-stone sm:py-4 sm:text-[10px] sm:tracking-[0.34em]">
-          <div className="flex items-center justify-between gap-4">
-            <div className="hidden min-w-[180px] md:block">Olmos 74A, Tashkent</div>
-            <Link href="/" className="flex items-center gap-3 text-ink md:absolute md:left-1/2 md:-translate-x-1/2">
+          <div className="flex flex-wrap items-center justify-between gap-4 xl:grid xl:grid-cols-[minmax(170px,1fr)_auto_minmax(360px,1fr)] xl:gap-6">
+            <div className="hidden min-w-[170px] xl:block">Olmos 74A, Tashkent</div>
+            <Link
+              href="/"
+              className="flex min-w-0 items-center gap-2 text-ink sm:gap-3 xl:justify-self-center"
+            >
               <img
                 src="/hotel-tashkent-logo.png"
                 alt="Hotel Tashkent logo"
-                className="h-10 w-auto object-contain sm:h-12 md:h-14"
+                className="h-9 w-auto shrink-0 object-contain sm:h-10 xl:h-11"
               />
-              <span className="font-display text-[20px] tracking-[0.14em] sm:text-[24px] sm:tracking-[0.18em] md:text-[30px]">
+              <span className="font-display text-[18px] tracking-[0.1em] sm:text-[22px] sm:tracking-[0.14em] xl:text-[26px]">
                 HOTEL TASHKENT
               </span>
             </Link>
 
-            <div className="ml-auto flex flex-wrap items-center justify-end gap-3 sm:gap-5">
-              <a href="tel:+9988858933333" className="hidden transition hover:text-ink lg:inline">
+            <div className="ml-auto flex flex-wrap items-center justify-end gap-3 sm:gap-4 xl:ml-0 xl:justify-self-end">
+              <a href="tel:+9988858933333" className="hidden whitespace-nowrap transition hover:text-ink 2xl:inline">
                 +998 88 589 33 33
               </a>
               <LanguageSwitcher current={lang} />
