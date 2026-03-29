@@ -148,7 +148,7 @@ export function SiteChrome({ children, lang }: { children: React.ReactNode; lang
             <div className="hidden min-w-[180px] md:block">Olmos 74A, Tashkent</div>
             <Link href="/" className="flex items-center gap-3 text-ink md:absolute md:left-1/2 md:-translate-x-1/2">
               <img
-                src="/hotel-tashkent-logo.svg"
+                src="/hotel-tashkent-logo.png"
                 alt="Hotel Tashkent logo"
                 className="h-10 w-auto object-contain sm:h-12 md:h-14"
               />
@@ -202,7 +202,7 @@ export function SiteChrome({ children, lang }: { children: React.ReactNode; lang
             <div className="flex items-start justify-between gap-4">
               <Link href="/" className="flex items-center gap-3" onClick={() => setMenuOpen(false)}>
                 <img
-                  src="/hotel-tashkent-logo.svg"
+                  src="/hotel-tashkent-logo.png"
                   alt="Hotel Tashkent logo"
                   className="h-14 w-auto object-contain"
                 />
@@ -270,7 +270,7 @@ export function SiteChrome({ children, lang }: { children: React.ReactNode; lang
             <div className="section-label">{copy.footer.title}</div>
             <div className="mt-4 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
               <img
-                src="/hotel-tashkent-logo.svg"
+                src="/hotel-tashkent-logo.png"
                 alt="Hotel Tashkent logo"
                 className="h-14 w-auto object-contain sm:h-16"
               />

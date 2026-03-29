@@ -460,7 +460,7 @@ function HomePreviewRoomCard({
         <Image src={room.image_url} alt={room.title} fill className="object-cover" />
         <div className="absolute right-3 top-3 rounded-xl bg-white/92 p-2 shadow-md backdrop-blur-sm">
           <Image
-            src="/hotel-tashkent-logo.svg"
+            src="/hotel-tashkent-logo.png"
             alt="Hotel Tashkent logo"
             width={40}
             height={40}

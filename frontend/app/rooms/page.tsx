@@ -189,7 +189,7 @@ function RoomCard({
 
         <div className="absolute right-2 top-2 rounded-xl bg-white/92 p-1.5 shadow-md backdrop-blur-sm">
           <Image
-            src="/hotel-tashkent-logo.svg"
+            src="/hotel-tashkent-logo.png"
             alt="Hotel Tashkent logo"
             width={34}
             height={34}
